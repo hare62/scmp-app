@@ -3,6 +3,8 @@ import {createStackNavigator} from 'react-navigation-stack';
 import WelcomePage from '../page/WelcomePage';
 import HomePage from '../page/HomePage';
 import DetailPage from '../page/DetailPage';
+import Login from '../page/Login'
+import Worker from '../page/worker/index'
 
 const InitNavigator = createStackNavigator(
     {
@@ -11,11 +13,22 @@ const InitNavigator = createStackNavigator(
             navigationOptions: {
                 header: null,//隐藏头部
             },
-
+        },
+        Login:{
+            screen: Login,
+            navigationOptions: {
+                header: null,//隐藏头部
+            }
         },
     },
 );
 const MainNavigator = createStackNavigator({
+    Worker:{
+        screen: Worker,
+        navigationOptions: {
+            header: null,//隐藏头部
+        }
+    },
     HomePage: {
         screen: HomePage,
         navigationOptions: {
@@ -27,7 +40,8 @@ const MainNavigator = createStackNavigator({
         navigationOptions: {
             header: null,//隐藏头部
         }
-    }
+    },
+   
 });
 export default createAppContainer(createSwitchNavigator({
     Init: InitNavigator,
