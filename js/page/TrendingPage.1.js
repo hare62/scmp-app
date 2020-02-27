@@ -24,7 +24,6 @@ import FavoriteUtil from "../util/FavoriteUtil";
 import NavigationUtil from '../navigator/NavigationUtil';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import TimeSpan from '../model/TimeSpan'
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
 
 
@@ -39,10 +38,10 @@ export default class TrendingPage extends Component {
         super(props);
         // this.tabNames = ['C', 'C#', 'PHP', 'JavaScript'];
         this.tabNames = [
-            { label: '未报工', requestData: 'C' },
-            { label: '已报工', requestData: 'C#' },
-            { label: '全部', requestData: 'PHP' },
-
+            {label:'未报工',requestData:'C'},
+            {label:'已报工',requestData:'C#'},
+            {label:'全部',requestData:'PHP'},
+           
         ];
         this.state = {
             timeSpan: TimeSpans[0],
@@ -93,7 +92,7 @@ export default class TrendingPage extends Component {
         this.setState({
             timeSpan: tab,
         });
-        // DeviceEventEmitter.emit(EVENT_TYPE_TIME_SPAN_CHANGE, tab);
+        DeviceEventEmitter.emit(EVENT_TYPE_TIME_SPAN_CHANGE, tab);
     }
 
 
@@ -105,7 +104,7 @@ export default class TrendingPage extends Component {
         />;
     }
     _tabNav() {
-        // if (!this.tabNav) {//优化效率：根据需要选择是否重新创建建TabNavigator，通常tab改变后才重新创建
+        if (!this.tabNav) {//优化效率：根据需要选择是否重新创建建TabNavigator，通常tab改变后才重新创建
             this.tabNav = createAppContainer(createMaterialTopTabNavigator(
                 this._genTabs(),
                 {
@@ -126,36 +125,15 @@ export default class TrendingPage extends Component {
                     },
                 },
             ));
-        // }
+        }
 
         return this.tabNav
-    }
-
-    createDailyData() {
-        this.tabNames = [
-            { label: '未报工', requestData: 'C' },
-            { label: '已报工', requestData: 'C#' },
-            { label: '全部', requestData: 'PHP' },
-
-        ];
-
-        return this.onSelectTimeSpan( new TimeSpan('今 天', 'since=daily'))
-    }
-
-    createWeeklyData() {
-        this.tabNames = [
-            { label: '最近三天', requestData: 'javaScript' },
-            { label: '最近一周', requestData: 'C#' },
-            { label: '最近半年', requestData: 'PHP' },
-
-        ];
-        return this.onSelectTimeSpan(new TimeSpan('本 周', 'since=weekly'))
     }
 
     renderRightButton() {
         return (<View style={{ flexDirection: 'row' }}>
             <TouchableOpacity
-                onPress={() => this.createWeeklyData()}>
+                onPress={() => { }}>
                 <Ionicons
                     name={'ios-timer'}
                     size={25}
@@ -164,7 +142,7 @@ export default class TrendingPage extends Component {
 
             </TouchableOpacity>
             <TouchableOpacity
-                onPress={() => this.createDailyData()}>
+                onPress={() => { }}>
                 <AntDesign
                     name={'filter'}
                     size={25}
@@ -184,12 +162,12 @@ export default class TrendingPage extends Component {
         };
 
         let navigationBar = <NavigationBar
-            // titleView={this.renderTitleView()}
-            title={'我的派工单'}
+            titleView={this.renderTitleView()}
+            // title={'我的派工单'}
             statusBar={statusBar}
             // style={theme.styles.navBar}
             style={{ backgroundColor: '#376CDA' }}
-            rightButton={this.renderRightButton()}
+        rightButton={this.renderRightButton()}
         />
 
         const TabNavigator = this._tabNav();
@@ -215,10 +193,10 @@ class TrendingTab extends Component {
 
     componentDidMount() {
         this.loadData()
-        // this.timeSpanChangeListener = DeviceEventEmitter.addListener(EVENT_TYPE_TIME_SPAN_CHANGE, (timeSpan) => {
-        //     this.timeSpan = timeSpan;
-        //     this.loadData();
-        // });
+        this.timeSpanChangeListener = DeviceEventEmitter.addListener(EVENT_TYPE_TIME_SPAN_CHANGE, (timeSpan) => {
+            this.timeSpan = timeSpan;
+            this.loadData();
+        });
         // EventBus.getInstance().addListener(EventTypes.favoriteChanged_trending, this.favoriteChangeListener = () => {
         //     this.isFavoriteChanged = true;
         // });
@@ -230,9 +208,9 @@ class TrendingTab extends Component {
 
     }
     componentWillUnmount() {
-        // if (this.timeSpanChangeListener) {
-        //     this.timeSpanChangeListener.remove();
-        // }
+        if (this.timeSpanChangeListener) {
+            this.timeSpanChangeListener.remove();
+        }
         // EventBus.getInstance().removeListener(this.favoriteChangeListener);
         // EventBus.getInstance().removeListener(this.bottomTabSelectListener);
     }
@@ -310,7 +288,7 @@ class TrendingTab extends Component {
         return (
             <View style={styles.contains}>
                 <FlatList
-
+                    
                     data={store.projectModels}
                     renderItem={data => this.renderItem(data)}
                     keyExtractor={item => "" + item.item.fullName}

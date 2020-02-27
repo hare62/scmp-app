@@ -1,19 +1,54 @@
+// import React, {Component} from 'react';
+// import {View, Text, StyleSheet, Button} from 'react-native';
+// import actions from '../action';
+// import {connect} from 'react-redux';
+
+// class MyPage extends Component {
+//     render() {
+//         const {navigation} = this.props;
+//         return (
+//             <View style={styles.container}>
+//                 <Text style={styles.welcome}>MyPage</Text>
+//                 <Button
+//                     title={'修改主题'}
+//                     onPress={() => this.props.onThemeChange('#8a3')}
+//                 />
+//             </View>
+//         );
+//     }
+
+// }
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         backgroundColor: '#F5FCFF',
+//     },
+//     welcome: {
+//         fontSize: 20,
+//         textAlign: 'center',
+//         margin: 10,
+//     },
+// });
+// const mapDispatchToProps = dispatch => ({
+//     onThemeChange: theme => dispatch(actions.onThemeChange(theme)),
+// });
+// export default connect(null, mapDispatchToProps)(MyPage);
 
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, AsyncStorage  } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 import NavigationUtil from '../navigator/NavigationUtil';
 import DataStore from '../expand/dao/DataStore'
-import action from '../action';
-import { connect } from 'tls';
 
 export default class PopularPage extends Component {
     constructor(props) {
         super(props);
-        this.tabNames = ['最热', '趋势'];
-
+        this.tabNames = ['最热', '趋势', 'iOS', 'React', 'React Native', 'PHP'];
+        // this.
     }
 
     _genTabs() {
@@ -52,49 +87,48 @@ export default class PopularPage extends Component {
             </View>
         );
     }
+
 }
 
 class PopularTab extends Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            dataSource: [],
-            asyncStorageData: '初始数据',
-            showText: ''
-        };
-        this.DataStore = new DataStore();
+       super(props);
+      this.state={
+        dataSource:[],
+        asyncStorageData:'初始数据',
+        showText:''
+      };
+      this.DataStore=new DataStore();
     }
 
     async getAsyncStorageData() {
-        let url = `https://facebook.github.io/react-native/movies.json`;
+        let url =`https://facebook.github.io/react-native/movies.json`;
         this.DataStore.fetchData(url)
-            .then(data => {
-                console.log(data)
-                let showText = `初次数据加载时间:${new Date(data.timestamp)}\n${JSON.stringify(data)}`;
-                this.setState({
-                    showText
-                })
-            }).catch(error => {
-                error && console.log(error.toString());
+        .then(data =>{
+            console.log(data)
+            let showText =`初次数据加载时间:${new Date(data.timestamp)}\n${JSON.stringify(data)}`;
+            this.setState({
+                showText
             })
+        }).catch(error =>{
+            error && console.log(error.toString());
+        })
     }
 
     loadData() {
         fetch('https://facebook.github.io/react-native/movies.json')
-            .then((response) => {
-                if (response.ok) {
-                    return response.json()
+            .then((response) =>{
+              
+                if(response.ok){
+                  return  response.json()
                 }
                 throw new Error("NetWork response was not ok.")
             })
             .then((responseJson) => {
-                console.log(responseJson.movies)
-
+                console.log('responseJson.movies',responseJson)
                 this.setState({
-
                     dataSource: responseJson.description,
                 }, function () {
-
                 });
 
             })
@@ -106,36 +140,36 @@ class PopularTab extends Component {
             });
     }
 
-    async saveData() {
+   async saveData(){
         try {
             await AsyncStorage.setItem('@MySuperStore:key', 'I like to save it.');
-        } catch (error) {
+          } catch (error) {
             // Error saving data
-        }
+          }
     }
 
     async  readData() {
         try {
             const value = await AsyncStorage.getItem('@MySuperStore:key');
             if (value !== null) {
-                // We have data!!
-                console.log(value);
-                this.setState({
-                    asyncStorageData: value
-                })
+              // We have data!!
+              console.log(value);
+              this.setState({
+                asyncStorageData:value
+              })
             }
-        } catch (error) {
-            // Error retrieving data
-        }
+           } catch (error) {
+             // Error retrieving data
+           }
 
     }
 
-
+   
     render() {
         return (
             <View>
                 <Text>PopularTab</Text>
-                <Text onPress={
+                <Text onPress={ 
                     () => {
                         console.log("你好")
                         NavigationUtil.goPage({}, 'DetailPage');
@@ -145,7 +179,7 @@ class PopularTab extends Component {
                 <TextInput
                     style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
                     onChangeText={text => { this.searchKey = text }}
-
+                   
                 />
                 <Button title="获取" onPress={() => { this.loadData() }}></Button>
                 <Button title="保存数据" onPress={() => { this.saveData() }}></Button>
@@ -162,20 +196,10 @@ class PopularTab extends Component {
     }
 }
 
-
-// const mapStateToProps = state => ({
-//     favorite: state.favorite
-// })
-
-// const mapDispatchToProps = dispatch => ({
-//     onLoadfavoriteData: () => dispatch(actions.onLoadfavoriteData())
-// })
-
-// const PupolarTabPage = connect(mapStateToProps, mapDispatchToProps)(PopularTab)
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginTop: 30,
     },
     welcome: {
         fontSize: 20,

@@ -3,7 +3,8 @@ import { Image, StyleSheet, Text, TouchableOpacity, View, } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import HTMLView from 'react-native-htmlview';
 import BaseItem from "./BaseItem";
-
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 export default class TrendingItem extends BaseItem {
 
     render() {
@@ -17,8 +18,7 @@ export default class TrendingItem extends BaseItem {
             <TouchableOpacity
                 onPress={() => this.onItemClick()}
             >
-                <View style={styles.cell_container}>
-                    {/* <Text >nihao</Text> */}
+                {/* <View style={styles.cell_container}>
                     <View style={styles.container_left} ></View>
                     <View style={styles.container_right}>
                         <View style={styles.container_right_title} >
@@ -27,10 +27,40 @@ export default class TrendingItem extends BaseItem {
                         </View>
                         <View style={styles.container_right_title} >
                             <Text style={styles.container_right_date} >25分钟之前</Text>
-                            {/* <Text style={styles.container_right_title_right}>物料：六角螺母</Text> */}
+                        </View>
+                    </View>
+                </View> */}
+                <TouchableOpacity
+                onPress={() => this.onItemClick()}
+            >
+                <View style={styles.cell_container}>
+                    <View style={styles.container_left} >
+                        {/* 图标根据状态去传显示什么图标 */}
+                        <EvilIcons
+                            name={'check'}
+                            size={80}
+                            style={{ color: '#376CDA',  }}
+                        />
+                    </View>
+                    <View style={styles.container_right}>
+                        <View style={styles.container_right_title} >
+                            <Text style={styles.container_right_title_order} >{item.fullName}</Text>
+                            <Text style={styles.container_right_title_materials}>物料：六角螺母</Text>
+                        </View>
+                        <View style={styles.container_right_contain} >
+                            <Text style={styles.container_right_date} >
+                                <AntDesign
+                                    name={'clockcircleo'}
+                                    size={18}
+                                    style={{ color: '#aaa',  }}
+                                />
+
+                            </Text>
+                            <Text style={styles.container_right_text} >2020-02-27</Text>
                         </View>
                     </View>
                 </View>
+            </TouchableOpacity>
                 {/* <View style={styles.cell_containers}>
                     <Text style={styles.title}>
                         {item.fullName}
@@ -75,54 +105,54 @@ export default class TrendingItem extends BaseItem {
 }
 const styles = StyleSheet.create({
     cell_container: {
-        paddingLeft: 20,
+        paddingLeft: 5,
         paddingTop: 20,
-        // paddingBottom: 20,
-        // backgroundColor: '#99cc99',
         flexDirection: 'row'
 
     },
     container_left: {
         height: 80,
         width: 80,
-        backgroundColor: '#ec6a6a',
+        marginRight:10,
         borderRadius: 50,
         lineHeight: 80,
-        justifyContent: 'center',
-        alignContent: 'center',
-        alignItems: 'center'
-
     },
     container_right: {
         color: 'white',
-        // backgroundColor: '#ec6a6a',
-        height:90,
-        marginLeft: 15,
+        height: 80,
         flex: 1,
-        // paddingTop: 10,
-        borderBottomColor:"#ccc",
-        borderBottomWidth:1
+        borderBottomColor: "#ccc",
+        borderBottomWidth: 1
     },
     container_right_title: {
         flexDirection: 'row',
-        // color: 'white',
+        justifyContent:'space-between',
+        paddingRight:30
+    
     },
-    container_right_title_order : {
-        marginLeft: 15,
+    container_right_contain:{
+        flexDirection: 'row',
+    },
+    container_right_title_order: {
         color: 'black',
         marginBottom: 10,
-        
+        fontSize:17
+
+
     },
-    container_right_title_materials : {
-        marginLeft: 15,
+    container_right_title_materials: {
         color: '#666',
         marginBottom: 10,
     },
     container_right_date: {
-        color:"#333",
-        marginLeft: 15,
-        // marginBottom: 10,
+        color: "#aaa",
+        justifyContent: 'flex-end',
     },
+    container_right_text: {
+        paddingLeft: 10,
+        color:'#aaa'
+    },
+
     cell_containers: {
         backgroundColor: 'white',
         padding: 10,
