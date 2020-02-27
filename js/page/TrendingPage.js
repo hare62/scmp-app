@@ -19,7 +19,7 @@ import NavigationBar from '../common/NavigationBar';
 import TrendingDialog, { TimeSpans } from '../common/TrendingDialog'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FavoriteDao from "../expand/dao/FavoriteDao";
-import {FLAG_STORAGE} from "../expand/dao/DataStore";
+import { FLAG_STORAGE } from "../expand/dao/DataStore";
 import FavoriteUtil from "../util/FavoriteUtil";
 import NavigationUtil from '../navigator/NavigationUtil'
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
@@ -35,6 +35,7 @@ export default class TrendingPage extends Component {
     constructor(props) {
         super(props);
         this.tabNames = ['C', 'C#', 'PHP', 'JavaScript'];
+        // this.tabNamesreplace = ['未报工', '已报工', '全部'];
         this.state = {
             timeSpan: TimeSpans[0],
         };
@@ -68,10 +69,11 @@ export default class TrendingPage extends Component {
             tabs[`tab${index}`] = {
                 // screen: props => <TrendingTabPage {...props} tabLabel={item} />,
                 screen: props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} tabLabel={item}
-                    // theme={theme} 
-                    />,//初始化Component时携带默认参数 @https://github.com/react-navigation/react-navigation/issues/2392
+                // theme={theme} 
+                />,//初始化Component时携带默认参数 @https://github.com/react-navigation/react-navigation/issues/2392
                 navigationOptions: {
                     title: item,
+
                 },
 
             };
@@ -95,14 +97,14 @@ export default class TrendingPage extends Component {
         />;
     }
     _tabNav() {
-        if(!this.tabNav){//优化效率：根据需要选择是否重新创建建TabNavigator，通常tab改变后才重新创建
+        if (!this.tabNav) {//优化效率：根据需要选择是否重新创建建TabNavigator，通常tab改变后才重新创建
             this.tabNav = createAppContainer(createMaterialTopTabNavigator(
                 this._genTabs(),
                 {
                     tabBarOptions: {
                         tabStyle: styles.tabStyle,
                         upperCaseLabel: false,
-                        scrollEnabled: true,
+                        scrollEnabled: false,
                         style: {
                             backgroundColor: '#a67',
                         },
@@ -118,8 +120,9 @@ export default class TrendingPage extends Component {
 
     render() {
         let statusBar = {
-            backgroundColor: "black",
             barStyle: 'light-content',
+            hidden: false,
+            backgroundColor: "black",
         };
 
         let navigationBar = <NavigationBar
@@ -128,9 +131,9 @@ export default class TrendingPage extends Component {
             // style={theme.styles.navBar}
             style={{ backgroundColor: THEME_COLOR }}
         // rightButton={this.renderRightButton()}
-        />;
+        />
 
-        const TabNavigator =this._tabNav();
+        const TabNavigator = this._tabNav();
         return (
             <View style={styles.container}>
                 {navigationBar}
@@ -146,7 +149,7 @@ class TrendingTab extends Component {
     constructor(props) {
         super(props);
 
-        const { tabLabel, timeSpan} = this.props;
+        const { tabLabel, timeSpan } = this.props;
         this.timeSpan = timeSpan;
         this.storeName = tabLabel
     }
@@ -198,7 +201,7 @@ class TrendingTab extends Component {
         const url = this.genFetchUrl(this.storeName);
         let pageIndex = ++store.pageIndex
         if (loadMore) {
-            onLoadMoreTrending(this.storeName, pageIndex, pageSize, store.items,favoriteDao, callback => {
+            onLoadMoreTrending(this.storeName, pageIndex, pageSize, store.items, favoriteDao, callback => {
                 this.refs.toast.show('没有更多了');
             })
         } else {
@@ -212,7 +215,7 @@ class TrendingTab extends Component {
 
     genFetchUrl(key) {
 
-        return URL + key  + '?' + this.timeSpan.searchText;
+        return URL + key + '?' + this.timeSpan.searchText;
     }
 
     renderItem(data) {
@@ -222,13 +225,13 @@ class TrendingTab extends Component {
             onSelect={(callback) => {
                 NavigationUtil.goPage({
                     projectModel: item,
-                    flag:FLAG_STORAGE.flag_trending,
+                    flag: FLAG_STORAGE.flag_trending,
                     callback
                 }, 'DetailPage');
             }}
             onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_trending)}
         />;
-       
+
 
     }
 

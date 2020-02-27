@@ -80,7 +80,7 @@ class DynamicTabNavigator extends React.Component {
             return this.Tabs;
         }
         const {PopularPage, TrendingPage, FavoritePage, MyPage} = TABS;
-        const tabs = {PopularPage, TrendingPage, FavoritePage, MyPage};
+        const tabs = { TrendingPage, FavoritePage, MyPage};
         PopularPage.navigationOptions.tabBarLabel = '最热';//动态修改Tab属性
         return this.Tabs = createAppContainer(createBottomTabNavigator(
             tabs, {
