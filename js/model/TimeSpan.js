@@ -4,7 +4,8 @@
  * @param searchText
  * @constructor
  */
-export default function TimeSpan(showText, searchText) {
+export default function TimeSpan(showText, searchText ,showIconName) {
     this.showText = showText;
     this.searchText = searchText;
+    this.showIconName = showIconName
 }

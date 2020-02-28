@@ -24,7 +24,8 @@ import FavoriteUtil from "../util/FavoriteUtil";
 import NavigationUtil from '../navigator/NavigationUtil';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import TimeSpan from '../model/TimeSpan'
+import TimeSpan from '../model/TimeSpan';
+import {fit} from '../common/fit'
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
 
 
@@ -57,13 +58,13 @@ export default class TrendingPage extends Component {
                 onPress={() => this.dialog.show()}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={{
-                        fontSize: 18,
+                        fontSize: fit(18),
                         color: '#FFFFFF',
                         fontWeight: '400',
                     }}>我的派工单</Text>
                     <MaterialIcons
                         name={'arrow-drop-down'}
-                        size={22}
+                        size={fit(22)}
                         style={{ color: 'white' }}
                     />
                 </View>
@@ -81,6 +82,7 @@ export default class TrendingPage extends Component {
                 />,//初始化Component时携带默认参数 @https://github.com/react-navigation/react-navigation/issues/2392
                 navigationOptions: {
                     title: item.label,
+
 
                 },
 
@@ -158,8 +160,8 @@ export default class TrendingPage extends Component {
                 onPress={() => this.createWeeklyData()}>
                 <Ionicons
                     name={'ios-timer'}
-                    size={25}
-                    style={{ color: 'white', marginRight: 20 }}
+                    size={fit(20)}
+                    style={{ color: 'white', marginRight: fit(20) }}
                 />
 
             </TouchableOpacity>
@@ -167,8 +169,8 @@ export default class TrendingPage extends Component {
                 onPress={() => this.createDailyData()}>
                 <AntDesign
                     name={'filter'}
-                    size={25}
-                    style={{ color: 'white', marginRight: 20 }}
+                    size={fit(20)}
+                    style={{ color: 'white', marginRight: fit(20) }}
                 />
 
             </TouchableOpacity>
@@ -367,18 +369,18 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     tabStyle: {
-        minWidth: 50,
+        minWidth: fit(20),
         color: 'red'
     },
     indicatorStyle: {
-        height: 2,
+        height: fit(2),
         backgroundColor: '#376CDA',
 
     },
     labelStyle: {
         fontSize: 16,
-        marginTop: 6,
-        marginBottom: 6,
+        marginTop: fit(6),
+        marginBottom: fit(6),
         color: "#376CDA"
     },
     activeTintColor: {

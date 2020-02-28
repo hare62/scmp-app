@@ -1,23 +1,34 @@
-import React, {Component} from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import actions from '../action';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 class MyPage extends Component {
-   gotoWorkerPage(){
-    const {navigation} = this.props;
-    console.log(this.props)
-    navigation.navigate('Worker');
-   }
+    gotoWorkerPage() {
+        const { navigation } = this.props;
+        console.log(this.props)
+        navigation.navigate('Worker');
+    }
 
+    gotoWorkshopDirector() {
+        const { navigation } = this.props;
+        console.log(this.props)
+        navigation.navigate('WorkshopDirector');
+    }
     render() {
-        const {navigation} = this.props;
+        const { navigation } = this.props;
         return (
             <View style={styles.container}>
                 <Text style={styles.welcome}>LoginPage</Text>
                 <Button
-                    title={'登录页面0'}
+                    style={styles.contain}
+                    title={'跳转到工人派工单'}
                     onPress={() => this.gotoWorkerPage()}
+                />
+                <Button
+                    style={styles.button2}
+                    title={'跳转到车间主任'}
+                    onPress={() => this.gotoWorkshopDirector()}
                 />
             </View>
         );
@@ -35,7 +46,17 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
+        marginBottom:20
     },
+
+    contain: {
+        padding: 20,
+        backgroundColor:'red',
+        marginBottom:20
+    },
+    button2:{
+        marginTop:20
+    }
 });
 const mapDispatchToProps = dispatch => ({
     onThemeChange: theme => dispatch(actions.onThemeChange(theme)),

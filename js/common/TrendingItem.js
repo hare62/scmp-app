@@ -5,6 +5,7 @@ import HTMLView from 'react-native-htmlview';
 import BaseItem from "./BaseItem";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import {fit} from '../common/fit'
 export default class TrendingItem extends BaseItem {
 
     render() {
@@ -103,6 +104,90 @@ export default class TrendingItem extends BaseItem {
         )
     }
 }
+// const styles = StyleSheet.create({
+//     cell_container: {
+//         paddingLeft: 5,
+//         paddingTop: fit(20),
+//         flexDirection: 'row'
+
+//     },
+//     container_left: {
+//         height: fit(80),
+//         width: fit(80),
+//         marginRight:fit(10),
+//         borderRadius: fit(50),
+//         lineHeight: fit(80),
+//     },
+//     container_right: {
+//         color: 'white',
+//         height: fit(80),
+//         flex: fit(1),
+//         borderBottomColor: "#ccc",
+//         borderBottomWidth: fit(1)
+//     },
+//     container_right_title: {
+//         flexDirection: 'row',
+//         justifyContent:'space-between',
+//         paddingRight:fit(30)
+    
+//     },
+//     container_right_contain:{
+//         flexDirection: 'row',
+//     },
+//     container_right_title_order: {
+//         color: 'black',
+//         marginBottom: fit(10),
+//         fontSize:fit(18)
+
+
+//     },
+//     container_right_title_materials: {
+//         color: '#666',
+//         marginBottom: fit(10),
+//     },
+//     container_right_date: {
+//         color: "#aaa",
+//         justifyContent: 'flex-end',
+//     },
+//     container_right_text: {
+//         paddingLeft: fit(10),
+//         color:'#aaa'
+//     },
+
+//     cell_containers: {
+//         backgroundColor: 'white',
+//         padding: fit(10),
+//         marginLeft: fit(5),
+//         marginRight: fit(5),
+//         marginVertical: fit(3),
+//         borderColor: '#dddddd',
+//         borderWidth: fit(0.5),
+//         borderRadius: 2,
+//         shadowColor: 'gray',
+//         shadowOffset: { width: fit(0.5), height: fit(0.5) },
+//         shadowOpacity: fit(0.4),
+//         shadowRadius: fit(1),
+//         elevation: fit(1)
+//     },
+//     row: {
+//         justifyContent: 'space-between',
+//         flexDirection: 'row',
+//         alignItems: 'center',
+//     },
+//     title: {
+//         fontSize: fit(16),
+//         marginBottom: fit(2),
+//         color: '#212121',
+//     },
+//     description: {
+//         fontSize: fit(14),
+//         marginBottom: fit(2),
+//         color: '#757575',
+//     }
+// }
+// );
+
+
 const styles = StyleSheet.create({
     cell_container: {
         paddingLeft: 5,
@@ -136,7 +221,7 @@ const styles = StyleSheet.create({
     container_right_title_order: {
         color: 'black',
         marginBottom: 10,
-        fontSize:17
+        fontSize:18
 
 
     },
@@ -149,7 +234,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     container_right_text: {
-        paddingLeft: 10,
+        paddingLeft:10,
         color:'#aaa'
     },
 
@@ -158,15 +243,15 @@ const styles = StyleSheet.create({
         padding: 10,
         marginLeft: 5,
         marginRight: 5,
-        marginVertical: 3,
+        marginVertical:3,
         borderColor: '#dddddd',
         borderWidth: 0.5,
         borderRadius: 2,
         shadowColor: 'gray',
-        shadowOffset: { width: 0.5, height: 0.5 },
+        shadowOffset: { width: 0.5, height:0.5 },
         shadowOpacity: 0.4,
         shadowRadius: 1,
-        elevation: 2
+        elevation: 1
     },
     row: {
         justifyContent: 'space-between',
@@ -180,7 +265,7 @@ const styles = StyleSheet.create({
     },
     description: {
         fontSize: 14,
-        marginBottom: 2,
+        marginBottom:2,
         color: '#757575',
     }
 }

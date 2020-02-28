@@ -4,7 +4,8 @@ import WelcomePage from '../page/WelcomePage';
 import HomePage from '../page/HomePage';
 import DetailPage from '../page/DetailPage';
 import Login from '../page/Login'
-import Worker from '../page/worker/index'
+import Worker from '../page/worker/index';
+import WorkshopDirector from '../page/workshopDirector/index'
 
 const InitNavigator = createStackNavigator(
     {
@@ -23,6 +24,12 @@ const InitNavigator = createStackNavigator(
     },
 );
 const MainNavigator = createStackNavigator({
+    WorkshopDirector:{
+        screen: WorkshopDirector,
+        navigationOptions: {
+            header: null,//隐藏头部
+        }
+    },
     Worker:{
         screen: Worker,
         navigationOptions: {
