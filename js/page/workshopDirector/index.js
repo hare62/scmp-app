@@ -15,7 +15,7 @@ import actions from '../../action/index';
 import TrendingItem from '../../common/TrendingItem';
 import Toast from 'react-native-easy-toast';
 import NavigationBar from '../../common/NavigationBar';
-import WorkshopDirectorDialog, { TimeSpans } from '../../common/WorkshopDirectorDialog';
+import WorkshopDirectorDialog, { FilterConditionSpan } from '../../common/WorkshopDirectorDialog';
 import TopTabNavigatorOfFlatList from '../../common/TopTabNavigatorOfFlatList'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FavoriteDao from "../../expand/dao/FavoriteDao";
@@ -40,7 +40,7 @@ export default class WorkshopDirector extends Component {
             { label: '全部', requestData: 'PHP' },
         ];
         this.state = {
-            timeSpan: TimeSpans[0],
+            FilterConditionData: FilterConditionSpan[0],
         };
     }
 
@@ -48,7 +48,7 @@ export default class WorkshopDirector extends Component {
         const tabs = {};
         this.tabNames.forEach((item, index) => {
             tabs[`tab${index}`] = {
-                screen: props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} tabLabel={item.requestData}
+                screen: props => <TrendingTabPage {...props} FilterConditionData={this.state.FilterConditionData} tabLabel={item.requestData}
                 />,
                 navigationOptions: {
                     title: item.label,
@@ -63,7 +63,7 @@ export default class WorkshopDirector extends Component {
     renderWorkshopDirectorDialog() {
         return <WorkshopDirectorDialog
             ref={dialog => this.dialog = dialog}
-            onSelect={tab => this.onSelectTimeSpan(tab)}
+            onSelect={tab => this.onSelectFilterConditionData(tab)}
         />;
     }
 
@@ -94,7 +94,7 @@ export default class WorkshopDirector extends Component {
         return this.tabNav
     }
 
-    onSelectTimeSpan(tab) {
+    onSelectFilterConditionData(tab) {
         console.log('tab', tab)
         if (tab.searchText === 'since=monthly') {
             this.tabNames = [
@@ -122,7 +122,7 @@ export default class WorkshopDirector extends Component {
 
         this.dialog.dismiss();
         this.setState({
-            timeSpan: tab,
+            FilterConditionData: tab,
         });
         // DeviceEventEmitter.emit(EVENT_TYPE_TIME_SPAN_CHANGE, tab);
     }

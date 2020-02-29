@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { Modal, Text, TouchableOpacity, StyleSheet, View, Platform, DeviceInfo } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import TimeSpan from '../model/TimeSpan'
+import FilterConditionData from '../model/FilterConditionData'
 
-export const TimeSpans = [
-                          new TimeSpan('今 天', 'since=daily',''),
-                          new TimeSpan('本 周', 'since=weekly'), 
-                          new TimeSpan('本 月', 'since=monthly')
+export const FilterConditionSpan = [
+                          new FilterConditionData('今 天', 'since=daily',''),
+                          new FilterConditionData('本 周', 'since=weekly'), 
+                          new FilterConditionData('本 月', 'since=monthly')
                         ]
 export default class TrendingDialog extends Component {
     state = {
@@ -42,7 +42,7 @@ export default class TrendingDialog extends Component {
                     style={styles.arrow}
                 />
                 <View style={styles.content}>
-                    {TimeSpans.map((result, i, arr) => {
+                    {FilterConditionSpan.map((result, i, arr) => {
                         console.log('arr[i]',arr[i])
                         return <TouchableOpacity
                             key={i}
@@ -54,7 +54,7 @@ export default class TrendingDialog extends Component {
                                 >{arr[i].showText}</Text>
                             </View>
                             {
-                                i !== TimeSpans.length - 1 ? <View
+                                i !== FilterConditionSpan.length - 1 ? <View
                                     style={styles.line}
                                 /> : null
                             }

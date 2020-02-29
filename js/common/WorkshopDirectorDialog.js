@@ -1,19 +1,15 @@
 import React, { Component } from 'react';
 import { Modal, Text, TouchableOpacity, StyleSheet, View, Platform, DeviceInfo } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import TimeSpan from '../model/TimeSpan';
+import FilterConditionData from '../model/FilterConditionData';
 import Feather from 'react-native-vector-icons/Feather';
-// export const TimeSpans = [
-//     new TimeSpan('选择时间', 'since=daily', 'clock'),
-//     new TimeSpan('选择状态', 'since=monthly', 'filter'),
-//     new TimeSpan('选择人员', 'since=weekly', 'user'),
-// ]
-
-export const TimeSpans = [
-    TimeSpan.init({showText:'选择时间', searchText:'since=daily', showIconName:'clock'}),
-    TimeSpan.init({showText:'选择状态', searchText:'since=monthly', showIconName:'filter'}),
-    TimeSpan.init({showText:'选择人员', searchText:'since=weekly', showIconName:'filter'}),
+export const FilterConditionSpan = [
+    new FilterConditionData('选择时间', 'since=daily', 'clock'),
+    new FilterConditionData('选择状态', 'since=monthly', 'filter'),
+    new FilterConditionData('选择人员', 'since=weekly', 'user'),
 ]
+
+
 export default class WorkshopDirectorDialog extends Component {
     state = {
         visible: false,
@@ -48,7 +44,7 @@ export default class WorkshopDirectorDialog extends Component {
                     style={styles.arrow}
                 />
                 <View style={styles.content}>
-                    {TimeSpans.map((result, i, arr) => {
+                    {FilterConditionSpan.map((result, i, arr) => {
                         console.log('arr[i]', arr[i])
                         return <TouchableOpacity
                             key={i}
@@ -65,7 +61,7 @@ export default class WorkshopDirectorDialog extends Component {
                                 >{result.showText}</Text>
                             </View>
                             {
-                                i !== TimeSpans.length - 1 ? <View
+                                i !== FilterConditionSpan.length - 1 ? <View
                                     style={styles.line}
                                 /> : null
                             }

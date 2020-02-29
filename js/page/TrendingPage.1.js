@@ -16,7 +16,7 @@ import actions from '../action/index';
 import TrendingItem from '../common/TrendingItem';
 import Toast from 'react-native-easy-toast';
 import NavigationBar from '../common/NavigationBar';
-import WorkshopDirectorDialog, { TimeSpans } from '../common/WorkshopDirectorDialog'
+import WorkshopDirectorDialog, { FilterConditionSpan } from '../common/WorkshopDirectorDialog'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FavoriteDao from "../expand/dao/FavoriteDao";
 import { FLAG_STORAGE } from "../expand/dao/DataStore";
@@ -44,7 +44,7 @@ export default class TrendingPage extends Component {
            
         ];
         this.state = {
-            timeSpan: TimeSpans[0],
+            FilterConditionData: FilterConditionSpan[0],
         };
     }
 
@@ -75,7 +75,7 @@ export default class TrendingPage extends Component {
         this.tabNames.forEach((item, index) => {
             tabs[`tab${index}`] = {
                 // screen: props => <TrendingTabPage {...props} tabLabel={item} />,
-                screen: props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} tabLabel={item.requestData}
+                screen: props => <TrendingTabPage {...props} FilterConditionData={this.state.FilterConditionData} tabLabel={item.requestData}
                 // theme={theme} 
                 />,//初始化Component时携带默认参数 @https://github.com/react-navigation/react-navigation/issues/2392
                 navigationOptions: {
@@ -87,10 +87,10 @@ export default class TrendingPage extends Component {
         });
         return tabs;
     }
-    onSelectTimeSpan(tab) {
+    onSelectFilterConditionData(tab) {
         this.dialog.dismiss();
         this.setState({
-            timeSpan: tab,
+            FilterConditionData: tab,
         });
         DeviceEventEmitter.emit(EVENT_TYPE_TIME_SPAN_CHANGE, tab);
     }
@@ -100,7 +100,7 @@ export default class TrendingPage extends Component {
     renderWorkshopDirectorDialog() {
         return <WorkshopDirectorDialog
             ref={dialog => this.dialog = dialog}
-            onSelect={tab => this.onSelectTimeSpan(tab)}
+            onSelect={tab => this.onSelectFilterConditionData(tab)}
         />;
     }
     _tabNav() {
@@ -186,15 +186,15 @@ class TrendingTab extends Component {
     constructor(props) {
         super(props);
 
-        const { tabLabel, timeSpan } = this.props;
-        this.timeSpan = timeSpan;
+        const { tabLabel, FilterConditionData } = this.props;
+        this.FilterConditionData = FilterConditionData;
         this.storeName = tabLabel
     }
 
     componentDidMount() {
         this.loadData()
-        this.timeSpanChangeListener = DeviceEventEmitter.addListener(EVENT_TYPE_TIME_SPAN_CHANGE, (timeSpan) => {
-            this.timeSpan = timeSpan;
+        this.FilterConditionDataChangeListener = DeviceEventEmitter.addListener(EVENT_TYPE_TIME_SPAN_CHANGE, (FilterConditionData) => {
+            this.FilterConditionData = FilterConditionData;
             this.loadData();
         });
         // EventBus.getInstance().addListener(EventTypes.favoriteChanged_trending, this.favoriteChangeListener = () => {
@@ -208,8 +208,8 @@ class TrendingTab extends Component {
 
     }
     componentWillUnmount() {
-        if (this.timeSpanChangeListener) {
-            this.timeSpanChangeListener.remove();
+        if (this.FilterConditionDataChangeListener) {
+            this.FilterConditionDataChangeListener.remove();
         }
         // EventBus.getInstance().removeListener(this.favoriteChangeListener);
         // EventBus.getInstance().removeListener(this.bottomTabSelectListener);
@@ -252,7 +252,7 @@ class TrendingTab extends Component {
 
     genFetchUrl(key) {
 
-        return URL + key + '?' + this.timeSpan.searchText;
+        return URL + key + '?' + this.FilterConditionData.searchText;
     }
 
     renderItem(data) {
