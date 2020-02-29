@@ -15,13 +15,13 @@ export default class TopTabNavigatorOfFlatList extends Component {
     /**
      * 
      *  @param {tabLabel*} props  状态查询条件
-     *  @param {timeSpan*} props  时间查询条件
+     *  @param {FilterConditionData*} props  时间查询条件
      *  
      */
     constructor(props) {
         super(props);
-        const { tabLabel, timeSpan } = this.props;
-        this.timeSpan = timeSpan;
+        const { tabLabel, FilterConditionData } = this.props;
+        this.FilterConditionData = FilterConditionData;
         this.storeName = tabLabel
     }
 
@@ -69,7 +69,7 @@ export default class TopTabNavigatorOfFlatList extends Component {
 
     genFetchUrl(key) {
         // https://github.com/trending/C++?since=daily
-        return URL + key + '?' + this.timeSpan.searchText;
+        return URL + key + '?' + this.FilterConditionData.searchText;
     }
 
     renderItem(data) {
