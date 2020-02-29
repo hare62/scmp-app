@@ -42,9 +42,9 @@ export function onRefreshTrending(storeName, url, pageSize, favoriteDao) {
 export function onLoadMoreTrending(storeName, pageIndex, pageSize, dataArray = [], favoriteDao, callBack) {
     return dispatch => {
         setTimeout(() => {//模拟网络请求
-            if ( (pageIndex - 1) * pageSize >= dataArray.length) {//已加载完全部数据
+            let isFullData =  (pageIndex - 1) * pageSize >= dataArray.length
+            if (isFullData) {//已加载完全部数据
 
-                console.log("hhhh",(pageIndex - 1) * pageSize)
                 if (typeof callBack === 'function') {
                     callBack('no more')
                 }

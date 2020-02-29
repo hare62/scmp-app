@@ -118,7 +118,7 @@ export default class DetailPage extends Component {
                         source={{uri: this.state.url}}
                     />
                     {navigationBar}
-                    <ProductionProcesses></ProductionProcesses>
+                    {/* <ProductionProcesses></ProductionProcesses> */}
                 </View>
             // </SafeAreaViewPlus>
         );

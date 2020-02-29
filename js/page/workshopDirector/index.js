@@ -16,7 +16,7 @@ import actions from '../../action/index';
 import TrendingItem from '../../common/TrendingItem';
 import Toast from 'react-native-easy-toast';
 import NavigationBar from '../../common/NavigationBar';
-import TrendingDialog, { TimeSpans } from '../../common/TrendingDialog'
+import WorkshopDirectorDialog, { TimeSpans } from '../../common/WorkshopDirectorDialog'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FavoriteDao from "../../expand/dao/FavoriteDao";
 import { FLAG_STORAGE } from "../../expand/dao/DataStore";
@@ -36,6 +36,8 @@ const EVENT_TYPE_TIME_SPAN_CHANGE = 'EVENT_TYPE_TIME_SPAN_CHANGE';
 export default class WorkshopDirector extends Component {
     constructor(props) {
         super(props);
+
+        NavigationUtil.navigation = this.props.navigation;
         // this.tabNames = ['C', 'C#', 'PHP', 'JavaScript'];
         this.tabNames = [
             { label: '未报工', requestData: 'C' },
@@ -56,6 +58,7 @@ export default class WorkshopDirector extends Component {
                 />,//初始化Component时携带默认参数 @https://github.com/react-navigation/react-navigation/issues/2392
                 navigationOptions: {
                     title: item.label,
+                    headerShown:false
                 },
             };
         });
@@ -63,8 +66,8 @@ export default class WorkshopDirector extends Component {
         return tabs;
     }
 
-    renderTrendingDialog() {
-        return <TrendingDialog
+    renderWorkshopDirectorDialog() {
+        return <WorkshopDirectorDialog
             ref={dialog => this.dialog = dialog}
             onSelect={tab => this.onSelectTimeSpan(tab)}
         />;
@@ -189,7 +192,7 @@ export default class WorkshopDirector extends Component {
             <View style={styles.container}>
                 {navigationBar}
                 <TabNavigator />
-                {this.renderTrendingDialog()}
+                {this.renderWorkshopDirectorDialog()}
             </View>
         );
     }
@@ -270,17 +273,20 @@ class TrendingTab extends Component {
 
     renderItem(data) {
         const item = data.item;
-        console.log('this.props',this.props)
-        // NavigationUtil.navigation = this.props.navigation;/
+        let {navigation} = this.props;
+        // NavigationUtil.navigation = this.props.navigation;
         return <TrendingItem
+           
             projectModel={item}
             onSelect={(callback) => {
+                console.log("125")
+               
+                NavigationUtil.goPage({
+                    projectModel: item,
+                    flag: FLAG_STORAGE.flag_trending,
+                    callback
+                }, 'DetailPage');
 
-                // NavigationUtil.goPage({
-                //     projectModel: item,
-                //     flag: FLAG_STORAGE.flag_trending,
-                //     callback
-                // }, 'DetailPage');
            
             }}
             // onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_trending)}

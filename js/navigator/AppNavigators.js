@@ -6,7 +6,7 @@ import DetailPage from '../page/DetailPage';
 import Login from '../page/Login'
 import Worker from '../page/worker/index';
 import WorkshopDirector from '../page/workshopDirector/index'
-
+import WorkshopDirectorDetail from '../page/workshopDirector/WorkshopDirectorDetail'
 const InitNavigator = createStackNavigator(
     {
         WelcomePage: {
@@ -48,6 +48,12 @@ const MainNavigator = createStackNavigator({
             header: null,//隐藏头部
         }
     },
+    WorkshopDirectorDetail:{
+        screen: WorkshopDirectorDetail,
+        navigationOptions: {
+            header: null,//隐藏头部
+        }
+    }
    
 });
 export default createAppContainer(createSwitchNavigator({

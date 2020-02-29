@@ -8,7 +8,7 @@ export const TimeSpans = [
     new TimeSpan('选择状态', 'since=monthly', 'filter'),
     new TimeSpan('选择人员', 'since=weekly', 'user'),
 ]
-export default class TrendingDialog extends Component {
+export default class WorkshopDirectorDialog extends Component {
     state = {
         visible: false,
     };

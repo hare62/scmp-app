@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import actions from '../action';
 import { connect } from 'react-redux';
 
-class MyPage extends Component {
+class Login extends Component {
     gotoWorkerPage() {
         const { navigation } = this.props;
         console.log(this.props)
@@ -62,4 +62,4 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => ({
     onThemeChange: theme => dispatch(actions.onThemeChange(theme)),
 });
-export default connect(null, mapDispatchToProps)(MyPage);
+export default connect(null, mapDispatchToProps)(Login);
