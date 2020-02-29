@@ -3,10 +3,16 @@ import { Modal, Text, TouchableOpacity, StyleSheet, View, Platform, DeviceInfo }
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import TimeSpan from '../model/TimeSpan';
 import Feather from 'react-native-vector-icons/Feather';
+// export const TimeSpans = [
+//     new TimeSpan('选择时间', 'since=daily', 'clock'),
+//     new TimeSpan('选择状态', 'since=monthly', 'filter'),
+//     new TimeSpan('选择人员', 'since=weekly', 'user'),
+// ]
+
 export const TimeSpans = [
-    new TimeSpan('选择时间', 'since=daily', 'clock'),
-    new TimeSpan('选择状态', 'since=monthly', 'filter'),
-    new TimeSpan('选择人员', 'since=weekly', 'user'),
+    TimeSpan.init({showText:'选择时间', searchText:'since=daily', showIconName:'clock'}),
+    TimeSpan.init({showText:'选择状态', searchText:'since=monthly', showIconName:'filter'}),
+    TimeSpan.init({showText:'选择人员', searchText:'since=weekly', showIconName:'filter'}),
 ]
 export default class WorkshopDirectorDialog extends Component {
     state = {

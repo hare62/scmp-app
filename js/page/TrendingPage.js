@@ -25,7 +25,7 @@ import NavigationUtil from '../navigator/NavigationUtil';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TimeSpan from '../model/TimeSpan';
-import {fit} from '../common/fit'
+import {fit} from '../common/Fit'
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
 
 

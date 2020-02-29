@@ -1,16 +1,4 @@
-// /**
-//  * Trending搜索时间跨度mo
-//  * @param showText
-//  * @param searchText
-//  * @constructor
-//  */
-// export default function TimeSpan(showText, searchText ,showIconName) {
-//     this.showText = showText;
-//     this.searchText = searchText;
-//     this.showIconName = showIconName
-// }
-
-class TimeSpan {
+class FilterConditionOfDispatchList {
     /**
      * {展示的时间}showText
      * {请求的接口的参数}searchText
@@ -26,7 +14,7 @@ class TimeSpan {
     static init(data) {
         if (!data) throw new Error('FilterConditionOfDispatchList - init:data is null');
 
-        let filterData = new TimeSpan();
+        let filterData = new FilterConditionOfDispatchList();
         try {
             let { showText, searchText, showIconName } = data;
             filterData.showText = showText;
@@ -38,6 +26,16 @@ class TimeSpan {
 
         return filterData;
     }
-}
 
-export default TimeSpan;
+    isExist() {
+        let isExist = true;
+        isExist = isExist && !!this.showText;
+        isExist = isExist && !!this.searchText;
+        isExist = isExist && !!this.showIconName;
+
+        return isExist;
+    }
+
+
+}
+export default FilterConditionOfDispatchList;

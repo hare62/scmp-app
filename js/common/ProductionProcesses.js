@@ -5,7 +5,7 @@ import HTMLView from 'react-native-htmlview';
 import BaseItem from "./BaseItem";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import {fit} from '../common/fit'
+import {fit} from './Fit'
 export default class ProductionProcesses extends BaseItem {
 
     render() {
@@ -13,7 +13,7 @@ export default class ProductionProcesses extends BaseItem {
         const { item } = projectModel;
         item = {
             fullName:'RT-WD',
-            
+
         }
 
 
