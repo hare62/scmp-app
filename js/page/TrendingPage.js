@@ -86,7 +86,7 @@ export default class TrendingPage extends Component {
 
                 },
 
-            };
+            }
         });
         return tabs;
     }
@@ -163,7 +163,6 @@ export default class TrendingPage extends Component {
                     size={fit(20)}
                     style={{ color: 'white', marginRight: fit(20) }}
                 />
-
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={() => this.createDailyData()}>
@@ -172,9 +171,7 @@ export default class TrendingPage extends Component {
                     size={fit(20)}
                     style={{ color: 'white', marginRight: fit(20) }}
                 />
-
             </TouchableOpacity>
-
         </View>
         )
     }
@@ -266,7 +263,6 @@ class TrendingTab extends Component {
                 this.refs.toast.show('没有更多了');
             })
         } else {
-
             onRefreshTrending(this.storeName, url, pageSize, favoriteDao)
         }
 
@@ -284,6 +280,7 @@ class TrendingTab extends Component {
         return <TrendingItem
             projectModel={item}
             onSelect={(callback) => {
+
                 NavigationUtil.goPage({
                     projectModel: item,
                     flag: FLAG_STORAGE.flag_trending,
@@ -307,7 +304,7 @@ class TrendingTab extends Component {
     }
 
     render() {
-
+// NavigationUtil.navigation = this.props.navigation;
         let store = this._store();
         return (
             <View style={styles.contains}>

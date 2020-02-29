@@ -17,6 +17,7 @@ class MyPage extends Component {
     }
     render() {
         const { navigation } = this.props;
+        console.log("navigation",navigation)
         return (
             <View style={styles.container}>
                 <Text style={styles.welcome}>LoginPage</Text>

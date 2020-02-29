@@ -6,11 +6,15 @@ import BaseItem from "./BaseItem";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {fit} from '../common/fit'
-export default class TrendingItem extends BaseItem {
+export default class ProductionProcesses extends BaseItem {
 
     render() {
         const { projectModel } = this.props;
         const { item } = projectModel;
+        item = {
+            fullName:'RT-WD',
+            
+        }
 
 
         if (!item) return null;

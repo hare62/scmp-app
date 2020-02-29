@@ -23,20 +23,17 @@ import { FLAG_STORAGE } from "../../expand/dao/DataStore";
 import FavoriteUtil from "../../util/FavoriteUtil";
 import NavigationUtil from '../../navigator/NavigationUtil';
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import TimeSpan from '../../model/TimeSpan';
-import { fit } from '../../common/fit'
+import { fit } from '../../common/fit';
 // import console = require('console');
+
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
-
-
 const URL = 'https://github.com/trending/';
 const QUERY_STR = '&sort=stars';
-const THEME_COLOR = '#AA2F23'
-const EVENT_TYPE_TIME_SPAN_CHANGE = 'EVENT_TYPE_TIME_SPAN_CHANGE'
-// 1.
-export default class TrendingPage extends Component {
+const THEME_COLOR = '#AA2F23';
+const EVENT_TYPE_TIME_SPAN_CHANGE = 'EVENT_TYPE_TIME_SPAN_CHANGE';
 
+export default class WorkshopDirector extends Component {
     constructor(props) {
         super(props);
         // this.tabNames = ['C', 'C#', 'PHP', 'JavaScript'];
@@ -44,55 +41,27 @@ export default class TrendingPage extends Component {
             { label: '未报工', requestData: 'C' },
             { label: '已报工', requestData: 'C#' },
             { label: '全部', requestData: 'PHP' },
-
         ];
         this.state = {
             timeSpan: TimeSpans[0],
         };
     }
 
-
-    renderTitleView() {
-        return <View>
-            <TouchableOpacity
-                underlayColor='transparent'
-                onPress={() => this.dialog.show()}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{
-                        fontSize: fit(16),
-                        color: '#FFFFFF',
-                        fontWeight: '400',
-                    }}>派工单</Text>
-                    <MaterialIcons
-                        name={'arrow-drop-down'}
-                        size={fit(20)}
-                        style={{ color: 'white' }}
-                    />
-                </View>
-            </TouchableOpacity>
-        </View>;
-    }
-
     _genTabs() {
         const tabs = {};
         this.tabNames.forEach((item, index) => {
             tabs[`tab${index}`] = {
-                // screen: props => <TrendingTabPage {...props} tabLabel={item} />,
                 screen: props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} tabLabel={item.requestData}
                 // theme={theme} 
                 />,//初始化Component时携带默认参数 @https://github.com/react-navigation/react-navigation/issues/2392
                 navigationOptions: {
                     title: item.label,
-
                 },
-
             };
         });
+
         return tabs;
     }
-
-
-
 
     renderTrendingDialog() {
         return <TrendingDialog
@@ -100,6 +69,7 @@ export default class TrendingPage extends Component {
             onSelect={tab => this.onSelectTimeSpan(tab)}
         />;
     }
+
     _tabNav() {
         // if (!this.tabNav) {//优化效率：根据需要选择是否重新创建建TabNavigator，通常tab改变后才重新创建
         this.tabNav = createAppContainer(createMaterialTopTabNavigator(
@@ -126,6 +96,7 @@ export default class TrendingPage extends Component {
 
         return this.tabNav
     }
+
     onSelectTimeSpan(tab) {
         console.log('tab', tab)
         if (tab.searchText === 'since=monthly') {
@@ -144,7 +115,6 @@ export default class TrendingPage extends Component {
             ];
         }
 
-        
         if (tab.searchText === 'since=weekly') {
             this.tabNames = [
                 { label: '胡老师', requestData: 'javaScript' },
@@ -152,6 +122,7 @@ export default class TrendingPage extends Component {
                 // { label: '最近半年', requestData: 'python' },
             ];
         }
+
         this.dialog.dismiss();
         this.setState({
             timeSpan: tab,
@@ -159,61 +130,44 @@ export default class TrendingPage extends Component {
         // DeviceEventEmitter.emit(EVENT_TYPE_TIME_SPAN_CHANGE, tab);
     }
 
-    createDailyData() {
-        this.tabNames = [
-            { label: '未报工', requestData: 'C' },
-            { label: '已报工', requestData: 'C#' },
-            { label: '全部', requestData: 'PHP' },
-
-        ];
-
-        return this.onSelectTimeSpan(new TimeSpan('今 天', 'since=daily'))
-    }
-
-    createWeeklyData() {
-        this.tabNames = [
-            { label: '最近三天', requestData: 'javaScript' },
-            { label: '最近一周', requestData: 'C++' },
-            { label: '最近半年', requestData: 'python' },
-
-        ];
-        return this.onSelectTimeSpan(new TimeSpan('本 周', 'since=weekly'))
-    }
-
     renderRightButton() {
-        return (<View style={{ flexDirection: 'row' }}>
-            {/* <TouchableOpacity
-                onPress={() => this.createWeeklyData()}>
-                <Ionicons
-                    name={'ios-timer'}
-                    size={fit(20)}
-                    style={{ color: 'white', marginRight: fit(20) }}
-                />
-
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={() => this.createDailyData()}>
-                <AntDesign
-                    name={'pushpino'}
-                    size={fit(20)}
-                    style={{ color: 'white', marginRight: fit(20) }}
-                />
-
-            </TouchableOpacity> */}
-            <TouchableOpacity
-                onPress={() => this.dialog.show()}>
-                <AntDesign
-                    name={'filter'}
-                    size={fit(20)}
-                    style={{ color: 'white', marginRight: fit(20) }}
-                />
-
-            </TouchableOpacity>
-
-
-        </View>
+        return (
+            <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                    onPress={() => this.dialog.show()}>
+                    <AntDesign
+                        name={'filter'}
+                        size={fit(20)}
+                        style={{ color: 'white', marginRight: fit(20) }}
+                    />
+                </TouchableOpacity>
+            </View>
         )
     }
+
+    renderTitleView() {
+        return (
+            <View>
+                <TouchableOpacity
+                    underlayColor='transparent'
+                    onPress={() => this.dialog.show()}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{
+                            fontSize: fit(16),
+                            color: '#FFFFFF',
+                            fontWeight: '400',
+                        }}>派工单</Text>
+                        <MaterialIcons
+                            name={'arrow-drop-down'}
+                            size={fit(20)}
+                            style={{ color: 'white' }}
+                        />
+                    </View>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
     render() {
         let statusBar = {
             barStyle: 'light-content',
@@ -239,13 +193,12 @@ export default class TrendingPage extends Component {
             </View>
         );
     }
-
 }
+
 const pageSize = 10;//设为常量，防止修改
 class TrendingTab extends Component {
     constructor(props) {
         super(props);
-
         const { tabLabel, timeSpan } = this.props;
         this.timeSpan = timeSpan;
         this.storeName = tabLabel
@@ -267,6 +220,7 @@ class TrendingTab extends Component {
         // });
 
     }
+
     componentWillUnmount() {
         // if (this.timeSpanChangeListener) {
         //     this.timeSpanChangeListener.remove();
@@ -274,6 +228,7 @@ class TrendingTab extends Component {
         // EventBus.getInstance().removeListener(this.favoriteChangeListener);
         // EventBus.getInstance().removeListener(this.bottomTabSelectListener);
     }
+
     /**
     * 获取与当前页面有关的数据
     * @returns {*}
@@ -292,6 +247,7 @@ class TrendingTab extends Component {
         }
         return store;
     }
+
     loadData(loadMore) {
         const { onRefreshTrending, onLoadMoreTrending } = this.props;
         const store = this._store();
@@ -300,36 +256,35 @@ class TrendingTab extends Component {
         if (loadMore) {
             onLoadMoreTrending(this.storeName, pageIndex, pageSize, store.items, favoriteDao, callback => {
                 this.refs.toast.show('没有更多了');
-            })
+            });
         } else {
-
-            onRefreshTrending(this.storeName, url, pageSize, favoriteDao)
+            onRefreshTrending(this.storeName, url, pageSize, favoriteDao);
         }
-
-
-
     }
 
     genFetchUrl(key) {
+        // https://github.com/trending/C++?since=daily
 
         return URL + key + '?' + this.timeSpan.searchText;
     }
 
     renderItem(data) {
         const item = data.item;
+        console.log('this.props',this.props)
+        // NavigationUtil.navigation = this.props.navigation;/
         return <TrendingItem
             projectModel={item}
             onSelect={(callback) => {
-                NavigationUtil.goPage({
-                    projectModel: item,
-                    flag: FLAG_STORAGE.flag_trending,
-                    callback
-                }, 'DetailPage');
+
+                // NavigationUtil.goPage({
+                //     projectModel: item,
+                //     flag: FLAG_STORAGE.flag_trending,
+                //     callback
+                // }, 'DetailPage');
+           
             }}
-            onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_trending)}
+            // onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_trending)}
         />;
-
-
     }
 
     genIndicator() {
@@ -343,12 +298,12 @@ class TrendingTab extends Component {
     }
 
     render() {
-
+        // NavigationUtil.navigation = this.props.navigation;
+       this.navigation = this.props;
         let store = this._store();
         return (
             <View style={styles.contains}>
                 <FlatList
-
                     data={store.projectModels}
                     renderItem={data => this.renderItem(data)}
                     keyExtractor={item => "" + item.item.fullName}
@@ -375,7 +330,6 @@ class TrendingTab extends Component {
                             }
                         }, 100);
                     }}
-
                     onMomentumScrollBegin={() => {
                         this.canLoadMore = true; //fix 初始化时页调用onEndReached的问题
                         console.log('---onMomentumScrollBegin-----')
@@ -388,12 +342,14 @@ class TrendingTab extends Component {
         );
     }
 }
+
 const mapStateToProps = state => ({
     trending: state.trending
 })
 
 const mapDispatchToProps = dispatch => ({
-    onRefreshTrending: (storeName, url, pageSize, favoriteDao) => dispatch(actions.onRefreshTrending(storeName, url, pageSize, favoriteDao)),
+    onRefreshTrending: (storeName, url, pageSize, favoriteDao) => 
+        dispatch(actions.onRefreshTrending(storeName, url, pageSize, favoriteDao)),
     onLoadMoreTrending: (storeName, pageIndex, pageSize, items, favoriteDao, callBack) =>
         dispatch(actions.onLoadMoreTrending(storeName, pageIndex, pageSize, items, favoriteDao, callBack))
 })
@@ -411,7 +367,6 @@ const styles = StyleSheet.create({
     indicatorStyle: {
         height: 2,
         backgroundColor: '#376CDA',
-
     },
     labelStyle: {
         fontSize: 16,

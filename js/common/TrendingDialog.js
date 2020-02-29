@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import { Modal, Text, TouchableOpacity, StyleSheet, View, Platform, DeviceInfo } from 'react-native'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import TimeSpan from '../model/TimeSpan'
-import Feather from 'react-native-vector-icons/Feather'
+import React, { Component } from 'react';
+import { Modal, Text, TouchableOpacity, StyleSheet, View, Platform, DeviceInfo } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import TimeSpan from '../model/TimeSpan';
+import Feather from 'react-native-vector-icons/Feather';
 export const TimeSpans = [
-    new TimeSpan('选择时间', 'since=daily','clock'),
-    new TimeSpan('选择状态', 'since=monthly','filter'),
-    new TimeSpan('选择人员', 'since=weekly','user'),
+    new TimeSpan('选择时间', 'since=daily', 'clock'),
+    new TimeSpan('选择状态', 'since=monthly', 'filter'),
+    new TimeSpan('选择人员', 'since=weekly', 'user'),
 ]
 export default class TrendingDialog extends Component {
     state = {
@@ -28,7 +28,6 @@ export default class TrendingDialog extends Component {
     render() {
         const { onClose, onSelect } = this.props;
         return (<Modal
-            
             transparent={true}
             visible={this.state.visible}
             onRequestClose={() => onClose}
@@ -37,38 +36,29 @@ export default class TrendingDialog extends Component {
                 style={styles.container}
                 onPress={() => this.dismiss()}
             >
-                 <MaterialIcons
+                <MaterialIcons
                     name={'arrow-drop-up'}
                     size={36}
                     style={styles.arrow}
                 />
-              
                 <View style={styles.content}>
-                    
-               
                     {TimeSpans.map((result, i, arr) => {
                         console.log('arr[i]', arr[i])
                         return <TouchableOpacity
                             key={i}
-                            onPress={() => onSelect(arr[i])}
+                            onPress={() => onSelect(result)}
                             underlayColor='transparent'>
                             <View style={styles.text_container}>
-
-
-                                {/* hourglass */}
                                 <Feather
-                                    // name={'hourglass-o'}
-                                    name={arr[i].showIconName}
+                                    name={result.showIconName}
                                     size={18}
                                     style={{ color: 'white', }}
                                 />
                                 <Text
                                     style={styles.text}
-                                >{arr[i].showText}</Text>
+                                >{result.showText}</Text>
                             </View>
                             {
-
-                                
                                 i !== TimeSpans.length - 1 ? <View
                                     style={styles.line}
                                 /> : null
@@ -97,7 +87,7 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
         // justifyContent:'center',
         margin: -15,
-        marginRight:25,
+        marginRight: 25,
         // margin:-15,
         // marginLeft:-50,
         // paddingLeft:-20
@@ -114,8 +104,8 @@ const styles = StyleSheet.create({
     text_container: {
         alignItems: 'center',
         flexDirection: 'row',
-        justifyContent:'space-around',
-         paddingLeft: 20,
+        justifyContent: 'space-around',
+        paddingLeft: 20,
         paddingRight: 20
     },
     text: {

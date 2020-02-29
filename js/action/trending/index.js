@@ -58,13 +58,6 @@ export function onLoadMoreTrending(storeName, pageIndex, pageSize, dataArray = [
             } else {
                 //本次和载入的最大数量
                 let max = pageSize * pageIndex > dataArray.length ? dataArray.length : pageSize * pageIndex;
-
-                // dispatch({
-                //     type: Types.TRENDING_LOAD_MORE_SUCCESS,
-                //     storeName,
-                //     pageIndex,
-                //     projectModels: dataArray.slice(0, max),
-                // })
                 _projectModels(dataArray.slice(0, max),favoriteDao,data=>{
                     dispatch({
                         type: Types.POPULAR_LOAD_MORE_SUCCESS,
@@ -74,7 +67,7 @@ export function onLoadMoreTrending(storeName, pageIndex, pageSize, dataArray = [
                     })
                 })
             }
-        }, 500);
+        }, 0);
     }
 }
 

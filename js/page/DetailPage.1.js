@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {StyleSheet, TouchableOpacity, View, DeviceInfo} from 'react-native';
 import NavigationBar, {NAVIGATION_BAR_HEIGHT} from '../common/NavigationBar'
 import ViewUtil from "../util/ViewUtil";
-import ProductionProcesses from '../common/ProductionProcesses'
 // import share from "../res/data/share";
 // import ShareUtil from "../util/ShareUtil";
 // import SafeAreaViewPlus from "../common/SafeAreaViewPlus";
@@ -118,7 +117,6 @@ export default class DetailPage extends Component {
                         source={{uri: this.state.url}}
                     />
                     {navigationBar}
-                    <ProductionProcesses></ProductionProcesses>
                 </View>
             // </SafeAreaViewPlus>
         );
