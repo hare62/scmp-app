@@ -1,39 +1,23 @@
 import React, { Component } from 'react';
-import {
-    StyleSheet,
-    ActivityIndicator,
-    TouchableOpacity,
-    Text,
-    View,
-    FlatList,
-    RefreshControl,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 import { connect } from 'react-redux';
 import actions from '../../action/index';
-import TrendingItem from '../../common/TrendingItem';
-import Toast from 'react-native-easy-toast';
 import NavigationBar from '../../common/NavigationBar';
 import WorkshopDirectorDialog, { FilterConditionSpan } from '../../common/WorkshopDirectorDialog';
 import TopTabNavigatorOfFlatList from '../../common/TopTabNavigatorOfFlatList'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import FavoriteDao from "../../expand/dao/FavoriteDao";
-import { FLAG_STORAGE } from "../../expand/dao/DataStore";
 import NavigationUtil from '../../navigator/NavigationUtil';
-import AntDesign from 'react-native-vector-icons/AntDesign'
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import FirstRequestData from './FirstRequest'
 import { fit } from '../../common/Fit';
 
-const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
-const URL = 'https://github.com/trending/';
-const THEME_COLOR = '#AA2F23';
-
-export default class WorkshopDirector extends Component {
+class WorkshopDirector extends Component {
     constructor(props) {
         super(props);
 
         NavigationUtil.navigation = this.props.navigation;
-        // this.tabNames = ['C', 'C#', 'PHP', 'JavaScript'];
         this.tabNames = [
             { label: '未报工', requestData: 'C' },
             { label: '已报工', requestData: 'C#' },
@@ -41,60 +25,12 @@ export default class WorkshopDirector extends Component {
         ];
         this.state = {
             FilterConditionData: FilterConditionSpan[0],
+            isFirstRequest: true
         };
     }
 
-    _genTabs() {
-        const tabs = {};
-        this.tabNames.forEach((item, index) => {
-            tabs[`tab${index}`] = {
-                screen: props => <TrendingTabPage {...props} FilterConditionData={this.state.FilterConditionData} tabLabel={item.requestData}
-                />,
-                navigationOptions: {
-                    title: item.label,
-                    headerShown: false
-                },
-            };
-        });
-
-        return tabs;
-    }
-
-    renderWorkshopDirectorDialog() {
-        return <WorkshopDirectorDialog
-            ref={dialog => this.dialog = dialog}
-            onSelect={tab => this.onSelectFilterConditionData(tab)}
-        />;
-    }
-
-    _tabNav() {
-        // if (!this.tabNav) {//优化效率：根据需要选择是否重新创建建TabNavigator，通常tab改变后才重新创建
-        this.tabNav = createAppContainer(createMaterialTopTabNavigator(
-            this._genTabs(),
-            {
-                tabBarOptions: {
-                    tabStyle: styles.tabStyle,
-                    upperCaseLabel: false,
-                    scrollEnabled: false,
-                    style: {
-                        backgroundColor: 'white',
-                        color: 'red'
-                    },
-                    indicatorStyle: styles.indicatorStyle,
-                    labelStyle: styles.labelStyle,
-                    activeTintColor: styles.activeTintColor,
-                    inactiveTintColor: {
-                        color: 'yellow'
-                    }
-                },
-            },
-        ));
-        // }
-
-        return this.tabNav
-    }
-
     onSelectFilterConditionData(tab) {
+        this.state.isFirstRequest = false
         console.log('tab', tab)
         if (tab.searchText === 'since=monthly') {
             this.tabNames = [
@@ -115,8 +51,6 @@ export default class WorkshopDirector extends Component {
         if (tab.searchText === 'since=weekly') {
             this.tabNames = [
                 { label: '胡老师', requestData: 'javaScript' },
-                // { label: '最近一周', requestData: 'C++' },
-                // { label: '最近半年', requestData: 'python' },
             ];
         }
 
@@ -124,7 +58,6 @@ export default class WorkshopDirector extends Component {
         this.setState({
             FilterConditionData: tab,
         });
-        // DeviceEventEmitter.emit(EVENT_TYPE_TIME_SPAN_CHANGE, tab);
     }
 
     renderRightButton() {
@@ -165,6 +98,54 @@ export default class WorkshopDirector extends Component {
         );
     }
 
+    _genTabs() {
+        const tabs = {};
+        this.tabNames.forEach((item, index) => {
+            tabs[`tab${index}`] = {
+                screen: props => <TrendingTabPage {...props} FilterConditionData={this.state.FilterConditionData} tabLabel={item.requestData}
+                />,
+                navigationOptions: {
+                    title: item.label,
+                    headerShown: false
+                },
+            };
+        });
+
+        return tabs;
+    }
+
+    renderWorkshopDirectorDialog() {
+        return <WorkshopDirectorDialog
+            ref={dialog => this.dialog = dialog}
+            onSelect={tab => this.onSelectFilterConditionData(tab)}
+        />;
+    }
+
+    _tabNav() {
+        this.tabNav = createAppContainer(createMaterialTopTabNavigator(
+            this._genTabs(),
+            {
+                tabBarOptions: {
+                    tabStyle: styles.tabStyle,
+                    upperCaseLabel: false,
+                    scrollEnabled: false,
+                    style: {
+                        backgroundColor: 'white',
+                        color: 'red'
+                    },
+                    indicatorStyle: styles.indicatorStyle,
+                    labelStyle: styles.labelStyle,
+                    activeTintColor: styles.activeTintColor,
+                    inactiveTintColor: {
+                        color: 'yellow'
+                    }
+                },
+            },
+        ));
+
+        return this.tabNav
+    }
+
     render() {
         let statusBar = {
             barStyle: 'light-content',
@@ -173,19 +154,18 @@ export default class WorkshopDirector extends Component {
         };
 
         let navigationBar = <NavigationBar
-            // titleView={this.renderTitleView()}
-            title={'派工单'}
+            title={'我的派工单'}
             statusBar={statusBar}
-            // style={theme.styles.navBar}
             style={{ backgroundColor: '#376CDA' }}
             rightButton={this.renderRightButton()}
         />
 
         const TabNavigator = this._tabNav();
+        // const FirstRequestData = <TrendingTabPage {...this.props} FilterConditionData={this.state.FilterConditionData} tabLabel={this.tabNames[0].requestData}></TrendingTabPage> 
         return (
             <View style={styles.container}>
                 {navigationBar}
-                <TabNavigator />
+                {this.state.isFirstRequest ? <FirstRequestData/> : <TabNavigator />}
                 {this.renderWorkshopDirectorDialog()}
             </View>
         );
@@ -194,16 +174,16 @@ export default class WorkshopDirector extends Component {
 
 const mapStateToProps = state => ({
     trending: state.trending
-})
+});
 
 const mapDispatchToProps = dispatch => ({
     onRefreshTrending: (storeName, url, pageSize, favoriteDao) =>
         dispatch(actions.onRefreshTrending(storeName, url, pageSize, favoriteDao)),
     onLoadMoreTrending: (storeName, pageIndex, pageSize, items, favoriteDao, callBack) =>
         dispatch(actions.onLoadMoreTrending(storeName, pageIndex, pageSize, items, favoriteDao, callBack))
-})
+});
 
-const TrendingTabPage = connect(mapStateToProps, mapDispatchToProps)(TopTabNavigatorOfFlatList)
+const TrendingTabPage = connect(mapStateToProps, mapDispatchToProps)(TopTabNavigatorOfFlatList);
 
 const styles = StyleSheet.create({
     container: {
@@ -227,3 +207,5 @@ const styles = StyleSheet.create({
         color: 'red'
     },
 });
+
+export default WorkshopDirector;

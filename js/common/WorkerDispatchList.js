@@ -7,6 +7,12 @@ export default class WorkerDispatchList extends Component {
 
     render() {
 
+        let item = {
+            materials:'RT-WD-RY-89-ER',
+            materialsName:'物料：六角螺母',
+            time:'2020-02-27', 
+        }
+
         return (
             <TouchableOpacity
                 onPress={() => this.onItemClick()}
@@ -22,8 +28,8 @@ export default class WorkerDispatchList extends Component {
                     </View>
                     <View style={styles.container_right}>
                         <View style={styles.container_right_title} >
-                            <Text style={styles.container_right_title_order} >RT-WD-RY-89-ER</Text>
-                            <Text style={styles.container_right_title_materials}>物料：六角螺母</Text>
+                            <Text style={styles.container_right_title_order} >{item.materials}</Text>
+                            <Text style={styles.container_right_title_materials}>{item.materialsName}</Text>
                         </View>
                         <View style={styles.container_right_contain} >
                             <Text style={styles.container_right_date} >
@@ -32,26 +38,21 @@ export default class WorkerDispatchList extends Component {
                                     size={18}
                                     style={{ color: '#aaa',  }}
                                 />
-
                             </Text>
-                            <Text style={styles.container_right_text} >2020-02-27</Text>
+                            <Text style={styles.container_right_text} >{item.time}</Text>
                         </View>
                     </View>
                 </View>
             </TouchableOpacity>
-            
-            
         )
     }
 }
-
 
 const styles = StyleSheet.create({
     cell_container: {
         paddingLeft: 5,
         paddingTop: 20,
         flexDirection: 'row'
-
     },
     container_left: {
         height: 80,
@@ -80,8 +81,6 @@ const styles = StyleSheet.create({
         color: 'black',
         marginBottom: 10,
         fontSize:17
-
-
     },
     container_right_title_materials: {
         color: '#666',
@@ -95,6 +94,5 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         color:'#aaa'
     }
-
 }
 );

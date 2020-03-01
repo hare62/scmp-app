@@ -45,7 +45,6 @@ export default class FavoriteItem extends BaseItem {
                                 />
                                 })
                             }
-                            
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Text>Start:</Text>

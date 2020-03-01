@@ -3,6 +3,7 @@ import { Modal, Text, TouchableOpacity, StyleSheet, View, Platform, DeviceInfo }
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FilterConditionData from '../model/FilterConditionData';
 import Feather from 'react-native-vector-icons/Feather';
+
 export const FilterConditionSpan = [
     new FilterConditionData('选择时间', 'since=daily', 'clock'),
     new FilterConditionData('选择状态', 'since=monthly', 'filter'),
@@ -70,7 +71,6 @@ export default class WorkshopDirectorDialog extends Component {
                 </View>
             </TouchableOpacity>
         </Modal>
-
         )
     }
 }
@@ -79,23 +79,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0)',
         flex: 1,
         alignItems: 'flex-end',
-        // justifyContent:'flex-end',
         paddingTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0
     },
     arrow: {
         marginTop: 40,
         color: 'black',
         padding: 0,
-        // alignItems: 'center',
-        // justifyContent:'center',
         margin: -15,
         marginRight: 25,
-        // margin:-15,
-        // marginLeft:-50,
-        // paddingLeft:-20
     },
     content: {
-        // marginTop:50,
         backgroundColor: 'black',
         borderRadius: 3,
         paddingTop: 3,
@@ -115,11 +108,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '400',
         padding: 8,
-        // paddingLeft: 26,
-        // paddingRight: 26
     },
     line: {
-        // height: 0.5,
         backgroundColor: 'darkgray',
     },
 });
