@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, View, Animated, Easing, } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -16,6 +16,7 @@ import { fit } from '../../common/Fit';
 class WorkshopDirector extends Component {
     constructor(props) {
         super(props);
+        this.animatedValue = new Animated.Value(0)
 
         NavigationUtil.navigation = this.props.navigation;
         this.tabNames = [
@@ -27,6 +28,21 @@ class WorkshopDirector extends Component {
             FilterConditionData: FilterConditionSpan[0],
             isFirstRequest: true
         };
+    }
+
+    componentDidMount() {
+        this.animate()
+    }
+    animate() {
+        this.animatedValue.setValue(0)
+        Animated.timing(
+            this.animatedValue,
+            {
+                toValue: 1,
+                duration: 2000,
+                easing: Easing.linear
+            }
+        ).start(() => this.animate())
     }
 
     onSelectFilterConditionData(tab) {
@@ -99,11 +115,32 @@ class WorkshopDirector extends Component {
     }
 
     _genTabs() {
+        // const opacity = this.animatedValue.interpolate({
+        //     inputRange: [0, 0.5, 1],
+        //     outputRange: [0, 1, 0]
+        // })
         const tabs = {};
         this.tabNames.forEach((item, index) => {
             tabs[`tab${index}`] = {
-                screen: props => <TrendingTabPage {...props} FilterConditionData={this.state.FilterConditionData} tabLabel={item.requestData}
-                />,
+                screen: props =>
+
+                    // <Animated.View
+                    //     style={{
+                    //         // opacity,
+                    //         // marginTop: -80,
+                    //         // height: 30,
+                    //         // width: 40,
+                    //         // backgroundColor: 'blue'
+                    //     }} >
+                    //     <TrendingTabPage {...props} FilterConditionData={this.state.FilterConditionData} tabLabel={item.requestData}
+                    //     />
+                    // </Animated.View>
+
+                    <TrendingTabPage {...props} FilterConditionData={this.state.FilterConditionData} tabLabel={item.requestData}
+                    />
+
+
+                ,
                 navigationOptions: {
                     title: item.label,
                     headerShown: false
@@ -136,9 +173,9 @@ class WorkshopDirector extends Component {
                     indicatorStyle: styles.indicatorStyle,
                     labelStyle: styles.labelStyle,
                     activeTintColor: styles.activeTintColor,
-                    inactiveTintColor: {
-                        color: 'yellow'
-                    }
+                    inactiveTintColor: '#000000',
+                    // showLabel: false,
+                    showIcon: true,
                 },
             },
         ));
@@ -147,6 +184,12 @@ class WorkshopDirector extends Component {
     }
 
     render() {
+
+        const opacity = this.animatedValue.interpolate({
+            inputRange: [0, 0.5, 1],
+            outputRange: [0, 1, 0]
+        })
+
         let statusBar = {
             barStyle: 'light-content',
             hidden: false,
@@ -161,11 +204,22 @@ class WorkshopDirector extends Component {
         />
 
         const TabNavigator = this._tabNav();
+        const AnimatedTabNavigator = <Animated.View
+            style={{
+                opacity,
+                marginTop: 80,
+                height: 30,
+                width: 40,
+                backgroundColor: 'blue'
+            }} >
+
+        </Animated.View>
         // const FirstRequestData = <TrendingTabPage {...this.props} FilterConditionData={this.state.FilterConditionData} tabLabel={this.tabNames[0].requestData}></TrendingTabPage> 
         return (
             <View style={styles.container}>
                 {navigationBar}
-                {this.state.isFirstRequest ? <FirstRequestData/> : <TabNavigator />}
+                {/* {<TabNavigator />} */}
+                {this.state.isFirstRequest ? <FirstRequestData /> : <TabNavigator />}
                 {this.renderWorkshopDirectorDialog()}
             </View>
         );
@@ -191,7 +245,8 @@ const styles = StyleSheet.create({
     },
     tabStyle: {
         minWidth: 50,
-        color: 'red'
+        color: 'red',
+        // marginTop:-50
     },
     indicatorStyle: {
         height: 2,
