@@ -1,7 +1,8 @@
 import {onThemeChange} from './theme';
 import {onLoadPopularData, onLoadMorePopular }from './popular';
 import {onRefreshTrending, onLoadMoreTrending }from './trending';
-import {onLoadfavoriteData} from './favorite'
+import {onLoadfavoriteData} from './favorite';
+import {onfirstRequestWorkerData} from './workshopDirector/index'
 
 export default {
     onThemeChange,
@@ -9,5 +10,6 @@ export default {
     onLoadMorePopular,
     onRefreshTrending,
     onLoadMoreTrending,
-    onLoadfavoriteData
+    onLoadfavoriteData,
+    onfirstRequestWorkerData
 };

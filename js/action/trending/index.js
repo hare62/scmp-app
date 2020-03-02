@@ -1,6 +1,7 @@
 import Types from '../types';
 import DataStore, {FLAG_STORAGE} from '../../expand/dao/DataStore';
-import { handleData, _projectModels} from '../ActionUtil'
+import { handleData, _projectModels} from '../ActionUtil';
+import api from '../../api'
 /**
  * 获取最热数据的异步action
  * @param {} storeName 
@@ -12,6 +13,10 @@ import { handleData, _projectModels} from '../ActionUtil'
 
 export function onRefreshTrending(storeName, url, pageSize, favoriteDao) {
     return dispatch => {
+        // api.firstRequestWorkerData('https://facebook.github.io/react-native/movies.json').then((data)=>{
+        //     console.log('hare',data)
+        // })
+
         dispatch({ type: Types.TRENDING_REFRESH, storeName: storeName })
         let dataStore = new DataStore()
         dataStore.fetchData(url, FLAG_STORAGE.flag_trending).then(data => {

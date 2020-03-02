@@ -23,4 +23,44 @@ export default class Utils {
         }
         return false;
     }
+    /**
+     * 
+     * @param {请求路径} url 
+     */
+    static fetchData(url) {
+
+
+        return new Promise((resolve, reject) => {
+
+            fetch(url)
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json()
+                    }
+                    throw new Error("util - Utils -  response was not ok.")
+                })
+                .then((responseJson) => {
+                    console.log('responseJson', responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    throw new Error('util - Utils - firstRequestWorkerData' + error)
+                });
+        })
+
+        // fetch(url)
+        //     .then((response) => {
+        //         if (response.ok) {
+        //             return response.json()
+        //         }
+        //         throw new Error("util - Utils -  response was not ok.")
+        //     })
+        //     .then((responseJson) => {
+        //         return responseJson;
+        //     })
+        //     .catch((error) => {
+        //         throw new Error('util - Utils - firstRequestWorkerData' + error)
+        //     });
+    }
+
 }

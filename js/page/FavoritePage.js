@@ -26,8 +26,6 @@ export default class PopularPage extends Component {
 
     }
 
-
-
     _genTabs() {
         const tabs = {};
         this.tabNames.forEach((item, index) => {

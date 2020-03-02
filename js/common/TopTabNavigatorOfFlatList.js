@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { StyleSheet,ActivityIndicator,Text, View, FlatList,RefreshControl} from 'react-native';
+import { StyleSheet, ActivityIndicator, Text, View, FlatList, RefreshControl } from 'react-native';
 import Toast from 'react-native-easy-toast';
 import TrendingItem from '../common/TrendingItem';
+import actions from '../action'
 import { FLAG_STORAGE } from "../expand/dao/DataStore";
 import NavigationUtil from '../navigator/NavigationUtil';
 import FavoriteDao from "../expand/dao/FavoriteDao";
+import { connect } from 'react-redux';
 
 const pageSize = 10;//设为常量，防止修改
 const THEME_COLOR = '#AA2F23';
 const URL = 'https://github.com/trending/';
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
 
-export default class TopTabNavigatorOfFlatList extends Component {
+class TopTabNavigatorOfFlatList extends Component {
     /**
      * 
      *  @param {tabLabel*} props  状态查询条件
@@ -22,7 +24,7 @@ export default class TopTabNavigatorOfFlatList extends Component {
         super(props);
         const { tabLabel, FilterConditionData } = this.props;
         this.FilterConditionData = FilterConditionData;
-        this.storeName = tabLabel
+        this.storeName = tabLabel;
     }
 
     componentDidMount() {
@@ -45,6 +47,7 @@ export default class TopTabNavigatorOfFlatList extends Component {
                 hideLoadingMore: true,//默认隐藏加载更多
             }
         }
+
         return store;
     }
 
@@ -52,7 +55,7 @@ export default class TopTabNavigatorOfFlatList extends Component {
         const { onRefreshTrending, onLoadMoreTrending } = this.props;
         const store = this._store();
         const url = this.genFetchUrl(this.storeName);
-        let pageIndex = ++store.pageIndex
+        let pageIndex = ++store.pageIndex;
         if (loadMore) {
             onLoadMoreTrending(this.storeName, pageIndex, pageSize, store.items, favoriteDao, callback => {
                 this.refs.toast.show('没有更多了');
@@ -100,6 +103,7 @@ export default class TopTabNavigatorOfFlatList extends Component {
         // NavigationUtil.navigation = this.props.navigation;
         this.navigation = this.props;
         let store = this._store();
+        console.log('this.props.data', this.props)
         return (
             <View style={styles.contains}>
                 <FlatList
@@ -163,3 +167,18 @@ const styles = StyleSheet.create({
         color: 'red'
     },
 });
+
+const mapStateToProps = state => ({
+    trending: state.trending,
+
+});
+
+const mapDispatchToProps = dispatch => ({
+    onRefreshTrending: (storeName, url, pageSize, favoriteDao) =>
+        dispatch(actions.onRefreshTrending(storeName, url, pageSize, favoriteDao)),
+    onLoadMoreTrending: (storeName, pageIndex, pageSize, items, favoriteDao, callBack) =>
+        dispatch(actions.onLoadMoreTrending(storeName, pageIndex, pageSize, items, favoriteDao, callBack)),
+
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TopTabNavigatorOfFlatList);

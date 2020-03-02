@@ -1,22 +1,29 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity, Text, View, Animated, Easing, } from 'react-native';
+import { 
+    StyleSheet, 
+    TouchableOpacity, 
+    Text, 
+    View, 
+    Animated, 
+    Easing
+} from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 import { connect } from 'react-redux';
 import actions from '../../action/index';
 import NavigationBar from '../../common/NavigationBar';
 import WorkshopDirectorDialog, { FilterConditionSpan } from '../../common/WorkshopDirectorDialog';
-import TopTabNavigatorOfFlatList from '../../common/TopTabNavigatorOfFlatList'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import TrendingTabPage from '../../common/TopTabNavigatorOfFlatList';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import NavigationUtil from '../../navigator/NavigationUtil';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import FirstRequestData from './FirstRequest'
+import FirstRequestData from './FirstRequest';
 import { fit } from '../../common/Fit';
 
 class WorkshopDirector extends Component {
     constructor(props) {
         super(props);
-        this.animatedValue = new Animated.Value(0)
+        this.animatedValue = new Animated.Value(0);
 
         NavigationUtil.navigation = this.props.navigation;
         this.tabNames = [
@@ -31,10 +38,12 @@ class WorkshopDirector extends Component {
     }
 
     componentDidMount() {
-        this.animate()
+        this.animate();
+        this.props.onfirstRequestWorkerData();
     }
+
     animate() {
-        this.animatedValue.setValue(0)
+        this.animatedValue.setValue(0);
         Animated.timing(
             this.animatedValue,
             {
@@ -42,12 +51,14 @@ class WorkshopDirector extends Component {
                 duration: 2000,
                 easing: Easing.linear
             }
-        ).start(() => this.animate())
+        ).start(() => this.animate());
     }
 
     onSelectFilterConditionData(tab) {
-        this.state.isFirstRequest = false
-        console.log('tab', tab)
+        this.setState(() => ({
+            isFirstRequest: false
+        }))
+
         if (tab.searchText === 'since=monthly') {
             this.tabNames = [
                 { label: '未报工', requestData: 'C' },
@@ -88,7 +99,7 @@ class WorkshopDirector extends Component {
                     />
                 </TouchableOpacity>
             </View>
-        )
+        );
     }
 
     renderTitleView() {
@@ -123,7 +134,6 @@ class WorkshopDirector extends Component {
         this.tabNames.forEach((item, index) => {
             tabs[`tab${index}`] = {
                 screen: props =>
-
                     // <Animated.View
                     //     style={{
                     //         // opacity,
@@ -136,10 +146,11 @@ class WorkshopDirector extends Component {
                     //     />
                     // </Animated.View>
 
-                    <TrendingTabPage {...props} FilterConditionData={this.state.FilterConditionData} tabLabel={item.requestData}
+                    <TrendingTabPage 
+                        {...props} 
+                        FilterConditionData={this.state.FilterConditionData} 
+                        tabLabel={item.requestData}
                     />
-
-
                 ,
                 navigationOptions: {
                     title: item.label,
@@ -152,10 +163,12 @@ class WorkshopDirector extends Component {
     }
 
     renderWorkshopDirectorDialog() {
-        return <WorkshopDirectorDialog
-            ref={dialog => this.dialog = dialog}
-            onSelect={tab => this.onSelectFilterConditionData(tab)}
-        />;
+        return (
+            <WorkshopDirectorDialog
+                ref={dialog => this.dialog = dialog}
+                onSelect={tab => this.onSelectFilterConditionData(tab)}
+            />
+        );
     }
 
     _tabNav() {
@@ -175,20 +188,19 @@ class WorkshopDirector extends Component {
                     activeTintColor: styles.activeTintColor,
                     inactiveTintColor: '#000000',
                     // showLabel: false,
-                    showIcon: true,
+                    // showIcon: true,
                 },
             },
         ));
 
-        return this.tabNav
+        return this.tabNav;
     }
 
     render() {
-
         const opacity = this.animatedValue.interpolate({
             inputRange: [0, 0.5, 1],
             outputRange: [0, 1, 0]
-        })
+        });
 
         let statusBar = {
             barStyle: 'light-content',
@@ -196,48 +208,36 @@ class WorkshopDirector extends Component {
             backgroundColor: "black",
         };
 
-        let navigationBar = <NavigationBar
+        let navigationBar = (<NavigationBar
             title={'我的派工单'}
             statusBar={statusBar}
             style={{ backgroundColor: '#376CDA' }}
             rightButton={this.renderRightButton()}
-        />
+        />);
 
         const TabNavigator = this._tabNav();
-        const AnimatedTabNavigator = <Animated.View
-            style={{
-                opacity,
-                marginTop: 80,
-                height: 30,
-                width: 40,
-                backgroundColor: 'blue'
-            }} >
-
-        </Animated.View>
-        // const FirstRequestData = <TrendingTabPage {...this.props} FilterConditionData={this.state.FilterConditionData} tabLabel={this.tabNames[0].requestData}></TrendingTabPage> 
+        const AnimatedTabNavigator = (
+                    <Animated.View
+                        style={{
+                            opacity,
+                            marginTop: 80,
+                            height: 30,
+                            width: 40,
+                            backgroundColor: 'blue'
+                        }} >
+                    </Animated.View>
+                );
+      
         return (
             <View style={styles.container}>
                 {navigationBar}
                 {/* {<TabNavigator />} */}
-                {this.state.isFirstRequest ? <FirstRequestData /> : <TabNavigator />}
+                {this.state.isFirstRequest ? <FirstRequestData {...this.props} /> : <TabNavigator />}
                 {this.renderWorkshopDirectorDialog()}
             </View>
         );
     }
 }
-
-const mapStateToProps = state => ({
-    trending: state.trending
-});
-
-const mapDispatchToProps = dispatch => ({
-    onRefreshTrending: (storeName, url, pageSize, favoriteDao) =>
-        dispatch(actions.onRefreshTrending(storeName, url, pageSize, favoriteDao)),
-    onLoadMoreTrending: (storeName, pageIndex, pageSize, items, favoriteDao, callBack) =>
-        dispatch(actions.onLoadMoreTrending(storeName, pageIndex, pageSize, items, favoriteDao, callBack))
-});
-
-const TrendingTabPage = connect(mapStateToProps, mapDispatchToProps)(TopTabNavigatorOfFlatList);
 
 const styles = StyleSheet.create({
     container: {
@@ -263,4 +263,12 @@ const styles = StyleSheet.create({
     },
 });
 
-export default WorkshopDirector;
+const mapStateToProps = state => ({
+    data: state.workshopDirector.data
+});
+
+const mapDispatchToProps = dispatch => ({
+    onfirstRequestWorkerData: () => dispatch(actions.onfirstRequestWorkerData()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WorkshopDirector);

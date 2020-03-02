@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 import {View} from 'react-native'
 import WorkerDispatchList from '../../common/WorkerDispatchList'
+// import console = require('console');
 class FirstRequestData extends Component {
 
-
+ constructor(props){
+     super(props);
+     console.log('--------props',this.props)
+ }
 
     render() {
 
-        let item = {}
+       
         return (
             <View>
+                <WorkerDispatchList   {...this.props} />
+                {/* <WorkerDispatchList />
                 <WorkerDispatchList />
                 <WorkerDispatchList />
                 <WorkerDispatchList />
@@ -31,9 +37,7 @@ class FirstRequestData extends Component {
                 <WorkerDispatchList />
                 <WorkerDispatchList />
                 <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
+                <WorkerDispatchList /> */}
             </View>
 
         )

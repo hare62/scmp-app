@@ -2,20 +2,32 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+// import console = require('console');
 
 export default class WorkerDispatchList extends Component {
+    constructor(props) {
+        super(props)
+       
+    }
 
-    render() {
-
-        let item = {
-            materials:'RT-WD-RY-89-ER',
-            materialsName:'物料：六角螺母',
-            time:'2020-02-27', 
+    
+    initData(){
+        let {data} = this.props;
+        console.log("XXXXX",data)
+        if(!data){
+            data= [{
+                materials: 'loading...',
+                materialsName: 'loading...',
+                time: 'loading...',
+            }]
         }
+        return data;
+    }
 
+    renderItem(item) {
         return (
             <TouchableOpacity
-                onPress={() => this.onItemClick()}
+                onPress={() => { }}
             >
                 <View style={styles.cell_container}>
                     <View style={styles.container_left} >
@@ -23,7 +35,7 @@ export default class WorkerDispatchList extends Component {
                         <EvilIcons
                             name={'check'}
                             size={80}
-                            style={{ color: '#376CDA',  }}
+                            style={{ color: '#376CDA', }}
                         />
                     </View>
                     <View style={styles.container_right}>
@@ -36,7 +48,7 @@ export default class WorkerDispatchList extends Component {
                                 <AntDesign
                                     name={'clockcircleo'}
                                     size={18}
-                                    style={{ color: '#aaa',  }}
+                                    style={{ color: '#aaa', }}
                                 />
                             </Text>
                             <Text style={styles.container_right_text} >{item.time}</Text>
@@ -44,6 +56,23 @@ export default class WorkerDispatchList extends Component {
                     </View>
                 </View>
             </TouchableOpacity>
+        );
+    }
+
+    render() {
+
+        let data = this.initData()
+
+        // console.log("harehareprops", this.props.data,item)
+
+        return (
+            <View>
+            {
+                data.map((item, index, arr) => {
+                    return this.renderItem(item)
+                })
+            }
+            </View>
         )
     }
 }
@@ -57,7 +86,7 @@ const styles = StyleSheet.create({
     container_left: {
         height: 80,
         width: 80,
-        marginRight:10,
+        marginRight: 10,
         borderRadius: 50,
         lineHeight: 80,
     },
@@ -70,17 +99,17 @@ const styles = StyleSheet.create({
     },
     container_right_title: {
         flexDirection: 'row',
-        justifyContent:'space-between',
-        paddingRight:30
-    
+        justifyContent: 'space-between',
+        paddingRight: 30
+
     },
-    container_right_contain:{
+    container_right_contain: {
         flexDirection: 'row',
     },
     container_right_title_order: {
         color: 'black',
         marginBottom: 10,
-        fontSize:17
+        fontSize: 17
     },
     container_right_title_materials: {
         color: '#666',
@@ -92,7 +121,7 @@ const styles = StyleSheet.create({
     },
     container_right_text: {
         paddingLeft: 10,
-        color:'#aaa'
+        color: '#aaa'
     }
 }
 );

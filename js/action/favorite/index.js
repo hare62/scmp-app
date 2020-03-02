@@ -10,7 +10,7 @@ import ProjectModel from "../../model/ProjectModel";
  * @param {} url
  * @returns {function name(params) {
     * 
-     
+        
 }}
 */
 export function onLoadfavoriteData(storeName) {
