@@ -63,8 +63,6 @@ export default class WorkerDispatchList extends Component {
 
         let data = this.initData()
 
-        // console.log("harehareprops", this.props.data,item)
-
         return (
             <View>
             {

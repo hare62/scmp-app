@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, ActivityIndicator, Text, View, FlatList, RefreshControl } from 'react-native';
-import Toast from 'react-native-easy-toast';
-import TrendingItem from '../common/TrendingItem';
+import { View, } from 'react-native';
 import actions from '../action'
 import { FLAG_STORAGE } from "../expand/dao/DataStore";
-import NavigationUtil from '../navigator/NavigationUtil';
+import WorkshopDirectorDispatchList from './WorkshopDirectorDispatchList';
 import FavoriteDao from "../expand/dao/FavoriteDao";
 import { connect } from 'react-redux';
 
 const pageSize = 10;//设为常量，防止修改
-const THEME_COLOR = '#AA2F23';
 const URL = 'https://github.com/trending/';
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
 
@@ -71,102 +68,20 @@ class TopTabNavigatorOfFlatList extends Component {
      */
 
     genFetchUrl(key) {
-        // https://github.com/trending/C++?since=daily
         return URL + key + '?' + this.FilterConditionData.searchText;
     }
 
-    renderItem(data) {
-        const item = data.item;
-        return <TrendingItem
-            projectModel={item}
-            onSelect={(callback) => {
-                NavigationUtil.goPage({
-                    projectModel: item,
-                    flag: FLAG_STORAGE.flag_trending,
-                    callback
-                }, 'DetailPage');
-            }}
-        />;
-    }
-
-    genIndicator() {
-        return this._store().hideLoadingMore ? null :
-            <View style={styles.indicatorContainer}>
-                <ActivityIndicator
-                    style={styles.indicator}
-                />
-                <Text>正在加载更多</Text>
-            </View>
-    }
-
     render() {
-        // NavigationUtil.navigation = this.props.navigation;
         this.navigation = this.props;
         let store = this._store();
-        console.log('this.props.data', this.props)
+        console.log('this.props.data', store)
         return (
-            <View style={styles.contains}>
-                <FlatList
-                    data={store.projectModels}
-                    renderItem={data => this.renderItem(data)}
-                    keyExtractor={item => "" + item.item.fullName}
-                    refreshControl={
-                        <RefreshControl
-                            title={'Loading'}
-                            titleColor={THEME_COLOR}
-                            colors={[THEME_COLOR]}
-                            refreshing={store.isLoading}
-                            onRefresh={() => this.loadData()}
-                            tintColor={THEME_COLOR}
-                        />
-                    }
-                    ListFooterComponent={() => this.genIndicator()}
-                    onEndReachedThreshold={0.5}
-                    onEndReached={() => {
-                        console.log('---onEndReached----');
-                        //为了保证onMomentumScrollBegin()首先执行
-                        setTimeout(() => {
-                            if (this.canLoadMore) {//fix 滚动时两次调用onEndReached https://github.com/facebook/react-native/issues/14015
-                                this.loadData(true);
-                                this.canLoadMore = false;
-                            }
-                        }, 100);
-                    }}
-                    onMomentumScrollBegin={() => {
-                        this.canLoadMore = true; //fix 初始化时页调用onEndReached的问题
-                        console.log('---onMomentumScrollBegin-----')
-                    }}
-                ></FlatList>
-                <Toast ref={'toast'}
-                    position={'center'}
-                />
+            <View >
+                <WorkshopDirectorDispatchList data={store.projectModels}  ></WorkshopDirectorDispatchList>
             </View>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    tabStyle: {
-        minWidth: 50,
-        color: 'red'
-    },
-    indicatorStyle: {
-        height: 2,
-        backgroundColor: '#376CDA',
-    },
-    labelStyle: {
-        fontSize: 16,
-        marginTop: 6,
-        marginBottom: 6,
-        color: "#376CDA"
-    },
-    activeTintColor: {
-        color: 'red'
-    },
-});
 
 const mapStateToProps = state => ({
     trending: state.trending,

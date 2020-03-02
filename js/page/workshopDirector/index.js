@@ -4,8 +4,6 @@ import {
     TouchableOpacity, 
     Text, 
     View, 
-    Animated, 
-    Easing
 } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
@@ -23,8 +21,6 @@ import { fit } from '../../common/Fit';
 class WorkshopDirector extends Component {
     constructor(props) {
         super(props);
-        this.animatedValue = new Animated.Value(0);
-
         NavigationUtil.navigation = this.props.navigation;
         this.tabNames = [
             { label: '未报工', requestData: 'C' },
@@ -38,20 +34,7 @@ class WorkshopDirector extends Component {
     }
 
     componentDidMount() {
-        this.animate();
         this.props.onfirstRequestWorkerData();
-    }
-
-    animate() {
-        this.animatedValue.setValue(0);
-        Animated.timing(
-            this.animatedValue,
-            {
-                toValue: 1,
-                duration: 2000,
-                easing: Easing.linear
-            }
-        ).start(() => this.animate());
     }
 
     onSelectFilterConditionData(tab) {
@@ -126,32 +109,15 @@ class WorkshopDirector extends Component {
     }
 
     _genTabs() {
-        // const opacity = this.animatedValue.interpolate({
-        //     inputRange: [0, 0.5, 1],
-        //     outputRange: [0, 1, 0]
-        // })
         const tabs = {};
         this.tabNames.forEach((item, index) => {
             tabs[`tab${index}`] = {
                 screen: props =>
-                    // <Animated.View
-                    //     style={{
-                    //         // opacity,
-                    //         // marginTop: -80,
-                    //         // height: 30,
-                    //         // width: 40,
-                    //         // backgroundColor: 'blue'
-                    //     }} >
-                    //     <TrendingTabPage {...props} FilterConditionData={this.state.FilterConditionData} tabLabel={item.requestData}
-                    //     />
-                    // </Animated.View>
-
                     <TrendingTabPage 
                         {...props} 
                         FilterConditionData={this.state.FilterConditionData} 
                         tabLabel={item.requestData}
-                    />
-                ,
+                    />,
                 navigationOptions: {
                     title: item.label,
                     headerShown: false
@@ -187,8 +153,6 @@ class WorkshopDirector extends Component {
                     labelStyle: styles.labelStyle,
                     activeTintColor: styles.activeTintColor,
                     inactiveTintColor: '#000000',
-                    // showLabel: false,
-                    // showIcon: true,
                 },
             },
         ));
@@ -197,11 +161,6 @@ class WorkshopDirector extends Component {
     }
 
     render() {
-        const opacity = this.animatedValue.interpolate({
-            inputRange: [0, 0.5, 1],
-            outputRange: [0, 1, 0]
-        });
-
         let statusBar = {
             barStyle: 'light-content',
             hidden: false,
@@ -216,22 +175,10 @@ class WorkshopDirector extends Component {
         />);
 
         const TabNavigator = this._tabNav();
-        const AnimatedTabNavigator = (
-                    <Animated.View
-                        style={{
-                            opacity,
-                            marginTop: 80,
-                            height: 30,
-                            width: 40,
-                            backgroundColor: 'blue'
-                        }} >
-                    </Animated.View>
-                );
-      
+
         return (
             <View style={styles.container}>
                 {navigationBar}
-                {/* {<TabNavigator />} */}
                 {this.state.isFirstRequest ? <FirstRequestData {...this.props} /> : <TabNavigator />}
                 {this.renderWorkshopDirectorDialog()}
             </View>
@@ -246,7 +193,6 @@ const styles = StyleSheet.create({
     tabStyle: {
         minWidth: 50,
         color: 'red',
-        // marginTop:-50
     },
     indicatorStyle: {
         height: 2,
