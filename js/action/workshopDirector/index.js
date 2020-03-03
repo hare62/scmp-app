@@ -12,3 +12,9 @@ export function onfirstRequestWorkerData() {
 
     }
 }
+
+export function onFilterData(TopName, url) {
+    return dispatch => {
+       
+    }
+}

@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, FlatList, RefreshControl } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, FlatList, RefreshControl } from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Toast from 'react-native-easy-toast';
 import NavigationUtil from '../navigator/NavigationUtil';
 import TrendingItem from '../common/TrendingItem'
+// import console = require('console');
 
 const THEME_COLOR = '#AA2F23';
 
-class WorkerDispatchList extends Component {
+export default class WorkerDispatchList extends Component {
     constructor(props) {
         super(props)
+
     }
+
 
     initData() {
         let { data } = this.props
@@ -25,13 +30,51 @@ class WorkerDispatchList extends Component {
         return data;
     }
 
+    // renderItem(item) {
+    //     item=item.item
+    //     return (
+    //         <TouchableOpacity
+    //             onPress={() => { }}
+    //         >
+    //             <View style={styles.cell_container}>
+    //                 <View style={styles.container_left} >
+    //                     {/* 图标根据状态去传显示什么图标 */}
+    //                     <EvilIcons
+    //                         name={'check'}
+    //                         size={80}
+    //                         style={{ color: '#376CDA', }}
+    //                     />
+    //                 </View>
+    //                 <View style={styles.container_right}>
+    //                     <View style={styles.container_right_title} >
+    //                         <Text style={styles.container_right_title_order} >THEME_COLOR</Text>
+    //                         <Text style={styles.container_right_title_materials}>物料名称：六角螺母</Text>
+    //                     </View>
+    //                     <View style={styles.container_right_contain} >
+    //                         <Text style={styles.container_right_date} >
+    //                             <AntDesign
+    //                                 name={'clockcircleo'}
+    //                                 size={18}
+    //                                 style={{ color: '#aaa', }}
+    //                             />
+    //                         </Text>
+    //                         <Text style={styles.container_right_text} >{item.time}</Text>
+    //                     </View>
+    //                 </View>
+    //             </View>
+    //         </TouchableOpacity>
+    //     );
+    // }
+
      renderItem(data) {
         const item = data.item;
         return <TrendingItem
             projectModel={item}
             onSelect={(callback) => {
                 NavigationUtil.goPage({
-                   
+                    projectModel: item,
+                    flag: FLAG_STORAGE.flag_trending,
+                    callback
                 }, 'DetailPage');
             }}
         />;
@@ -48,8 +91,9 @@ class WorkerDispatchList extends Component {
     }
 
     render() {
+
         let store = this.initData()
-        console.log('store',store)
+        console.log('store-----------',store)
 
         return (
             <View style={styles.contains}>
@@ -69,6 +113,11 @@ class WorkerDispatchList extends Component {
                     }
                    
                 ></FlatList>
+
+                <FlatList
+                    data={[{ key: 'a' }, { key: 'b' }]}
+                    renderItem={({ item }) => <Text>{item.key}</Text>}
+                />
                 <Toast ref={'toast'}
                     position={'center'}
                 />
@@ -125,5 +174,3 @@ const styles = StyleSheet.create({
     }
 }
 );
-
-export default WorkerDispatchList;

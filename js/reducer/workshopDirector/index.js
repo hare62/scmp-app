@@ -14,7 +14,12 @@ export default function onAction(state = defaultState, action) {
         case Types.WORKERSHOP_FIRST_lOAD_SUCCESS://下拉刷新成功
             return {
                 ...state,
-               data:action.data
+               All:{
+                projectModels:action.data,
+                isLoading:false,
+                hideLoadingMore:false
+
+               }
             };
         
         default:

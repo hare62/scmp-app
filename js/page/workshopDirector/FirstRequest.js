@@ -14,30 +14,8 @@ class FirstRequestData extends Component {
        
         return (
             <View>
-                <WorkerDispatchList   {...this.props} />
-                {/* <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList />
-                <WorkerDispatchList /> */}
+                {/* <WorkerDispatchList   {...this.props} /> */}
+               
             </View>
 
         )
