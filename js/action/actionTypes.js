@@ -39,3 +39,8 @@ export const GET_FINISHED_SHEET_LIST_SUCCESS = 'director/get_finished_sheet_list
 
 // 获取已完成的派工单失败
 export const GET_FINISHED_SHEET_LIST_FAILURE = 'director/get_finished_sheet_list_failure';
+
+ // 获取工人派工单成功
+export const GET_WORKER_DEFAULT_SHEET_LIST_SUCCESS = 'worker/get_worker_default_sheet_list_success';
+ // 获取工人派工单失败
+export const GET_WORKER_DEFAULT_SHEET_LIST_FAILURE = 'worker/get_worker_default_sheet_list_failure';

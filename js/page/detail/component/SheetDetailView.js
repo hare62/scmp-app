@@ -6,12 +6,13 @@ import {
 } from 'react-native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import NavigationManager from '../../../navigation/NavigationManager';
 
 const SheetDetailView = (props) => {
   const { time,
           materialsID,
-          materialsName } = props.navigation.state.params;
+          materialsName,
+          materialsNum,
+          realNum } = props.navigation.state.params;
 
   return (
     <View style={styles.container}>
@@ -46,7 +47,7 @@ const SheetDetailView = (props) => {
             实际完成 
           </Text>
           <Text style={{fontSize: 18, color: '#82BBF7', marginLeft: 5}}>
-            6
+           {realNum}
           </Text>
         </View>
         <View style={{flexDirection:'row'}}>
@@ -54,7 +55,7 @@ const SheetDetailView = (props) => {
             物料数量
           </Text>
           <Text style={{fontSize: 18, color: '#676767', marginLeft: 5}}>
-            6
+            {materialsNum}
           </Text>
         </View>
       </View>
@@ -69,7 +70,6 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     height: 140,
-    //backgroundColor: '#888',
     flexDirection: 'row',
   },
   bottomContainer: {

@@ -25,24 +25,24 @@ class SheetListPage extends Component {
 
   componentDidMount() {
     const { pageIdentify,
-            requestLastDaysSheetList,
-            requestLastWeekSheetList,
-            requestHalfYearSheetList,
-            requestUnreportedSheetList,
-            requestCheckingSheetList, 
-            requestFinishedSheetList } = this.props;
+      requestLastDaysSheetList,
+      requestLastWeekSheetList,
+      requestHalfYearSheetList,
+      requestUnreportedSheetList,
+      requestCheckingSheetList,
+      requestFinishedSheetList } = this.props;
 
-    switch(pageIdentify) {
-      case TabPageEnum.LastDaysPage: 
+    switch (pageIdentify) {
+      case TabPageEnum.LastDaysPage:
         requestLastDaysSheetList();
         break;
       case TabPageEnum.LastWeekPage:
         requestLastWeekSheetList();
         break;
-      case TabPageEnum.LastHalfYearPage: 
+      case TabPageEnum.LastHalfYearPage:
         requestHalfYearSheetList();
         break;
-      case TabPageEnum.UnreportedPage: 
+      case TabPageEnum.UnreportedPage:
         requestUnreportedSheetList();
         break;
       case TabPageEnum.CheckingPage:
@@ -51,35 +51,35 @@ class SheetListPage extends Component {
       case TabPageEnum.FinishedPage:
         requestFinishedSheetList();
         break;
-      default: 
+      default:
         break;
     }
   }
 
   getSheetListDatas() {
     const { pageIdentify,
-            workSheetList,
-            lastDaysSheetList,
-            lastWeekSheetList,
-            halfYearSheetList,
-            unreportedSheetList,
-            checkingSheetList,
-            finishedSheetList } = this.props;
+      workSheetList,
+      lastDaysSheetList,
+      lastWeekSheetList,
+      halfYearSheetList,
+      unreportedSheetList,
+      checkingSheetList,
+      finishedSheetList } = this.props;
 
-    switch(pageIdentify) {
-      case TabPageEnum.LastDaysPage: 
+    switch (pageIdentify) {
+      case TabPageEnum.LastDaysPage:
         return lastDaysSheetList;
       case TabPageEnum.LastWeekPage:
         return lastWeekSheetList;
-      case TabPageEnum.LastHalfYearPage: 
+      case TabPageEnum.LastHalfYearPage:
         return halfYearSheetList;
-      case TabPageEnum.UnreportedPage: 
+      case TabPageEnum.UnreportedPage:
         return unreportedSheetList;
       case TabPageEnum.CheckingPage:
         return checkingSheetList;
       case TabPageEnum.FinishedPage:
         return finishedSheetList;
-      default: 
+      default:
         return workSheetList;
     }
   }
@@ -99,7 +99,7 @@ class SheetListPage extends Component {
               titleColor={THEME_COLOR}
               colors={[THEME_COLOR]}
               refreshing={false}
-              onRefresh={() => {}}
+              onRefresh={() => { }}
               tintColor={THEME_COLOR}
             />
           }

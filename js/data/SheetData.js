@@ -8,6 +8,8 @@ class SheetData {
     this.time = '';
     this.materialsID = '';
     this.materialsName = '';
+    this.materialsNum = '';
+    this.realNum = ''
   }
 
   static init(jsonData) {
@@ -18,12 +20,17 @@ class SheetData {
       let { id,
             time,
             materials,
-            materialsName } = jsonData;
+            materialsName,
+            materialsNum,
+            realNum } = jsonData;
       
       data.id = id;
       data.time = time;
       data.materialsID = materials;
       data.materialsName = materialsName;
+      data.materialsNum = materialsNum;
+      data.realNum = realNum;
+
     }
     catch(error) {
       console.log("SheetData - init: " + error);
@@ -39,6 +46,8 @@ class SheetData {
     isExist = isExist && !!this.time;
     isExist = isExist && !!this.materialsID;
     isExist = isExist && !!this.materialsName;
+    isExist = isExist && !!this.materialsNum;
+    isExist = isExist && !!this.realNum;
 
     return isExist;
   }

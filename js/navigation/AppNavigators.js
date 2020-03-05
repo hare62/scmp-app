@@ -6,7 +6,9 @@ import { createStackNavigator } from 'react-navigation-stack';
 import WelcomePage from '../page/WelcomePage';
 import DirectorPage from '../page/director/DirectorPage';
 import DetailPage from '../page/detail/DetailPage';
-
+import WorkerPage from '../page/worker/WorkerPage';
+import LoginPage from '../page/login/index';
+import AddressPage from '../page/director/componnet/Address/AddressPage'
 const InitNavigator = createStackNavigator({
   WelcomePage: {
     screen: WelcomePage,
@@ -29,13 +31,32 @@ const MainNavigator = createStackNavigator({
       header: null,
     },
   },
+  WorkerPage: {
+    screen: WorkerPage,
+    navigationOptions: {
+      header: null
+    }
+  },
+  LoginPage: {
+    screen: LoginPage,
+    navigationOptions: {
+      header: null
+    }
+  },
+  AddressPage: {
+    screen: AddressPage,
+    navigationOptions: {
+      header: null
+    }
+  }
+
 });
 
 const AppNavigators = createAppContainer(createSwitchNavigator(
   {
     Init: InitNavigator,
     Main: MainNavigator,
-  }, 
+  },
   {
     navigationOptions: {
       header: null,

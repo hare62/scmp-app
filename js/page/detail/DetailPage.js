@@ -22,9 +22,9 @@ class DetailPage extends Component {
         }}
       >
         <AntDesign
-          name={'clockcircleo'}
+          name={'left'}
           size={18}
-          style={{ color: '#aaa', marginLeft: 30 }}
+          style={{ color: 'white', marginLeft: 10 }}
         />
       </TouchableOpacity>
     );

@@ -9,11 +9,11 @@ class WelcomePage extends Component {
   componentDidMount() {
     this.timer = setTimeout(() => {
       const { navigation } = this.props;
-      navigation.navigate('DirectorPage');
+      navigation.navigate('LoginPage');
     }, 300);
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillMount() {
     this.timer && clearTimeout(this.timer);
   }
 

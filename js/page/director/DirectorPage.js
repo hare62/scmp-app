@@ -93,6 +93,11 @@ class DirectorPage extends Component {
 		}));
 	}
 
+	gotoAddressPage() {
+		NavigationManager.goPage('AddressPage');
+		// NavigationManager.goPage('WorkerPage')
+	}
+ 
 	getTopNavigation() {
 		const { filterCondition } = this.state; 
 
@@ -104,7 +109,7 @@ class DirectorPage extends Component {
 			case FilterEnum.status:
 				return <StatusNavigation />
 			case FilterEnum.member:
-				return null;
+				return this.gotoAddressPage();
 			default:
 				console.log("DirectorPage - getTopNavigation: filterCondition error");
 				return null;
