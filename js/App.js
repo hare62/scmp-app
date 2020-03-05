@@ -1,16 +1,14 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Provider} from 'react-redux';
-import AppNavigator from './navigator/AppNavigators';
 import store from './store';
+import AppNavigators from './navigation/AppNavigators';
 
-export default class App extends Component {
-    render() {
-        /**
-         * 3.将store传递给App框架
-         */
-        return <Provider store={store}>
-            <AppNavigator/>
-        </Provider>;
-    }
-
+const App = () => {
+	return (
+		<Provider store={store} >
+			<AppNavigators />
+		</Provider>
+	);
 }
+
+export default App;

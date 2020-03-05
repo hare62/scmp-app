@@ -1,23 +1,8 @@
-import {combineReducers} from 'redux';
-import theme from './theme';
-import popular from './popular';
-import trending from './rending';
-import favorite from './favorite';
-import workshopDirector from './workshopDirector'
+import { combineReducers } from 'redux';
+import DirectorReducer from './DirectorReducer';
 
-
-/**
- * 1.合并reducer
- * @type {Reducer<any> | Reducer<any, AnyAction>}
- */
-const index = combineReducers({
-    theme:theme,
-    popular:popular,
-    trending:trending,
-    favorite:favorite,
-    workshopDirector:workshopDirector,
-
-
+const reducers = combineReducers({
+  director: DirectorReducer
 });
 
-export default index;
+export default reducers;
