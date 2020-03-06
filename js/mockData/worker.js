@@ -17,6 +17,5 @@ export const defaultMockDatas = {
       realNum:'2',
       materialsNum:'6'
     },
-   
   ]
 };

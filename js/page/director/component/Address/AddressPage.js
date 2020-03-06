@@ -44,6 +44,4 @@ const AddressPage = (props)=>{
   )
 } 
 
-
-
 export default AddressPage;

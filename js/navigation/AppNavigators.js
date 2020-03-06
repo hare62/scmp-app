@@ -8,7 +8,7 @@ import DirectorPage from '../page/director/DirectorPage';
 import DetailPage from '../page/detail/DetailPage';
 import WorkerPage from '../page/worker/WorkerPage';
 import LoginPage from '../page/login/index';
-import AddressPage from '../page/director/componnet/Address/AddressPage'
+import AddressPage from '../page/director/component/Address/AddressPage'
 const InitNavigator = createStackNavigator({
   WelcomePage: {
     screen: WelcomePage,

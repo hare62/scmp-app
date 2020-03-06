@@ -6,13 +6,13 @@ import {
 import NavigationManager from '../../navigation/NavigationManager';
 import NavigationBar from '../../common/NavigationBar';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import FilterView from './componnet/FilterView/FilterView';
+import FilterView from './component/FilterView/FilterView';
 import { fitSize } from '../../utils/Fit';
 import { connect } from 'react-redux';
 import { getDefaultSheetList } from '../../action/actionCreators';
-import TimeNavigation from './componnet/TabNavigation/TimeNavigation';
-import StatusNavigation from './componnet/TabNavigation/StatusNavigation';
-import SheetListPage from './componnet/SheetListView/SheetListPage';
+import TimeNavigation from './component/TabNavigation/TimeNavigation';
+import StatusNavigation from './component/TabNavigation/StatusNavigation';
+import SheetListPage from './component/SheetListView/SheetListPage';
 
 /**
  * 过滤条件
@@ -60,45 +60,42 @@ class DirectorPage extends Component {
 		);
 	}
 
-	onShowFilterView() {
-		this.setState(() => ({
+	async onShowFilterView() {
+		await this.setState(() => ({
 			showFilterView: true
 		}));
 	}
 
-	onCloseFilterView() {
-		this.setState(() => ({
+	async	onCloseFilterView() {
+		await this.setState(() => ({
 			showFilterView: false
 		}));
 	}
 
-	onSelectTime() {
-		this.setState(() => ({
+	async onSelectTime() {
+		await this.setState(() => ({
 			filterCondition: FilterEnum.time,
 			showFilterView: false
 		}));
 	}
 
-	onSelectStatus() {
-		this.setState(() => ({
+	async onSelectStatus() {
+		await this.setState(() => ({
 			filterCondition: FilterEnum.status,
 			showFilterView: false
 		}));
 	}
 
-	onSelectMember() {
-		this.setState(() => ({
-			filterCondition: FilterEnum.member,
+	async onSelectMember() {
+		await this.setState(() => ({
+			// filterCondition: FilterEnum.member,
 			showFilterView: false
 		}));
+
+		NavigationManager.goPage('AddressPage');
 	}
 
-	gotoAddressPage() {
-		NavigationManager.goPage('AddressPage');
-		// NavigationManager.goPage('WorkerPage')
-	}
- 
-	getTopNavigation() {
+	renderTopNavigation() {
 		const { filterCondition } = this.state; 
 
 		switch(filterCondition) {
@@ -109,7 +106,7 @@ class DirectorPage extends Component {
 			case FilterEnum.status:
 				return <StatusNavigation />
 			case FilterEnum.member:
-				return this.gotoAddressPage();
+				return null;
 			default:
 				console.log("DirectorPage - getTopNavigation: filterCondition error");
 				return null;
@@ -122,7 +119,7 @@ class DirectorPage extends Component {
 		return (
 			<View style={{flex: 1}}>
 				<NavigationBar
-					title={'我的派工单'}
+					title={'我的  派工单'}
 					style={{ backgroundColor: '#376CDA' }}
 					rightButton={this.renderTabRightButton()}
 				/>
@@ -134,7 +131,7 @@ class DirectorPage extends Component {
 					onSelectMember={this.onSelectMember}
 				/>
 				{
-					this.getTopNavigation()
+					this.renderTopNavigation()
 				}
 			</View>
 		);
