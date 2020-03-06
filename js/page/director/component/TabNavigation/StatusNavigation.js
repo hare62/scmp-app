@@ -1,12 +1,12 @@
 import React from 'react';
 import BaseTopNavigation from './BaseTopNavigation';
-import SheetListPage from '../SheetListView/SheetListPage';
+import SheetListView from '../SheetListView/SheetListView';
 import { TabPageEnum } from '../../define';
 
 const StatusNavigationOptions = {
   UnreportedPage: {
     screen: (props) => {
-      return <SheetListPage pageIdentify={TabPageEnum.UnreportedPage} />
+      return <SheetListView pageIdentify={TabPageEnum.UnreportedPage} />
     },
     navigationOptions: {
       tabBarLabel: '未报工'
@@ -14,7 +14,7 @@ const StatusNavigationOptions = {
   },
   CheckingPage: {
     screen: (props) => {
-      return <SheetListPage pageIdentify={TabPageEnum.CheckingPage} />
+      return <SheetListView pageIdentify={TabPageEnum.CheckingPage} />
     },
     navigationOptions: {
       tabBarLabel: '质检中'
@@ -22,7 +22,7 @@ const StatusNavigationOptions = {
   },
   FinishedPage: {
     screen: (props) => {
-      return <SheetListPage pageIdentify={TabPageEnum.FinishedPage} />
+      return <SheetListView pageIdentify={TabPageEnum.FinishedPage} />
     },
     navigationOptions: {
       tabBarLabel: '已完成'

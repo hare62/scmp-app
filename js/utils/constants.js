@@ -1,3 +1,3 @@
 export default {
-   THEME_COLOR : 'yellow',
+   THEME_COLOR : '#386CDA',
 }

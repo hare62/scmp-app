@@ -4,7 +4,7 @@ import {
   View,
   RefreshControl
 } from 'react-native';
-import SheetItem from './SheetItem';
+import SheetItem from '../../../component/SheetItem';
 import { connect } from 'react-redux';
 import { TabPageEnum } from '../../define';
 import {
@@ -18,7 +18,7 @@ import {
 
 const THEME_COLOR = '#AA2F23';
 
-class SheetListPage extends Component {
+class SheetListView extends Component {
   constructor(props) {
     super(props);
   }
@@ -140,4 +140,4 @@ const mapDispatch = (dispatch) => ({
   }
 })
 
-export default connect(mapState, mapDispatch)(SheetListPage);
+export default connect(mapState, mapDispatch)(SheetListView);

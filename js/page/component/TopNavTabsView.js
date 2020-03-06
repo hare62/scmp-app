@@ -7,7 +7,7 @@ import FilterStatusView from '../worker/component/FilterStatusView';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 
-class SelectTopNav extends Component {
+class TopNavTabsView extends Component {
   constructor(props) {
     super(props);
   }
@@ -86,4 +86,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SelectTopNav;
+export default TopNavTabsView;

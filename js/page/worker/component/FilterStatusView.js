@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
 } from 'react-native';
-import SheetListPage from '../../component/SheetListPage';
+import SheetListView from '../../component/SheetListView';
 import { connect } from 'react-redux';
 import { getFilterSheetList } from '../../../action/worker/index';
 
@@ -21,7 +21,7 @@ class FilterStatusView extends Component {
 
   loadData() {
     const { data, getFilterSheetList } = this.props;
-    const { label, key, value } = data;
+    const { key, value } = data;
     const url = this.getFetchUrl(key, value);
     const pageSize = 1;
     getFilterSheetList(key, url, pageSize);
@@ -29,11 +29,11 @@ class FilterStatusView extends Component {
 
   render() {
     const { data, item } = this.props;
-    const { label, key, value } = data;
+    const { key } = data;
     let SheetList = item[key];
     return (
       <View>
-        {!SheetList ? <></> : <SheetListPage data={SheetList.filterSheetList} ></SheetListPage>}
+        {!SheetList ? <></> : <SheetListView data={SheetList.filterSheetList} ></SheetListView>}
       </View>
     )
   }
@@ -48,7 +48,6 @@ const mapDispatch = (dispatch) => ({
     dispatch(getFilterSheetList(label, url, pageSize))
   }
 });
-
 
 export default connect(mapState, mapDispatch)(FilterStatusView);
 

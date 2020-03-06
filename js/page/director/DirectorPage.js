@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { getDefaultSheetList } from '../../action/actionCreators';
 import TimeNavigation from './component/TabNavigation/TimeNavigation';
 import StatusNavigation from './component/TabNavigation/StatusNavigation';
-import SheetListPage from './component/SheetListView/SheetListPage';
+import SheetListView from './component/SheetListView/SheetListView';
 
 /**
  * 过滤条件
@@ -100,7 +100,7 @@ class DirectorPage extends Component {
 
 		switch(filterCondition) {
 			case FilterEnum.default: 
-				return <SheetListPage />;
+				return <SheetListView />;
 			case FilterEnum.time:
 				return <TimeNavigation />
 			case FilterEnum.status:

@@ -10,10 +10,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fitSize } from '../../utils/Fit';
 import { connect } from 'react-redux';
 import { getDefaultSheetList } from '../../action/worker/index';
-import SheetListPage from '../component/SheetListPage';
-import SelectTopNav from '../component/TopNavTabsPage';
-
-const color = 'red'
+import SheetListView from '../component/SheetListView';
+import TopNavTabsView from '../component/TopNavTabsView';
+import Constants from '../../utils/Constants'
 
 export const TabPageEnum = {
   defaultPage: Symbol('defaultPage'),
@@ -87,11 +86,11 @@ class WorkerPage extends Component {
     
     switch (filterCondition) {
       case TabPageEnum.defaultPage:
-        return <SheetListPage data={Worker} />;
+        return <SheetListView data={Worker} />;
       case TabPageEnum.filterStatusPage:
-        return <SelectTopNav data={this.state.tabNames} />;
+        return <TopNavTabsView data={this.state.tabNames} />;
       case TabPageEnum.fiterTimePage:
-        return <SelectTopNav data={this.state.tabNames} />;
+        return <TopNavTabsView data={this.state.tabNames} />;
       default:
         return null;
     }
@@ -103,7 +102,7 @@ class WorkerPage extends Component {
       <View style={styles.container}>
         <NavigationBar
           title={'派工单'}
-          style={{ backgroundColor: '#376CDA' }}
+          style={{ backgroundColor: Constants.THEME_COLOR }}
           rightButton={this.renderTabRightButton()}
         />
         {this.renderTopNavigationPage(Worker)}

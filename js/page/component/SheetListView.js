@@ -8,7 +8,7 @@ import SheetItem from './SheetItem';
 
 const THEME_COLOR = '#AA2F23';
 
-const SheetListPage = (props) => {
+const SheetListView = (props) => {
   const { data } = props;
 
   return (
@@ -32,4 +32,4 @@ const SheetListPage = (props) => {
   );
 };
 
-export default SheetListPage;
+export default SheetListView;
