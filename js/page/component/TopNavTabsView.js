@@ -13,18 +13,19 @@ class TopNavTabsView extends Component {
   }
 
   _getTabs() {
-    const {data} = this.props;
-    let tabNames = data;
     const tabs = {};
+    const { data } = this.props;
+    let tabNames = data;
+    
     tabNames.forEach((item, index) => {
       tabs[`tab${index}`] = {
-        screen: props => <FilterStatusView {...props} data={item}
-        />,
+        screen: (props) => <FilterStatusView {...props} data={item} />,
         navigationOptions: {
           title: item.label,
         },
       }
     });
+
     return tabs;
   }
 
@@ -59,7 +60,7 @@ class TopNavTabsView extends Component {
       <View style={styles.container}>
         <TabNavigator></TabNavigator>
       </View>
-    )
+    );
   }
 }
 

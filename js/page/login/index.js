@@ -4,23 +4,23 @@ import {
   Text,
   Button,
   StyleSheet
-}
-  from 'react-native';
+} from 'react-native';
 import NavigationManager from '../../navigation/NavigationManager';
 
 class LoginPage extends Component {
   constructor(props) {
     super(props);
+
     const { navigation } = this.props;
     NavigationManager.setNavigation(navigation);
   }
 
   gotoWorkerPage() {
-    NavigationManager.goPage('WorkerPage')
+    NavigationManager.goPage('WorkerPage');
   }
 
   gotoDirectorPage() {
-    NavigationManager.goPage('DirectorPage')
+    NavigationManager.goPage('DirectorPage');
   }
 
   render() {
@@ -29,16 +29,15 @@ class LoginPage extends Component {
         <Text>LoginPage</Text>
         <Button
           title={"跳转到工人页面"}
-          //  onPress={this.gotoWorkerPage()} 区别是什么
           onPress={() => this.gotoWorkerPage()}
         ></Button>
         <Button
-          style={{marginTop: 50,flex:1,}}
+          style={{ marginTop: 50, flex: 1, }}
           title={"跳转到车间主任页面"}
-        onPress={() => this.gotoDirectorPage()}
+          onPress={() => this.gotoDirectorPage()}
         ></Button>
       </View >
-    )
+    );
   }
 }
 

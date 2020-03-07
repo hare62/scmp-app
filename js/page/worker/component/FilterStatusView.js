@@ -12,7 +12,7 @@ class FilterStatusView extends Component {
   }
 
   componentDidMount() {
-    this.loadData()
+    this.loadData();
   }
 
   getFetchUrl(key, value) {
@@ -35,7 +35,7 @@ class FilterStatusView extends Component {
       <View>
         {!SheetList ? <></> : <SheetListView data={SheetList.filterSheetList} ></SheetListView>}
       </View>
-    )
+    );
   }
 }
 

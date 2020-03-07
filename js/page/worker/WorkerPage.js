@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { getDefaultSheetList } from '../../action/worker/index';
 import SheetListView from '../component/SheetListView';
 import TopNavTabsView from '../component/TopNavTabsView';
-import Constants from '../../utils/Constants'
+import Constants from '../../utils/Constants';
 
 export const TabPageEnum = {
   defaultPage: Symbol('defaultPage'),
@@ -33,7 +33,7 @@ class WorkerPage extends Component {
   }
 
   componentDidMount() {
-    this.props.requestWorkSheetList()
+    this.props.requestWorkSheetList();
   }
 
   async createFilterTimeView() {
@@ -44,7 +44,7 @@ class WorkerPage extends Component {
         { label: '一周前', key: 'C++', value: '&sort=stars' },
         { label: '一个月前', key: 'React', value: '&sort=stars' },
       ]
-    }))
+    }));
   }
 
   async createFilterStatusView() {
@@ -55,7 +55,7 @@ class WorkerPage extends Component {
         { label: '已报工', key: 'android', value: '&sort=stars' },
         { label: '全部', key: 'All', value: '&sort=stars' },
       ]
-    })
+    });
   }
 
   renderTabRightButton() {
@@ -78,7 +78,7 @@ class WorkerPage extends Component {
           />
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 
   renderTopNavigationPage = (Worker) => {
@@ -107,7 +107,7 @@ class WorkerPage extends Component {
         />
         {this.renderTopNavigationPage(Worker)}
       </View>
-    )
+    );
   }
 }
 

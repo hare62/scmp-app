@@ -5,8 +5,7 @@ import {
   RefreshControl
 } from 'react-native';
 import SheetItem from './SheetItem';
-
-const THEME_COLOR = '#AA2F23';
+import Constants from '../../utils/Constants';
 
 const SheetListView = (props) => {
   const { data } = props;
@@ -20,11 +19,11 @@ const SheetListView = (props) => {
         refreshControl={
           <RefreshControl
             title={'Loading'}
-            titleColor={THEME_COLOR}
-            colors={[THEME_COLOR]}
+            titleColor={Constants.THEME_COLOR}
+            colors={[Constants.THEME_COLOR]}
             refreshing={false}
             onRefresh={() => { }}
-            tintColor={THEME_COLOR}
+            tintColor={Constants.THEME_COLOR}
           />
         }
       />

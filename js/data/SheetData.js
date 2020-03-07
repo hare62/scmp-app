@@ -14,9 +14,9 @@ class SheetData {
 
   static init(jsonData) {
     if (!jsonData) throw new Error("SheetData - init: jsonData is null");
-
     let data = new SheetData();
     try {
+      // 更改后端真实接口参数
       let { id,
             time,
             materials,

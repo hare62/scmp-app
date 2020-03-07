@@ -41,7 +41,6 @@ export const getDefaultSheetList = () => {
 export const getFilterSheetList = (topNavName, url, pageIndex) => {
   return (dispatch) => {
     let sheetListData = SheetListData.init(defaultMockDatas);
-    
     dispatch({
       type: actionTypes.GET_WORKER_TIME_FILTER_SHEET_LIST_SUCCESS,
       filterSheetList: sheetListData,
