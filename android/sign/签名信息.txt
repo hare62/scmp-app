@@ -1,0 +1,2 @@
+keystorePassword£º123456
+alias password£º123456

@@ -31,9 +31,10 @@ class FilterStatusView extends Component {
     const { data, item } = this.props;
     const { key } = data;
     let SheetList = item[key];
+    
     return (
       <View>
-        {!SheetList ? <></> : <SheetListView data={SheetList.filterSheetList} ></SheetListView>}
+        {!SheetList ? <></> : <SheetListView data={SheetList.filterSheetList} />}
       </View>
     );
   }

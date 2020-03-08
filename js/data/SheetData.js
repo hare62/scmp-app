@@ -9,7 +9,7 @@ class SheetData {
     this.materialsID = '';
     this.materialsName = '';
     this.materialsNum = '';
-    this.realNum = ''
+    this.realNum = '';
   }
 
   static init(jsonData) {
