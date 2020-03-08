@@ -7,8 +7,11 @@ import WelcomePage from '../page/WelcomePage';
 import DirectorPage from '../page/director/DirectorPage';
 import DetailPage from '../page/detail/DetailPage';
 import WorkerPage from '../page/worker/WorkerPage';
-import LoginPage from '../page/login/index';
-import AddressPage from '../page/director/component/Address/AddressPage'
+import LoginPage from '../page/login/LoginPage';
+import AddressPage from '../page/director/component/Address/AddressPage';
+import ResetPasswordPage from '../page/login/ResetPasswordPage';
+import AuthPage from '../page/login/AuthPage'
+
 const InitNavigator = createStackNavigator({
   WelcomePage: {
     screen: WelcomePage,
@@ -39,6 +42,18 @@ const MainNavigator = createStackNavigator({
   },
   LoginPage: {
     screen: LoginPage,
+    navigationOptions: {
+      header: null
+    }
+  },
+  ResetPasswordPage:{
+    screen: ResetPasswordPage,
+    navigationOptions: {
+      header: null
+    }
+  },
+  AuthPage:{
+    screen: AuthPage,
     navigationOptions: {
       header: null
     }
