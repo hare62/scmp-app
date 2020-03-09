@@ -1,4 +1,4 @@
-package com.github_rn;
+package com.scmp_app;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

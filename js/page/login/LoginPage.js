@@ -9,7 +9,7 @@ import {
 import NavigationManager from '../../navigation/NavigationManager';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MD5 from "react-native-md5";
-import ConfirmModal from '../../common/ConfirmModal'
+import ConfirmModal from '../../common/ConfirmModal';
 
 class LoginPage extends Component {
   constructor(props) {

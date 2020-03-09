@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.github_rn"
+        applicationId "com.scmp_app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

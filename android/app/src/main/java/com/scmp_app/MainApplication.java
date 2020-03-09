@@ -1,4 +1,4 @@
-package com.github_rn;
+package com.scmp_app;
 
 import android.app.Application;
 import android.content.Context;
