@@ -4,13 +4,13 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
-  TextInput
+  TextInput,
 } from 'react-native';
 import NavigationBar from '../../common/NavigationBar';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import NavigationManager from '../../navigation/NavigationManager';
 import { fitSize } from '../../utils/Fit';
-// import NavigationManager from '../../navigation/NavigationManager'
+import CountdownBtn from './CountdownBtn';
 
 class AuthPage extends Component {
   constructor(props) {
@@ -41,22 +41,43 @@ class AuthPage extends Component {
     );
   }
 
-  clickGetIdentifytCode() {
-    this.setState({
-      isCountdown: true
-    })
-    // setInterval(()=>{
-    //   this.setState({
-    //     Number:(--this.state.Number)
-    //   })
-    // },1000)
-  }
-
   gotoResetPasswordPage() {
     NavigationManager.goPage('ResetPasswordPage')
   }
 
+  clickGetIdentifytCode() {
+    this.setState({
+      isCountdown: true
+    })
+  }
+
+  renderNoticeText = () => {
+    return (
+      <TouchableOpacity
+        onPress={() => this.clickGetIdentifytCode()}
+      >
+        <Text>点击获取验证码</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  renderCountDownNumber() {
+    this.onCountDown();
+    return (<Text>
+      {this.state.Number}
+    </Text>);
+  }
+
+  onCountDown() {
+    let setInterVal = setInterval(() => {
+      
+    }, interval);
+  }
+
+
+
   render() {
+
     return (
       <View>
         <NavigationBar
@@ -84,18 +105,14 @@ class AuthPage extends Component {
               style={{ borderWidth: 1, color: 'red', width: 100, height: 40 }}
               placeholder={'请输入验证码'}
             ></TextInput>
-            <TouchableOpacity
-              onPress={() => this.clickGetIdentifytCode()}
+            <View
+              style={{ height: 40, justifyContent: 'center', marginLeft: 20, backgroundColor: '#ccc', width: 150, alignItems: 'center' }}
             >
-              <View style={{ height: 40, justifyContent: 'center', marginLeft: 20, backgroundColor: '#ccc', width: 150, alignItems: 'center' }}>
-                <View>
-                  {
-                    this.state.isCountdown ? <Text>{this.state.Number}</Text> : <Text>点击获取验证码</Text>
-                  }
-                </View>
-
-              </View>
-            </TouchableOpacity>
+              {/* {this.state.isCountdown ? this.renderCountDownNumber() : this.renderNoticeText()} */}
+              <CountdownBtn 
+                text={'看什么看'}
+              />
+            </View>
           </View>
         </View>
         <TouchableOpacity
