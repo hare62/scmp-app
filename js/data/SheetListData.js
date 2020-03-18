@@ -21,7 +21,7 @@ import SheetData from './SheetData';
       });
     }
     catch(error) {
-      console.log("SheetListData - init: " + error);
+      console.warn("SheetListData - init: " + error);
     }
 
     return listData;

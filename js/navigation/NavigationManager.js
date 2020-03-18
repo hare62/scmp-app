@@ -6,7 +6,7 @@ class NavigationManager {
   static goPage(page, params) {
     const { navigation } = NavigationManager;
     if (!navigation) {
-      console.log(`NavigationManager - goPage: navigation can not be null, target page is ${page}`);
+      console.error(`NavigationManager - goPage: navigation can not be null, target page is ${page}`);
       return;
     }
 

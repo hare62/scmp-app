@@ -1,4 +1,4 @@
-import * as actionTypes from '../action/actionTypes';
+import  actionTypes from '../action/actionTypes';
 
 const defaultState = {
   workSheetList: [],

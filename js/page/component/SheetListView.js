@@ -4,17 +4,17 @@ import {
   View,
   RefreshControl
 } from 'react-native';
-import SheetItem from './SheetItem';
+import SheetItem from '../qualityInspector/component/SheetItem';
 import Constants from '../../utils/Constants';
 
 const SheetListView = (props) => {
-  const { data } = props;
+  const { sheetListData, renderSheetItem } = props;
 
   return (
     <View>
       <FlatList
-        data={data}
-        renderItem={data => <SheetItem {...data} />}
+        data={sheetListData}
+        renderItem={data => renderSheetItem(data)}
         keyExtractor={item => item.id}
         refreshControl={
           <RefreshControl
@@ -30,5 +30,11 @@ const SheetListView = (props) => {
     </View>
   );
 };
+
+SheetListView.defaultProps = {
+  renderSheetItem: (data) => {
+    return <SheetItem {...data} />
+  }
+}
 
 export default SheetListView;

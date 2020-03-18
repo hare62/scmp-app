@@ -92,7 +92,7 @@ class AuthPage extends Component {
           </Text>
             <TextInput
               style={styles.inputStyles}
-              placeholder={'请输入手机号码/账号'}
+              placeholder={'请输入新密码'}
             ></TextInput>
           </View>
         </View>
@@ -110,7 +110,7 @@ class AuthPage extends Component {
             >
               {/* {this.state.isCountdown ? this.renderCountDownNumber() : this.renderNoticeText()} */}
               <CountdownBtn 
-                text={'看什么看'}
+                text={'点击获取验证码'}
               />
             </View>
           </View>

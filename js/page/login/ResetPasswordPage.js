@@ -19,7 +19,8 @@ class ResetPasswordPage extends Component {
     NavigationManager.setNavigation(navigation);
     this.state = {
       Number: 60,
-      isCountdown: false
+      isCountdown: false,
+      newPassword:null
 
     }
   }
@@ -52,6 +53,13 @@ class ResetPasswordPage extends Component {
   }
 
   gotoResetPasswordPage() {
+    const pwpattent = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]{8,15}$/;
+    const { newPassword } = this.state;
+    if(pwpattent.test(newPassword)){
+      console.warn('包含大小写字母、数字、特殊字符至少3个组合大于8个字符');
+      return;
+    }
+    console.warn('密码校验通过');
     NavigationManager.goPage('LoginPage')
   }
 
@@ -70,10 +78,10 @@ class ResetPasswordPage extends Component {
           </Text>
             <TextInput
               style={styles.inputStyles}
-              placeholder={'请输入手机号码/账号'}
+              placeholder={'请输入新密码'}
+              value={this.state.newPassword}
             ></TextInput>
           </View>
-
           <View style={{ height: 40, marginTop:50, marginLeft: 100, justifyContent: "center", alignItems: 'flex-start', }}>
             <Text style={{color:'red',}}>包含大小写字母，数字,特殊字符,长度至少8位。</Text>
           </View>

@@ -3,9 +3,9 @@
  * @param {*} url 
  * @param {*} method 请求方法
  */
-export const fetchRequest = (url) => {
-  return new Promise((resolve, reject) => {
-    fetch(url)
+export const fetchRequest = (url, param) => {
+  return new Promise(async (resolve, reject) => {
+    await fetch(url, param)
       .then((response) => {
         if (response.ok) {
           return response.json()

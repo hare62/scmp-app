@@ -108,7 +108,7 @@ class DirectorPage extends Component {
 			case FilterEnum.member:
 				return null;
 			default:
-				console.log("DirectorPage - getTopNavigation: filterCondition error");
+				console.error("DirectorPage - getTopNavigation: filterCondition error");
 				return null;
 		}
 	}

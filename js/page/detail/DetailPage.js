@@ -18,7 +18,7 @@ class DetailPage extends Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          NavigationManager.goBack()
+          NavigationManager.goBack();
         }}
       >
         <AntDesign
@@ -34,10 +34,10 @@ class DetailPage extends Component {
     return (
       <>
         <NavigationBar
-					title={'我的派工单'}
+          title={'我的派工单'}
           style={{ backgroundColor: '#376CDA' }}
           leftButton={this.renderTabLeftButton()}
-				/>
+        />
         <SheetDetailView {...this.props} />
         <StepsView />
       </>

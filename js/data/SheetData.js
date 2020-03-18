@@ -1,5 +1,5 @@
 /**
- * 派工单数据
+ * 工人派工单数据
  */
 
 class SheetData {
@@ -33,7 +33,7 @@ class SheetData {
 
     }
     catch(error) {
-      console.log("SheetData - init: " + error);
+      console.error("SheetData - init: " + error);
     }
 
     return data;

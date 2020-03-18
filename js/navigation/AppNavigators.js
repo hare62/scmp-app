@@ -3,14 +3,17 @@ import {
   createSwitchNavigator
 } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import WelcomePage from '../page/WelcomePage';
+import WelcomePage from '../page/welcome/WelcomePage';
 import DirectorPage from '../page/director/DirectorPage';
 import DetailPage from '../page/detail/DetailPage';
 import WorkerPage from '../page/worker/WorkerPage';
 import LoginPage from '../page/login/LoginPage';
 import AddressPage from '../page/director/component/Address/AddressPage';
 import ResetPasswordPage from '../page/login/ResetPasswordPage';
-import AuthPage from '../page/login/AuthPage'
+import AuthPage from '../page/login/AuthPage';
+import QualityInspectorPage from '../page/qualityInspector/QualityInspectorPage';
+import TechnologyProcessPage from '../page/technologyProcess/TechnologyProcessPage';
+import MechanicalMessagePage from '../page/mechanicalMessage/MechanicalMessagePage';
 
 const InitNavigator = createStackNavigator({
   WelcomePage: {
@@ -46,13 +49,13 @@ const MainNavigator = createStackNavigator({
       header: null
     }
   },
-  ResetPasswordPage:{
+  ResetPasswordPage: {
     screen: ResetPasswordPage,
     navigationOptions: {
       header: null
     }
   },
-  AuthPage:{
+  AuthPage: {
     screen: AuthPage,
     navigationOptions: {
       header: null
@@ -63,8 +66,25 @@ const MainNavigator = createStackNavigator({
     navigationOptions: {
       header: null
     }
+  },
+  QualityInspectorPage: {
+    screen: QualityInspectorPage,
+    navigationOptions: {
+      header: null
+    }
+  },
+  TechnologyProcessPage: {
+    screen: TechnologyProcessPage,
+    navigationOptions: {
+      header: null
+    }
+  },
+  MechanicalMessagePage:{
+    screen: MechanicalMessagePage,
+    navigationOptions: {
+      header: null
+    }
   }
-
 });
 
 const AppNavigators = createAppContainer(createSwitchNavigator(

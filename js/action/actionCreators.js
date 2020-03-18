@@ -1,5 +1,5 @@
 import { fetchRequest } from '../manager/NetManager';
-import * as actionTypes from './actionTypes';
+import  actionTypes from './actionTypes';
 import SheetListData from '../data/SheetListData';
 import {
   defaultMockDatas,
@@ -92,7 +92,7 @@ export const getDefaultSheetList = () => {
     //     }
     //   })
     //   .catch((error) => {
-    //     console.log("actionCreators - getDefaultSheetList: " + error);
+    //     console.error("actionCreators - getDefaultSheetList: " + error);
     //     dispatch(getSheetListSuccessFailure());
     //   });
 

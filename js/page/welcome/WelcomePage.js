@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
-  View
+  View,
+  ImageBackground
 } from 'react-native';
+import { deviceWidthDp, deviceHeightDp } from '../../utils/Fit';
+import images from '../../assert/image.js';
 
 class WelcomePage extends Component {
   componentDidMount() {
     this.timer = setTimeout(() => {
       const { navigation } = this.props;
-      navigation.navigate('LoginPage');
-    }, 300);
+      // navigation.navigate('LoginPage');
+      navigation.navigate('QualityInspectorPage');
+    }, 2000);
   }
 
   UNSAFE_componentWillMount() {
@@ -20,9 +23,7 @@ class WelcomePage extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>
-          WelcomePage
-        </Text>
+        <ImageBackground style={[styles.img]} source={images.welcome}/>
       </View>
     );
   }
@@ -34,8 +35,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  img:{
+    height:deviceHeightDp,
+    width:deviceWidthDp,
+  }
 });
-
-
 
 export default WelcomePage;
