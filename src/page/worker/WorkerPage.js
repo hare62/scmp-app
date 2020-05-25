@@ -111,12 +111,12 @@ class WorkerPage extends Component {
       getPullUpRefreshDefaultSheetList,
       getLoadingMoreSheetList } = this.props;
 
-    switch (filterCondition) {
-      case TabPageEnum.defaultPage:
+    switch (filterCondition) { 
+      case TabPageEnum.defaultPage: 
         return <SheetListView
           sheetListData={workerSheetListData}
-          getLoadingMoreSheetList={getLoadingMoreSheetList}
-          getPullUpRefreshSheetList={getPullUpRefreshDefaultSheetList}
+          getLoadingMoreSheetList={getLoadingMoreSheetList}//加载更多
+          getPullUpRefreshSheetList={getPullUpRefreshDefaultSheetList}//上拉刷新
         />;
       case TabPageEnum.filterStatusPage:
         return <TopNavTabsStatusView tabNames={tabNames} />;
@@ -153,7 +153,7 @@ const mapState = (state) => ({
   workerSheetListData: state.Worker.workerSheetListData,
 })
 
-const mapDispatch = (dispatch) => ({
+const mapDispatch = (dispatch) => ({ 
   //获取加载更多派工单
   getLoadingMoreSheetList(sheetListData) {
     dispatch(getLoadingMoreSheetList(sheetListData))

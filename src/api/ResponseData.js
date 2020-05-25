@@ -16,7 +16,7 @@ class ResponseData {
     }
     
     catch (error) {
-      console.error(error);
+      console.error("ResponseData - init : catch" + error);
     }
 
     return responseData;

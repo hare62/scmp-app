@@ -1,3 +1,15 @@
+/**写成一个标准项组件
+ * 传入参数：standarItem list的一个对象
+ * eg:
+ * {
+    inspectionName: "长",
+    standardValue: 10,
+    positiveTolerance: 0.01,
+    negativeTolerance: 0.03
+  }
+  changeResult传入一个函数用于监听用户存值在TextInput 
+ * 
+ */
 import React from 'react';
 import {
   View,
@@ -5,95 +17,123 @@ import {
   StyleSheet,
   TextInput
 } from 'react-native';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
-const StatusEnum = {
-  Finish: "Finish",//质检完成
-  InProgress: "InProgress"//质检中
-};
-
-const FinishIcon = () => {
-  return (
-    <EvilIcons
-      name={'check'}
-      size={80}
-      style={{ color: '#376CDA' }}
-    />
-  )
-}
-
-const inProgress = () => {
-  return (
-    <EvilIcons
-      name={'spinner-3'}
-      size={80}
-      style={{ color: '#376CDA', height: 80 }}
-    />
-  )
-}
-
-const sheetListStatusView = (sheetListstatus) => {
-  switch (sheetListstatus) {
-    case StatusEnum.Finish:
-      return FinishIcon();
-    case StatusEnum.InProgress:
-      return inProgress();
-    default:
-      return null;
-  }
-};
-
-const renderTechnologyProcessList = (data) => {
-  let { mechanicalName, status, conclusion } = data.item;
-
+const renderModefyPage = (props) => {
+ 
+  let { changeResult, standarItem, index } = props;
+  let { inspectionName, standardValue, positiveTolerance, negativeTolerance, realNumber } = standarItem;
   return (
     <View style={styles.container}>
-
-      <View style={styles.content}>
-        <Text style={{ fontSize: 20, color: '#A7A7A7' }}>
-          {mechanicalName}
-        </Text>
-        <Text style={{ fontSize: 20, color: '#616161' }}>
-          {conclusion}
-        </Text>
-        {sheetListStatusView(status)}
-      </View>
-    </View>
-  )
-}
-
-const NormalTremView = (props) => {
-  let { changeResult, realNumber, isDetailPage } = props;
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.itemTitle}>内径</Text>
+      <Text style={styles.itemTitle}>标准项renderModefyPage</Text>
+      <Text style={styles.itemTitle}>{inspectionName}</Text>
       <View style={styles.innerContainer}>
         <View style={styles.normalContainer}>
           <View style={styles.normalItem}>
             <Text>标准值</Text>
-            <Text>10MM</Text>
+            <Text>{standardValue}MM</Text>
           </View>
           <View style={styles.normalItem}>
             <Text>正向容差</Text>
-            <Text>0.01</Text>
+            <Text>{positiveTolerance}</Text>
           </View>
           <View style={styles.normalItem}>
             <Text>负向容差</Text>
-            <Text>0.01</Text>
+            <Text>{negativeTolerance}</Text>
           </View>
         </View>
         <Text style={styles.title}>实际值</Text>
         <TextInput
           style={styles.textInput}
-          onChangeText={(realNumber)=>{changeResult(realNumber)}}
-          value={realNumber}
-          placeholder="请输入实际值"
-          editable={isDetailPage ? false : true}
+          onChangeText={(text) => { changeResult(text, index) }}
+          value={`${realNumber}`}
+          placeholder=""
+          keyboardType="numeric"
         />
       </View>
     </View>
   )
+}
+
+const renderAddPage = (props) => {
+  let { changeResult, standarItem, index } = props;
+  let { inspectionName, standardValue, positiveTolerance, negativeTolerance, realNumber } = standarItem;
+  return (
+    <View style={styles.container}>
+       <Text style={styles.itemTitle}>标准项renderAddPage</Text>
+      <Text style={styles.itemTitle}>{inspectionName}</Text>
+      <View style={styles.innerContainer}>
+        <View style={styles.normalContainer}>
+          <View style={styles.normalItem}>
+            <Text>标准值</Text>
+            <Text>{standardValue}MM</Text>
+          </View>
+          <View style={styles.normalItem}>
+            <Text>正向容差</Text>
+            <Text>{positiveTolerance}</Text>
+          </View>
+          <View style={styles.normalItem}>
+            <Text>负向容差</Text>
+            <Text>{negativeTolerance}</Text>
+          </View>
+        </View>
+        <Text style={styles.title}>实际值</Text>
+        <TextInput
+          style={styles.textInput}
+          onChangeText={(text) => { changeResult(text, index) }}
+          value={`${realNumber}`}
+          placeholder="请输入实际值"
+          keyboardType="numeric"
+        />
+      </View>
+    </View>
+  )
+}
+
+const renderDetailPage = (props) => {
+  let { changeResult, standarItem, index } = props;
+  let { inspectionName, standardValue, positiveTolerance, negativeTolerance, realNumber } = standarItem;
+
+  return (
+    <View style={styles.container}>
+       <Text style={styles.itemTitle}>标准项renderDetailPage</Text>
+      <Text style={styles.itemTitle}>{inspectionName}</Text>
+      <View style={styles.innerContainer}>
+        <View style={styles.normalContainer}>
+          <View style={styles.normalItem}>
+            <Text>标准值</Text>
+            <Text>{standardValue}MM</Text>
+          </View>
+          <View style={styles.normalItem}>
+            <Text>正向容差</Text>
+            <Text>{positiveTolerance}</Text>
+          </View>
+          <View style={styles.normalItem}>
+            <Text>负向容差</Text>
+            <Text>{negativeTolerance}</Text>
+          </View>
+        </View>
+        <Text style={styles.title}>实际值</Text>
+        <TextInput
+          style={styles.textInput}
+          onChangeText={(text) => { changeResult(text, index) }}
+          value={`${realNumber}`}
+          keyboardType="numeric"
+          editable={false}
+        />
+      </View>
+    </View>
+  )
+}
+const NormalTremView = (props) => {
+  let { standarItem, isSubmit, isAddPage, isModifyPage, isDetailPage } = props;
+  let { realNumber } = standarItem;
+  if (isModifyPage) {//存在实际值===修改页面
+    return renderModefyPage(props)
+  } else if (isAddPage) {//不存在实际值===新增页面
+    return renderAddPage(props);
+  } else if (isDetailPage) {//存在实际值&&没有提交按钮 
+    return renderDetailPage(props);
+  }
 };
 
 const styles = StyleSheet.create({
@@ -104,13 +144,14 @@ const styles = StyleSheet.create({
   title: {
     height: 30,
     lineHeight: 30,
-    color: "#BBBFC0"
+    color: "black"
   },
   textInput: {
     backgroundColor: "white",
     borderWidth: 1,
     borderColor: '#ECECEC',
-    paddingLeft: 10
+    paddingLeft: 10,
+    color: 'black'
   },
   itemTitle: {
     paddingBottom: 5,

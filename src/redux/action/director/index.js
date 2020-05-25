@@ -3,7 +3,7 @@ import SheetListData from '../../../data/director/SheetListData';
 import AddressListData from '../../../data/director/AddressListData';
 import { getHost, isMockData, isPageUrl } from '../../../utils/Config';
 import AsyncStorage from '@react-native-community/async-storage';
-import { fetchHeaderRequest, fetchRequest } from '../../../api/NetManager';
+import { fetchHeaderRequest, fetchRequest, fetchRequestTest } from '../../../api/NetManager';
 import {
   defaultMockDatas,
   lastDaysMockDatas,
@@ -696,19 +696,10 @@ export const getFinishedSheetList = (sheetListData) => {
 export const getAddressList = () => {
   return async (dispatch) => {
     let role_id = await AsyncStorage.getItem('role_id');
-    let token = await AsyncStorage.getItem('token');
     let host = getHost('login');//需要用到登录的接口
-    const method = {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        // 'Range': 'item=0-9',//后续做分页
-        'token': token
-      })
-    };
     const url = `${host}/user-info/listUser?roleId=${role_id}`;
 
-    fetchRequest(url, method)
+    fetchRequestTest({url, type:"GET"})
       .then((jsonData) => {
 
         let listData = AddressListData.init(jsonData);

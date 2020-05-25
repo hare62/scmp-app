@@ -65,4 +65,19 @@ export const isFunction = (param) => {
 export const isArray = (param) => {
   return Object.prototype.toString.call(param) === "[object Array]";
 }
-
+/**
+ * JS判断是否为空
+ * @param {*} ele 
+ */
+export const isExist = (ele)=>{
+  if(typeof ele==='undefined'){//先判断类型
+    return false;
+  }else if(ele==null){
+    return false;
+  }else if(ele==''){
+    return false;
+  }else if(!ele){
+    return false;
+  }
+  return true;
+}

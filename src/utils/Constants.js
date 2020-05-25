@@ -8,7 +8,7 @@ const Constants = {
    DESCRIBE:"#666",//描述文字颜色
    INPUT_BORDER:"#CCC",
    BORDER_COLOR:"#DDE1E4",
-   PAGE_INCREASE_COUNT: 10, // 分页数据增量
+   PAGE_INCREASE_COUNT: 1, // 分页数据增量
 }
 
-export default Constants;
+export default Constants;   

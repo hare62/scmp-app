@@ -1,7 +1,7 @@
 import actionTypes from '../actionTypes';
 import SheetListData from '../../../data/worker/SheetListData';
 import ProcessListData from '../../../data/worker/ProcessListData';
-import { fetchRequest, fetchHeaderRequest } from '../../../api/NetManager';
+import { fetchRequest, fetchHeaderRequest, fetchHeaderRequestTest, fetchRequestTest} from '../../../api/NetManager';
 import { getHost, isMockData, isPageUrl } from '../../../utils/Config';
 import AsyncStorage from '@react-native-community/async-storage';
 import { defaultMockDatas, ProcessMockData } from '../../../data/mockdata/worker';
@@ -62,31 +62,14 @@ const getRefreshStatus = () => ({
 })
 
 /**
- * 获取派工单工艺工序列表失败
- */
-const getTechnologyProcessListFailure = () => ({
-  type: actionTypes.GET_WORKER_TECHNOLOGTY_PROCESS_LIST_FAILURE
-})
-
-/**
  * 获取上拉刷新工人派工单
  */
 export const getPullUpRefreshDefaultSheetList = () => {
-  return async (dispatch) => {
+  return (dispatch) => {
     dispatch(workerSheetListRefresh());
-    let token = await AsyncStorage.getItem('token');
     let sheetListData = new SheetListData();
-
-    const method = {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'Range': sheetListData.generateHeaderData(),
-        'token': token
-      })
-    };
-
     let url;
+    const Range = sheetListData.generateHeaderData();
 
     if (isPageUrl) {
       url = `${host}/manufacture/pro-inventory`;
@@ -102,12 +85,10 @@ export const getPullUpRefreshDefaultSheetList = () => {
       dispatch(getDefaultSheetListSuccess(newSheetListData));
     } else {
 
-      fetchHeaderRequest(url, method)
+      fetchHeaderRequestTest({ url, type: 'GET', Range })
         .then((responseData) => {
-
           const { jsonData, headers } = responseData;
           sheetListData.appendDatas(jsonData);
-
           // 为了触发reducer
           let newSheetListData = new SheetListData();
           newSheetListData.copy(sheetListData);
@@ -120,7 +101,6 @@ export const getPullUpRefreshDefaultSheetList = () => {
     }
   }
 };
-
 /**
  * 获取下拉加载更多默认派工单
  */
@@ -130,13 +110,14 @@ export const getLoadingMoreSheetList = (sheetListData) => {
     dispatch(getLoadingStatus());
     let token = await AsyncStorage.getItem('token');
     const method = {
-      method: 'GET',
+      method: 'GET', 
       headers: new Headers({
         'Content-Type': 'application/json',
         'Range': sheetListData.generateHeaderData(),
         'token': token
       })
     };
+    // const Range = sheetListData.generateHeaderData();
 
     let url;
     if (isPageUrl) {
@@ -153,6 +134,7 @@ export const getLoadingMoreSheetList = (sheetListData) => {
       dispatch(getDefaultSheetListSuccess(newSheetListData));
     } else {
 
+      // fetchHeaderRequestTest({url, type:'GET',Range})
       fetchHeaderRequest(url, method)
         .then((responseData) => {
 
@@ -172,7 +154,6 @@ export const getLoadingMoreSheetList = (sheetListData) => {
   }
 };
 
-
 /**
  * 上拉刷新条件筛选派工单
  * 获取筛选条件的派工单
@@ -184,16 +165,8 @@ export const getLoadingMoreSheetList = (sheetListData) => {
 export const getPullUpRefreshFilterSheetList = (key, value) => {
   return async (dispatch) => {
     dispatch(workerSheetListRefresh());
-    let token = await AsyncStorage.getItem('token');
     let sheetListData = new SheetListData();
-    const method = {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'Range': sheetListData.generateHeaderData(),
-        'token': token
-      })
-    };
+    const Range = sheetListData.generateHeaderData();
     let url;
     if (isPageUrl) {
       url = `${host}/manufacture/pro-inventory`;
@@ -211,7 +184,7 @@ export const getPullUpRefreshFilterSheetList = (key, value) => {
 
     } else {
 
-      fetchHeaderRequest(url, method)
+      fetchHeaderRequestTest({ url, type: 'GET', Range })
         .then((responseData) => {
           const { jsonData, headers } = responseData;
           sheetListData.appendDatas(jsonData);
@@ -242,16 +215,7 @@ export const getPullUpRefreshFilterSheetList = (key, value) => {
 export const getFilterSheetList = (sheetListData, key, value) => {
   return async (dispatch) => {
     dispatch(getLoadingStatus());
-    let token = await AsyncStorage.getItem('token');
-    const method = {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'Range': sheetListData.generateHeaderData(),
-        'token': token
-      })
-    };
-
+    const Range = sheetListData.generateHeaderData();
     let url;
     if (isPageUrl) {
       url = `${host}/manufacture/pro-inventory`;
@@ -269,7 +233,7 @@ export const getFilterSheetList = (sheetListData, key, value) => {
 
     } else {
 
-      fetchHeaderRequest(url, method)
+      fetchHeaderRequestTest({ url, type: 'GET', Range })
         .then((responseData) => {
           const { jsonData, headers } = responseData;
           sheetListData.appendDatas(jsonData);
@@ -297,23 +261,14 @@ export const getTechnologyProcessList = (dispatchSheetId) => {
     dispatch(getRefreshStatus());
     //Todo
     // 没有传token也请求到了数据  是不对的！！！
-    let token = await AsyncStorage.getItem('token');
-    let method = {
-      method: "GET",
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'token': token
-      })
-    }
-
     const url = `${host}/app-pro-sheet/sheetDetail?dispatchSheetId=${dispatchSheetId}`;
     if (isMockData) {
-
       let sheetListData = ProcessListData.init(ProcessMockData);
       dispatch(getTechnologyProcessListSuccess(sheetListData));
 
     } else {
-      fetchRequest(url, method)
+
+      fetchRequestTest({url, type:"GET"})
         .then((jsonData) => {
           let sheetListData = ProcessListData.init(jsonData);
           dispatch(getTechnologyProcessListSuccess(sheetListData));
@@ -331,19 +286,20 @@ export const getTechnologyProcessList = (dispatchSheetId) => {
  */
 export const submitJobBooking = (sheetTechnologyId, completeQty, callBack) => {
   return async (dispatch) => {
-    let token = await AsyncStorage.getItem('token');
-    let method = {
-      method: "PUT",
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'token': token
-      })
-    }
+    // TODO 未测试
+    // let token = await AsyncStorage.getItem('token');
+    // let method = {
+    //   method: "PUT",
+    //   headers: new Headers({
+    //     'Content-Type': 'application/json',
+    //     'token': token
+    //   })
+    // }
     const url = `${host}/app-pro-sheet/productReport?completeQty=${completeQty}&proSheetTechnologyId=${sheetTechnologyId}`;
     if (isMockData) {
 
     } else {
-      fetchRequest(url, method)
+      fetchRequestTest({url, type:"PUT"})
         .then((jsonData) => {
           const COMPLETE = jsonData.DATA;
           if (typeof callBack === 'function') {

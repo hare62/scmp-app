@@ -8,63 +8,39 @@ import {
 } from 'react-native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import NavigationManager from '../../../navigation/NavigationManager';
+import { mechanicalStatus } from '../../../utils/Common';
 
-const StatusEnum = {
-  Finish: "Finish",//质检完成
-  InProgress: "InProgress"//质检中
-};
-
-const FinishIcon = () => {
-  return (
-    <EvilIcons
-      name={'check'}
-      size={80}
-      style={{ color: '#376CDA' }}
-    />
-  )
-}
-
-const inProgress = () => {
-  return (
-    <EvilIcons
-      name={'spinner-3'}
-      size={80}
-      style={{ color: '#376CDA', height: 80 }}
-    />
-  )
-}
-
-const sheetListStatusView = (sheetListstatus) => {
-  switch (sheetListstatus) {
-    case StatusEnum.Finish:
-      return FinishIcon();
-    case StatusEnum.InProgress:
-      return inProgress();
-    default:
-      return null;
-  }
-};
-
-const renderTechnologyProcessList = (data) => {
+const renderTechnologyProcessList = (data, props) => {
   let {
     mechanicalName,
     status,
-    conclusion } = data.item;
+    conclusion,
+    partNo,
+    qltConclusion,
+    qltConclusionValue,
+    qltSheetId } = data.item;  
+    const { sheetId, item } = props.navigation.state.params;
+    const { isSubmit } = item;
+   
   return (
     <TouchableOpacity
       onPress={() => {
-        NavigationManager.push('AddMechanicalPage', { ...data })
+        //把最外层数据传进来即可
+        NavigationManager.push('AddMechanicalPage', { sheetId, isSubmit, ...data.item,...props.navigation.state.params.item,})
       }}
     >
       <View style={styles.container}>
         <View style={styles.content}>
           <Text style={{ fontSize: 20, color: '#A7A7A7' }}>
-            {mechanicalName}
+            {partNo}
           </Text>
           <Text style={{ fontSize: 20, color: '#616161' }}>
-            {conclusion}
+           {qltConclusionValue}
           </Text>
-          {sheetListStatusView(status)}
+          <Text style={{ fontSize: 20, color: '#616161' }}>
+            质检状态:{JSON.stringify(qltConclusion)}
+            {/* {qltSheetId} */}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -72,25 +48,19 @@ const renderTechnologyProcessList = (data) => {
 }
 
 const MechanicalView = (props) => {
-  const { item } = props.navigation.state.params;
-  const { partNumber } = item;
-  // TODO
-
-  //  走接口渲染的数据，如果这边后端不是走接口请把这里和父组件的接口都删掉
-  // const {
-  //   name,
-  //   step,
-  //   number,
-  //   time } = item;
-  // let { mechanicalList } = props;
-
+  const {partNumber} =props.navigation.state.params.item;
+  //item 有工艺工序单列信息
+  //mechanicalList 整个零件号信息 请求接口的时候那这个参数渲染
+  const { mechanicalList } = props;
+  console.log("===",props.navigation.state.params)
+  // console.log("1===",mechanicalList)
   return (
     <View style={styles.block}>
       <Text style={styles.title}>零件号信息</Text>
       <FlatList
-        data={partNumber}
-        renderItem={data => renderTechnologyProcessList(data)}
-        keyExtractor={item => item.mechanicalName}
+        data={mechanicalList}
+        renderItem={data => renderTechnologyProcessList(data, props)}
+        keyExtractor={item => item.qltSheetId}
         style={styles.flatList}
       />
     </View>

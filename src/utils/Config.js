@@ -11,7 +11,7 @@ export const AppEnvEnum = {
 //是否为mock数据
 export const isMockData = false;
 
-//是否为分页url
+//是否为分页url 假数据就走没有分页的
 export const isPageUrl = false;
 
 /**
@@ -30,7 +30,7 @@ export const getHost = (type) => {
     case AppEnvEnum.login://192.168.0.190:7080  
       return 'http://47.108.27.242:80';
     case AppEnvEnum.manufacture:
-      return 'http://47.108.27.242:8080/manufacture';
+      return 'http://192.168.125.115:8783';//47.108.27.242:8080/manufacture   192.168.125.116:8783
     case AppEnvEnum.file:
       return 'http://47.108.27.242:80';
     default:

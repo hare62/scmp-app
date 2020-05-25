@@ -11,8 +11,8 @@ export const StatusEnum = {
   Finish: "02",//质检完成02
   Warehousing: "03",//质检中03
   InProgress: "01",//质检中01
-  Undo: "04",//04
-  Working: "00",//00
+  Undo: "04",//04 未报工
+  Working: "00",//00加工中
 };
 
 //完成ICON
@@ -43,7 +43,18 @@ export const Todo = () => {
     <MaterialCommunityIcons
       name={'progress-wrench'}
       size={fitSize(55)}
-      style={{ color: '#376CDA', height: 80,lineHeight:75 }}
+      style={{ color: '#376CDA', height: 80, lineHeight: 75 }}
+    />
+  )
+}
+
+//无法识别的
+export const notFound = () => {
+  return (
+    <EvilIcons
+      name={'exclamation'}
+      size={fitSize(70)}
+      style={{ color: '#376CDA', height: 80 }}
     />
   )
 }
@@ -51,7 +62,7 @@ export const Todo = () => {
 /**
  * 返回当前状态的方法
  * @param {派工单状态} sheetListstatus 
- */  
+ */
 export const sheetListStatusView = (sheetListstatus) => {
   switch (sheetListstatus) {
     case StatusEnum.Finish:
@@ -96,8 +107,91 @@ export const processStatusView = (sheetListstatus) => {
 };
 
 /**
+ * 质检工艺工序状态
+ */
+export const qualityStatusEnum = {
+  Finish: "02",//工艺工序质检完成03
+  InProgress: "01",//工艺工序质检中01
+  Todo: "00",//工艺工序待质检02
+  Approval: "04",//审批中
+  Undo: "03",//03未提交
+};
+
+/**
+ * 返回当前状态的方法
+ * @param {质检工艺工序状态} sheetListstatus 
+ */
+export const qualityStatusView = (sheetListstatus) => {
+  switch (sheetListstatus) {
+    case qualityStatusEnum.Finish:
+      return FinishIcon();
+    case qualityStatusEnum.InProgress:
+      return inProgress();
+    case qualityStatusEnum.Todo:
+      return Todo();
+    case qualityStatusEnum.Approval:
+      return FinishIcon();
+    case qualityStatusEnum.Undo:
+      return FinishIcon();
+    default:
+      return notFound();
+  }
+};
+
+
+//质检零件号状态
+/**
+“01”：合格，
+“02”：待审批，
+“03”:工废，
+“04”:料废，
+“05”：返修，
+“06”:返工，
+“07”：让步接收，
+“08”：改制
+ */
+export const mechanicalEnum = {
+  Finish: "01",//质检合格
+  InProgress: "02"//质检待审批
+};
+
+//质检零件号状态
+export const mechanicalStatus = (status) => {
+  switch (status) {
+    case mechanicalEnum.Finish:
+      return FinishIcon();
+    case mechanicalEnum.InProgress:
+      return Todo();
+    default:
+      return null;
+  }
+};
+
+//派工单质检状态===默认派工单
+const defaultQualityEnum = {
+  InProgress: "01",//质检中
+  Finish: "02",//质检已完成
+  Todo: "00",//待质检
+};
+
+// 派工单质检状态===默认派工单
+export const defaultQualityStatus = (status) => {
+  switch (status) {
+    case defaultQualityEnum.Finish:
+      return FinishIcon();
+    case defaultQualityEnum.InProgress:
+      return inProgress();
+    case defaultQualityEnum.Todo:
+      return Todo();
+    default:
+      return notFound();
+  }
+};
+
+/**
  * 创建一个颜色 HEX 值数组，然后随机抽取这个数组里6个值，组合生成颜色。
  */
 export const getColor = () => {
   return '#' + Math.floor(Math.random() * 16777215).toString(16);
 }
+

@@ -6,7 +6,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import NavigationManager from '../../../navigation/NavigationManager';
-import { processStatusView } from '../../../utils/Common';
+import { qualityStatusView } from '../../../utils/Common';
 import styles from '../../../common/Styles/StepsView';
 import ModelView from '../../../common/Component/ModelView';
 
@@ -29,10 +29,8 @@ class StepsView extends Component {
       this.setState({
         visible: true
       });
-      // NavigationManager.goPage('MechanicalMessagePage', { ...data.item });
       return false;
     }
-    // NavigationManager.goPage('BatchQualityPage', { ...data.item });
   }
 
   onPopModalView(data) {
@@ -47,23 +45,32 @@ class StepsView extends Component {
     //   return false;
     // }
     let { step, name, status, equipment, partNumber } = data.item;
-    let { hasMechanical } = this.props;
-    if (hasMechanical === '有' && !partNumber) {
+    let { hasMechanical, sheetListid, sheetId } = this.props;
+    if (hasMechanical === '01' && !partNumber) {
       this.setState({
         visible: true,
         source: data
       });
     }
-    else if (hasMechanical === '有' && partNumber) {
-      NavigationManager.push('MechanicalMessagePage', { hasMechanical, ...data });
+    else if (hasMechanical === '01' && partNumber) {
+      NavigationManager.push('MechanicalMessagePage', { hasMechanical, sheetId, ...data });
     }
-    else if (hasMechanical === '没有') {
-      NavigationManager.push('BatchQualityPage', { ...data });
+    else if (hasMechanical === '02') {
+      NavigationManager.push('BatchQualityPage', { sheetListid, ...data });
     }
   }
 
   renderTechnologyProcessList(data, callBack) {
-    let { step, name, status, equipment } = data.item;
+    let {
+      step,
+      name,
+      status,
+      equipment,
+      number,
+      isSubmit,
+      partNumber,
+      proInspectionId,
+      technologyId } = data.item;
 
     return (
       <TouchableOpacity
@@ -78,20 +85,41 @@ class StepsView extends Component {
               {name}
             </Text>
             <Text style={{ fontSize: 20, color: '#616161' }}>
+              报工数量{number}
+            </Text>
+
+            <Text style={{ fontSize: 20, color: '#616161' }}>
               {equipment}
             </Text>
-            {processStatusView(status)}
+            {qualityStatusView(status)}
           </View>
+
         </View>
+        {/* <View>
+          <Text>
+            technologyId{JSON.stringify(technologyId)}
+          </Text>
+          <Text>
+            proInspectionId{JSON.stringify(proInspectionId)}
+          </Text>
+          <Text>
+            是否有提交按钮{JSON.stringify(isSubmit)}
+          </Text>
+          <Text>
+            零件号信息{JSON.stringify(partNumber)}
+          </Text>
+
+        </View> */}
       </TouchableOpacity>
     )
   }
 
   noMechanical(data) {
+    let { sheetListid } = this.props;
     this.setState({
       visible: false
     });
-    NavigationManager.push('BatchQualityPage', { ...data });
+    NavigationManager.push('BatchQualityPage', { sheetListid, ...data });
   }
 
   hasMechanical(data) {
@@ -99,19 +127,21 @@ class StepsView extends Component {
       visible: false
     });
     // 传的参数是flatlist的里面有item和index
-    const { hasMechanical } = this.props;
-    NavigationManager.push('MechanicalMessagePage', { hasMechanical,...data });
+    const { hasMechanical, sheetId } = this.props;
+    NavigationManager.push('MechanicalMessagePage', { hasMechanical, sheetId, ...data });
   }
 
   render() {
     let { technologyProcessList } = this.props;
     let { visible, source } = this.state;
+    // console.log("StepsViewthis.props", this.props)
+    // console.log("StepsViewthis.props.navigation.state.params", this.props.navigation.state.params)
     return (
       <View>
         <FlatList
           data={technologyProcessList}
           renderItem={data => this.renderTechnologyProcessList(data, this.onPopModalView)}
-          keyExtractor={item => item.step}
+          keyExtractor={item => item.proInspectionId}
         />
         <ModelView
           visible={visible}

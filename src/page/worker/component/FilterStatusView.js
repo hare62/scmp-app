@@ -37,12 +37,11 @@ class FilterStatusView extends Component {
     } = this.props;
     const { key, value } = data;
     let sheetList = filterSheetData[key];
-    
     return (
       <View>
         {!sheetList ? <></> : 
             (<SheetListView 
-              value={value}
+              value={value} 
               keyEx={key}
               sheetListData={sheetList.filterSheetList} 
               getLoadingMoreSheetList={getFilterSheetList}//获取加载更多派工单列表数据

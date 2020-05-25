@@ -194,8 +194,9 @@ android {
         abortOnError false
     }
 }
-
+apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
 dependencies {
+    addUnimodulesDependencies()
     implementation project(':react-native-file-selector')
     implementation project(':react-native-fs')
     implementation fileTree(dir: "libs", include: ["*.jar"])

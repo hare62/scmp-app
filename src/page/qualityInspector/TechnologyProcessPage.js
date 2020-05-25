@@ -17,10 +17,16 @@ import styles from '../../common/Styles/SheetDetailView';
 class TechnologyProcessPage extends Component {
   constructor(props) {
     super(props);
+    props.navigation.addListener('didFocus', ()=>{ this.init()});
   }
 
   componentDidMount() {
-    this.props.getTechnologyProcessList();
+    this.init()
+  }
+
+  init(){
+    const { sheetId } = this.props.navigation.state.params;
+    this.props.getTechnologyProcessList(sheetId);
   }
 
   renderTabLeftButton() {
@@ -95,7 +101,7 @@ class TechnologyProcessPage extends Component {
   }
   
   render() {
-    const {  hasMechanical } = this.props.navigation.state.params;
+    const {  hasMechanical, sheetListid, sheetId } = this.props.navigation.state.params;
     return (
       <>
         <NavigationBar
@@ -104,11 +110,7 @@ class TechnologyProcessPage extends Component {
           leftButton={this.renderTabLeftButton()}
         />
         { this.renderDetailView()}
-        {/* 
-          hasMechanical 判断是否有零件号，来自质检单父级页面
-          
-        */}
-        <StepsView {...this.props} hasMechanical={hasMechanical} />
+        <StepsView {...this.props} hasMechanical={hasMechanical}  sheetListid={sheetListid} sheetId={sheetId} />
       </>
     );
   }
@@ -120,8 +122,8 @@ const mapStateToProps = (state) =>({
 });
 
 const mapDispatchToProps = (dispatch) =>({
-  getTechnologyProcessList(){
-    dispatch(getTechnologyProcessList())
+  getTechnologyProcessList(sheetId){
+    dispatch(getTechnologyProcessList(sheetId))
   }  
 });
 

@@ -2,19 +2,27 @@ import React, { Component } from 'react';
 import {
   View,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  Text
 } from 'react-native';
 import NavigationBar from '../../common/Component/NavigationBar';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fitSize } from '../../utils/Fit';
 import { connect } from 'react-redux';
-import { getQualityInspectorSheetList } from '../../redux/action/qualityInspector/index';
+import { 
+  getQualityInspectorSheetList, 
+  getLoadingMoreSheetList,
+  resetDefaultSheetList
+} from '../../redux/action/qualityInspector/index';
 import SheetListView from './component/SheetListView';
 import TopNavTabsView from './component/TopNavTabsView';
 import Constants from '../../utils/Constants';
 import { changeLoginStatus as changeLoginStatusAtion } from '../../redux/action/login/index';
 import { LoginStatusEnum } from '../login/Constants';
+// import NavigationManager from '../../navigation/NavigationManager';
+import MessageCenter from '../../api/MessageCenter';
+import { Quality_LOAD_MORE　}　from '../../api/MessageDefine';
 
 export const TabPageEnum = {
   defaultPage: Symbol('defaultPage'),
@@ -27,29 +35,40 @@ class QualityInspectorPage extends Component {
     super(props);
     this.state = {
       filterCondition: TabPageEnum.defaultPage,
-      tabNames: ''
+      tabNames: '',
+      SheetListData:{},//默认质检单数据
     }
-
     this.createFilterStatusView = this.createFilterStatusView.bind(this);
     this.createFilterTimeView = this.createFilterTimeView.bind(this);
+    // MessageCenter.getInstance().registerMessage(Quality_LOAD_MORE, this, this.refreshSheetListData);
+    
   }
 
+  // refreshSheetListData(SheetListData) {
+  //   this.setState({
+  //     SheetListData
+  //   })
+  // }
+
   componentDidMount() {
-    this.props.requestWorkSheetList();
+    this.props.requestWorkSheetList((res)=>{
+     
+    });
   }
 
   componentWillUnmount(){
     const { changeLoginStatus } =this.props;
     changeLoginStatus(LoginStatusEnum.Unlogin);
+    MessageCenter.getInstance().unregisterMessage(Quality_LOAD_MORE);
   }
 
   async createFilterTimeView() {
     await this.setState(() => ({
       filterCondition: TabPageEnum.fiterTimePage,
       tabNames: [
-        { label: '三天前', key: 'C', value: '&sort=stars' },
-        { label: '一周前', key: 'C++', value: '&sort=stars' },
-        { label: '一个月前', key: 'React', value: '&sort=stars' },
+        { label: '三天前', key: 'DAY', value: 'dateLogo=DAY' },
+        { label: '一周前', key: 'WEEK', value: 'dateLogo=WEEK' },
+        { label: '一个月前', key: 'MONTH', value: 'dateLogo=MONTH' },
       ]
     }));
   }
@@ -58,9 +77,8 @@ class QualityInspectorPage extends Component {
     await this.setState({
       filterCondition: TabPageEnum.filterStatusPage,
       tabNames: [
-        { label: '未报工', key: 'JavaScript', value: '&sort=stars' },
-        { label: '已报工', key: 'android', value: '&sort=stars' },
-        { label: '全部', key: 'All', value: '&sort=stars' },
+        { label: '未报工', key: '未完成', value: 'sheetStatus=01' },
+        { label: '已报工', key: '已完成', value: 'sheetStatus=02' },
       ]
     });
   }
@@ -92,23 +110,33 @@ class QualityInspectorPage extends Component {
     return (<SheetItem {...data} />);
   }
 
-  renderTopNavigationPage = (data) => {
-    const { filterCondition } = this.state;
-    
+  renderTopNavigationPage = () => {
+    const { filterCondition, tabNames, SheetListData  } = this.state;
+    const { sheetList } = SheetListData;
+    const { 
+      getLoadingMoreSheetList,
+      qualityInspectorSheetList, 
+      requestWorkSheetList, 
+      resetDefaultSheetList } = this.props;
     switch (filterCondition) {
       case TabPageEnum.defaultPage:
-        return <SheetListView sheetListData={data} />;
+        return <SheetListView 
+                  sheetListData={qualityInspectorSheetList}
+                  getLoadingMoreSheetList={getLoadingMoreSheetList}
+                  getPullUpRefreshSheetList={requestWorkSheetList} 
+                  resetDefaultSheetList={resetDefaultSheetList}
+                  />;
       case TabPageEnum.filterStatusPage:
-        return <TopNavTabsView tabNames={this.state.tabNames} />;
+        return <TopNavTabsView tabNames={tabNames} />;
       case TabPageEnum.fiterTimePage:
-        return <TopNavTabsView tabNames={this.state.tabNames} />;
+        return <TopNavTabsView tabNames={tabNames} />;
       default:
         return null;
     }
   }
 
   render() {
-    const { qualityInspectorSheetList } = this.props;
+    
     return (
       <View style={styles.container}>
         <NavigationBar
@@ -116,7 +144,7 @@ class QualityInspectorPage extends Component {
           style={{ backgroundColor: Constants.THEME_COLOR }}
           rightButton={this.renderTabRightButton()}
         />
-        {this.renderTopNavigationPage(qualityInspectorSheetList)}
+        {this.renderTopNavigationPage()}
       </View>
     );
   }
@@ -127,12 +155,20 @@ const mapState = (state) => ({
 })
 
 const mapDispatch = (dispatch) => ({
-  requestWorkSheetList() {
-    dispatch(getQualityInspectorSheetList())
+  //下拉刷新派工单===请求派工单
+  requestWorkSheetList(callBack) {
+    dispatch(getQualityInspectorSheetList(callBack))
   },
+  //更改登录状态
   changeLoginStatus(loginStatus) {
     dispatch(changeLoginStatusAtion(loginStatus));
   },
+  getLoadingMoreSheetList(callBack){
+    dispatch(getLoadingMoreSheetList(callBack))
+  },
+  resetDefaultSheetList(){
+    dispatch(resetDefaultSheetList())
+  }
 });
 
 const styles = StyleSheet.create({

@@ -72,7 +72,7 @@ class SheetListView extends Component {
       </TouchableOpacity>
     );
   };
-  
+
   /**
    * 1.3渲染加载更多的图标
    */
@@ -112,7 +112,8 @@ class SheetListView extends Component {
    */
   onRefreshGetDefaultSheetList() {
     // 清除默认派工单数据
-    let { resetDefaultSheetList,
+    let { 
+      resetDefaultSheetList,
       getPullUpRefreshSheetList,
       getPullUpRefreshFilterSheetList,
       keyEx,
@@ -180,7 +181,7 @@ SheetListView.defaultProps = {
 const mapState = (state) => ({
   isLoading: state.Worker.isLoading,
   isLoadingMore: state.Worker.isLoadingMore,
-  workerSheetListData: state.Worker.workerSheetListData,
+  // workerSheetListData: state.Worker.workerSheetListData,
 })
 
 const mapDispatch = (dispatch) => ({

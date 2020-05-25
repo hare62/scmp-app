@@ -87,13 +87,11 @@ class JobBooking extends Component {
         isSubmitJobBooking: true,
         jobBookingResultNotice: result.MESSAGE,
       })
-
       //通过派工单Id刷新工艺工序列表
       getTechnologyProcessList(sheetId);
       setTimeout(() => {
         this.setState({
           isSubmitJobBooking: false,
-          // jobBookingResultNotice: result.MESSAGE
         })
         NavigationManager.pop();
 

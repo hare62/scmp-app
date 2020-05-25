@@ -1,5 +1,5 @@
 import actionTypes from '../actionTypes';
-import { fetchRequest } from '../../../api/NetManager';
+import { fetchRequestTest } from '../../../api/NetManager';
 import LoginData from '../../../data/Login/LoginData';
 import RoleListData from '../../../data/Login/RoleListData';
 import MD5 from "react-native-md5";
@@ -41,16 +41,8 @@ export const changeRoleType = (roleType) => ({
  */
 export const authenticationRole = (userId, token) => {
   return (dispatch) => {
-    const method = {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'token': token
-      })
-    };
-
     const url = `${host}/login/listRole?userId=${userId}`;
-    fetchRequest(url, method)
+    fetchRequestTest({url, type:'GET'})
       .then(async (jsonData) => {
         let roleData = RoleListData.init(jsonData);
         const PAGE_LINK = roleData.roleList[0].PAGE_LINK;
@@ -73,16 +65,9 @@ export const authenticationRole = (userId, token) => {
  */
 export const getLoginInfo = (userInfo, password, isAjax) => {
   return async (dispatch) => {
-    const method = {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      })
-    };
-
     password = MD5.hex_md5(password);
     const url = `${host}/login?sysUserLogin.loginNm=${userInfo}&sysUserLogin.loginPwd=${password}&isAjax=${isAjax}`;
-    fetchRequest(url, method)
+    fetchRequestTest({url, type:"POST"})
       .then(async (responseJson) => {
         let loginData = LoginData.init(responseJson);
         let { userId, token } = loginData;

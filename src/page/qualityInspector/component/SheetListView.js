@@ -11,14 +11,18 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import NavigationManager from '../../../navigation/NavigationManager';
 import { fitSize } from '../../../utils/Fit';
 import styles from '../../../common/Styles/SheetItem';
-import { sheetListStatusView } from '../../../utils/Common';
+import { sheetListStatusView, defaultQualityStatus } from '../../../utils/Common';
 
 const SheetItem = (props) => {
-  const { sheetListFinishTime,
+  const {
+    sheetListFinishTime,
     sheetListid,
     materialsName,
     sheetListstatus,
-    hasMechanical } = props.item;
+    hasMechanical,
+    sheetId,
+    testData } = props.item;
+  console.log("aaa", testData)
 
   return (
     <TouchableOpacity
@@ -28,7 +32,7 @@ const SheetItem = (props) => {
     >
       <View style={styles.cell_container}>
         <View style={styles.container_left} >
-          {sheetListStatusView(sheetListstatus)}
+          {defaultQualityStatus(sheetListstatus)}
         </View>
         <View style={styles.container_right}>
           <View style={styles.container_right_title} >
@@ -52,10 +56,27 @@ const SheetItem = (props) => {
             </Text>
 
           </View>
-          <View style={styles.container_right_contain_item}>
+          {/* <View style={styles.container_right_contain_item}>
+            <Text>01有 02 没有</Text>
             <Text >
               是否有零件号: {hasMechanical}
             </Text>
+          </View> */}
+          {/* <View style={styles.container_right_contain_item}>
+            <Text >
+              sheetID : {sheetId}
+            </Text>
+          </View> */}
+          <View style={styles.container_right_contain_item}>
+            {/* <Text>
+              //质检中"01"
+              //质检已完成"02"
+              //待质检"00"
+              {testData}
+            </Text> */}
+            {/* <Text >
+              质检单状态 : {sheetListstatus}
+            </Text> */}
           </View>
         </View>
       </View>
@@ -63,13 +84,36 @@ const SheetItem = (props) => {
   );
 };
 
+const onRefreshGetDefaultSheetList = (props) => {
+  // 清除默认派工单数据
+  let {
+    resetDefaultSheetList,
+    getPullUpRefreshSheetList,
+    getPullUpRefreshFilterSheetList,
+    keyEx,
+    value
+  } = props;
+
+  resetDefaultSheetList();
+  if (keyEx && value) {
+    getPullUpRefreshFilterSheetList(keyEx, value);
+  } else {
+    getPullUpRefreshSheetList();
+  }
+}
+
 const SheetListView = (props) => {
-  const { sheetListData } = props;
+  const {
+    sheetListData,
+    getLoadingMoreSheetList,
+    keyEx,
+    value } = props;
+  console.log("链得", sheetListData)
 
   return (
-    <View>
+    <View  style={{ marginBottom: 60 }}>
       <FlatList
-        data={sheetListData}
+        data={sheetListData.sheetList}
         renderItem={data => SheetItem(data)}
         keyExtractor={item => item.sheetListid}
         refreshControl={
@@ -78,13 +122,28 @@ const SheetListView = (props) => {
             titleColor={Constants.THEME_COLOR}
             colors={[Constants.THEME_COLOR]}
             refreshing={false}
-            onRefresh={() => { }}
+            onRefresh={()=>{onRefreshGetDefaultSheetList(props)}}
             tintColor={Constants.THEME_COLOR}
           />
         }
+        onEndReached={() => {
+          console.warn("woede")
+          if (sheetListData.canLoadMoreData()) {
+            console.warn("内")
+
+            sheetListData.nextPage();
+            getLoadingMoreSheetList(sheetListData, keyEx, value);
+          }
+        }}
+        onEndReachedThreshold={0.1}
       />
     </View>
   );
 };
+
+SheetListView.defaultProps = {
+  keyEx: '',
+  value: ''
+}
 
 export default SheetListView;

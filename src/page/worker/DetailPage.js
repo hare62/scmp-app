@@ -25,8 +25,8 @@ class DetailPage extends Component {
     super(props);
     this.state={
       isShow:false
-    }
-  }
+    } 
+  } 
 
   componentDidMount() {
     const { sheetId } = this.props.navigation.state.params;
@@ -35,7 +35,7 @@ class DetailPage extends Component {
   }
 
   componentWillUnmount() {
-    const { sheetId, keyEx, value } = this.props.navigation.state.params;
+    const { sheetId, keyEx, value } = this.props .navigation.state.params;
     const { workerSheetListData, refreshWorkerCellSheetListData, isRefreshSheetCell, filterSheetData } = this.props;
     const { sheetList } = workerSheetListData;
    

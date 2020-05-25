@@ -40,7 +40,7 @@ export default (state = defaultState, action) => {
         ...state,
         processList: action.ProcessList,
         isLoading: false,
-      };
+      }; 
 
     //工艺工序获取列表失败
     case actionTypes.GET_WORKER_TECHNOLOGTY_PROCESS_LIST_FAILURE:
@@ -81,7 +81,7 @@ export default (state = defaultState, action) => {
         isLoading: true,
         isLoadingMore: false
       }
-
+ 
     //重置工人派工单默认数据 下拉刷新前操作
     case actionTypes.RESET_WORKER_DEFAULT_SHEET_LIST:
       return {

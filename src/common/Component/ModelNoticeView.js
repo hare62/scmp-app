@@ -24,7 +24,7 @@ const ModelNoticeView = (props) => {
       >
         <View style={styles.content}>
         <ProgressBarAndroid styleAttr='Inverse' color={Constants.THEME_COLOR} />
-          <View style={styles.notice}><Text >{notice}</Text></View>
+          <View style={styles.notice}><Text style={styles.text} >{notice}</Text></View>
         </View>
       </View>
     </Modal>
@@ -41,17 +41,18 @@ const styles = StyleSheet.create({
   content: {
     backgroundColor: 'white',
     paddingTop: 20,
-    width: 200,
+    width: 220,
     borderRadius: 5
   },
   notice: {
     alignItems: 'center',
     paddingBottom: 20,
     justifyContent: 'center',
-    width: 200,
+    width: 220,
     paddingLeft: 20,
     paddingRight: 20
   },
+
 });
 
 export default ModelNoticeView;

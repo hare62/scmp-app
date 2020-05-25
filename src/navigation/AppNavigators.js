@@ -19,6 +19,7 @@ import BatchQualityPage from '../page/qualityInspector/BatchQualityPage';
 import JobBooking from '../page/worker/JobBooking';
 import DirectorDetailPage from '../page/director/DetailPage';
 import WorkerSheetListPage from '../page/director/component/Address/WorkerSheetListPage';
+import LQcamera from '../page/qualityInspector/LQcamera';
 
 const InitNavigator = createStackNavigator({
   WelcomePage: {
@@ -121,6 +122,12 @@ const MainNavigator = createStackNavigator({
     screen: DirectorDetailPage,
     navigationOptions: {
       header: null
+    }
+  },
+  LQcamera:{
+    screen:LQcamera,
+    navigationOptions:{
+      header:null
     }
   },
   WorkerSheetListPage:{

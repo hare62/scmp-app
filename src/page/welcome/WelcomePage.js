@@ -14,7 +14,6 @@ class WelcomePage extends Component {
       navigation.navigate('LoginPage');
     }, 2000);
   }
-
   UNSAFE_componentWillMount() {
     this.timer && clearTimeout(this.timer);
   }

@@ -1,6 +1,14 @@
 package com.scmp_app;
+//expo
+// "com.doingmything" should be your app package name
+import com.scmp_app.generated.BasePackageList;
 
 import android.app.Application;
+//expo
+import org.unimodules.adapters.react.ModuleRegistryAdapter;
+import org.unimodules.adapters.react.ReactModuleRegistryProvider;
+import org.unimodules.core.interfaces.SingletonModule;
+//expo
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -9,11 +17,16 @@ import com.rnfs.RNFSPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
+//expo
+import java.util.Arrays;
+
 import com.tencent.bugly.crashreport.CrashReport;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
+        //expo
+     private final ReactModuleRegistryProvider mModuleRegistryProvider = new ReactModuleRegistryProvider(new BasePackageList().getPackageList(), null);
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
@@ -33,6 +46,17 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFileSelectorPackage();
 
 //                    new RNFSPackage() // <---------- add package
+
+       // Packages that cannot be autolinked yet can be added manually here, for example:
+      // packages.add(new MyReactNativePackage());
+
+      // Add unimodules
+      List<ReactPackage> unimodules = Arrays.<ReactPackage>asList(
+        new ModuleRegistryAdapter(mModuleRegistryProvider)
+      );
+      packages.addAll(unimodules);
+
+
           return packages;
         }
 
