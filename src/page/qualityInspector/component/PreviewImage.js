@@ -4,13 +4,11 @@ import { Overlay,Button } from 'react-native-elements';
 import { Video } from 'expo-av';
 import {reqFileUpload,reqMD5} from '../../../api';
 import {FileSystem} from "react-native-unimodules"
-import {FileUploadSave, postAddMechanical, postMD5Files} from '../../../redux/action/qualityInspector';
+import {FileUploadSave, postAddMechanical} from '../../../redux/action/qualityInspector';
 import { connect } from 'react-redux';
 import ConfirmModal from '../../../common/Component/ConfirmModal';
 import AlertBox from '../../../common/Component/AlertBox';
 import progressUtil from '../../../utils/progressUtil';
-
-
 
 class PreviewImage extends React.Component{
     state={
@@ -32,7 +30,6 @@ class PreviewImage extends React.Component{
     }
     toUploadImage=async ()=>{
         const {files}=this.state
-        console.log("works")
         const {filename,fileuri}=this.props
         const {md5}=await FileSystem.getInfoAsync(fileuri, {md5: true})
         let obj={
@@ -54,12 +51,10 @@ class PreviewImage extends React.Component{
             formData.append('file',file)
             formData.append("configKey",'SCMP-FILE');
             formData.append("md5",md5);
-            // console.log("formdata", JSON.stringify(formData))
             this.setState({disabled:true})
             this.listener = DeviceEventEmitter.addListener("progress", (e) => {
                 //e就是从页面B发送过来的数据
                 if (e) {
-                    console.log("progress",e)
                     this.setState({
                         progress:e*198
                     })
@@ -98,7 +93,6 @@ class PreviewImage extends React.Component{
         this.setState({
             isVisible:true,
         },()=>{
-            // console.log("state",this.state.navigation)
         })
     }
     toChangeVisible=()=>{
@@ -235,9 +229,6 @@ const mapDispatchToProps = (dispatch) => ({
     //提交新增零件号
     postAddMechanical(mechanical, qualityResult, realNumber, callBack) {
         dispatch(postAddMechanical(mechanical, qualityResult, realNumber, callBack))
-    },
-    postMD5Files(filepath){
-        dispatch(postMD5Files(filepath))
     },
     FileUploadSave(fileName,fileID){
         dispatch(FileUploadSave(fileName,fileID))

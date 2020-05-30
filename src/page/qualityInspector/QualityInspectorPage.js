@@ -3,7 +3,6 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
-  Text
 } from 'react-native';
 import NavigationBar from '../../common/Component/NavigationBar';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -13,16 +12,13 @@ import { connect } from 'react-redux';
 import { 
   getQualityInspectorSheetList, 
   getLoadingMoreSheetList,
-  resetDefaultSheetList
+  resetDefaultSheetList,
 } from '../../redux/action/qualityInspector/index';
 import SheetListView from './component/SheetListView';
 import TopNavTabsView from './component/TopNavTabsView';
 import Constants from '../../utils/Constants';
 import { changeLoginStatus as changeLoginStatusAtion } from '../../redux/action/login/index';
 import { LoginStatusEnum } from '../login/Constants';
-// import NavigationManager from '../../navigation/NavigationManager';
-import MessageCenter from '../../api/MessageCenter';
-import { Quality_LOAD_MORE　}　from '../../api/MessageDefine';
 
 export const TabPageEnum = {
   defaultPage: Symbol('defaultPage'),
@@ -40,26 +36,15 @@ class QualityInspectorPage extends Component {
     }
     this.createFilterStatusView = this.createFilterStatusView.bind(this);
     this.createFilterTimeView = this.createFilterTimeView.bind(this);
-    // MessageCenter.getInstance().registerMessage(Quality_LOAD_MORE, this, this.refreshSheetListData);
-    
   }
 
-  // refreshSheetListData(SheetListData) {
-  //   this.setState({
-  //     SheetListData
-  //   })
-  // }
-
   componentDidMount() {
-    this.props.requestWorkSheetList((res)=>{
-     
-    });
+    this.props.requestWorkSheetList();
   }
 
   componentWillUnmount(){
     const { changeLoginStatus } =this.props;
     changeLoginStatus(LoginStatusEnum.Unlogin);
-    MessageCenter.getInstance().unregisterMessage(Quality_LOAD_MORE);
   }
 
   async createFilterTimeView() {
@@ -112,7 +97,6 @@ class QualityInspectorPage extends Component {
 
   renderTopNavigationPage = () => {
     const { filterCondition, tabNames, SheetListData  } = this.state;
-    const { sheetList } = SheetListData;
     const { 
       getLoadingMoreSheetList,
       qualityInspectorSheetList, 
@@ -136,7 +120,6 @@ class QualityInspectorPage extends Component {
   }
 
   render() {
-    
     return (
       <View style={styles.container}>
         <NavigationBar

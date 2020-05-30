@@ -6,9 +6,7 @@ import {
   FlatList,
   TouchableOpacity
 } from 'react-native';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import NavigationManager from '../../../navigation/NavigationManager';
-import { mechanicalStatus } from '../../../utils/Common';
 
 const renderTechnologyProcessList = (data, props) => {
   let {
@@ -52,8 +50,6 @@ const MechanicalView = (props) => {
   //item 有工艺工序单列信息
   //mechanicalList 整个零件号信息 请求接口的时候那这个参数渲染
   const { mechanicalList } = props;
-  console.log("===",props.navigation.state.params)
-  // console.log("1===",mechanicalList)
   return (
     <View style={styles.block}>
       <Text style={styles.title}>零件号信息</Text>

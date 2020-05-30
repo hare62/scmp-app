@@ -1,33 +1,37 @@
 /**工人-工艺工序-数据
- * sheetTechnologyId              <!-- 派工单子表Id -->
- * equipmentId                    <!-- 设备Id-->
- * sheetId                          <!-- 派工单Id-->
- * technologyId                  <!-- 工艺工序Id-->
- * equipmentCode                 <!-- 设备编码-->
- * equipmentName                 <!-- 设备名称-->
- * price                        <!-- 加工价格-->
- * actualWorkTime              <!-- 实际加工时间-->
- * qualifiedQty                    <!-- 合格数-->
- * shareQty                            <!-- 合用数-->
- * industrialWasteQty        <!-- 工废-->
- * matWasteQty                      <!-- 料废-->
- * deserved                               <!-- 应得-->
- * deductible                         <!-- 应扣-->
- * actuallyGet                          <!-- 实得-->
- * hisDuration                      <!-- 历史加工时长-->
+ * sheetTechnologyId                       <!-- 派工单子表Id -->
+ * equipmentId                             <!-- 设备Id-->
+ * sheetId                                 <!-- 派工单Id-->
+ * technologyId                            <!-- 工艺工序Id-->
+ * equipmentCode                           <!-- 设备编码-->
+ * equipmentName                           <!-- 设备名称-->
+ * price                                   <!-- 加工价格-->
+ * actualWorkTime                          <!-- 实际加工时间-->
+ * qualifiedQty                            <!-- 合格数-->
+ * shareQty                                <!-- 合用数-->
+ * industrialWasteQty                      <!-- 工废-->
+ * matWasteQty                             <!-- 料废-->
+ * deserved                                <!-- 应得-->
+ * deductible                              <!-- 应扣-->
+ * actuallyGet                             <!-- 实得-->
+ * hisDuration                             <!-- 历史加工时长-->
  * reward                                  <!-- 奖励-->
- * testUser                             <!-- 检验员-->
- * technologyCode                 <!-- 工艺编号-->
- * technologyName                  <!-- 工艺名称-->
- * tecStep                             <!-- 步骤-->
- * taskTime                              <!-- 加工日期-->
- * workshop                               <!-- 车间-->
- * processPath                          <!-- 加工路径-->
- * sheetStatusName                   <!-- 工艺工序状态-->
- * completeQty                           <!-- 实际报工数-->
+ * testUser                                <!-- 检验员-->
+ * technologyCode                          <!-- 工艺编号-->
+ * technologyName                          <!-- 工艺名称-->
+ * tecStep                                 <!-- 步骤-->
+ * taskTime                                <!-- 加工日期-->
+ * workshop                                <!-- 车间-->
+ * processPath                             <!-- 加工路径-->
+ * sheetStatusName                         <!-- 工艺工序状态-->
+ * completeQty                             <!-- 实际报工数-->
  * sheetStatusCode                         <!-- 工艺工序状态编码-->
  * matQty                                  <!-- 物料名称 -->
- */
+ * reworkQty;                              <!--  返工数 --> 
+ * rebuildQty;                             <!--  返修数 -->  
+ * concessionQty;                          <!--  让步接收数 --> 
+ * restructuringQty;                       <!--  改制数 -->  
+ */                     
 
 class ProcessData {
   constructor() {
@@ -65,6 +69,10 @@ class ProcessData {
     this.completeQty = 0;
     this.sheetStatusCode = '';
     this.matQty = '';
+    this.reworkQty = '';
+    this.rebuildQty = '';
+    this.concessionQty = '';
+    this.restructuringQty = '';
   }
 
   static init(jsonData) {
@@ -100,12 +108,16 @@ class ProcessData {
         sheetStatusName,
         completeQty,
         sheetStatusCode,
-        matQty } = jsonData;
+        matQty,
+        reworkQty,
+        rebuildQty,
+        concessionQty,
+        restructuringQty } = jsonData;
       
       data.sheetTechnologyId = sheetTechnologyId;
       data.equipmentId = equipmentId;
       data.sheetId = sheetId;
-      data.technologyId = technologyId;
+      data.technologyId = technologyId; 
       data.equipmentCode = equipmentCode;
       data.equipmentName = equipmentName;
       data.price = price;
@@ -131,6 +143,10 @@ class ProcessData {
       data.completeQty = completeQty;
       data.sheetStatusCode = sheetStatusCode;
       data.matQty = matQty;
+      data.reworkQty = reworkQty;
+      data.rebuildQty = rebuildQty;
+      data.concessionQty = concessionQty;
+      data.restructuringQty = restructuringQty;
     }
     catch (error) {
       console.error("ProcessData - init: " + error);

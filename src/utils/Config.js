@@ -5,7 +5,7 @@
 export const AppEnvEnum = {
   manufacture: 'manufacture', //manufacture生产模块
   login: 'login', //login登录模块
-  file:'file',//文件路径
+  file:'file',//文件路径ue
 }
 
 //是否为mock数据
@@ -25,15 +25,17 @@ export const isPageUrl = false;
 /**
  * 获取ip地址
  */
+//测试工人派工单
 export const getHost = (type) => {
   switch (type) {
     case AppEnvEnum.login://192.168.0.190:7080  
       return 'http://47.108.27.242:80';
     case AppEnvEnum.manufacture:
-      return 'http://192.168.125.115:8783';//47.108.27.242:8080/manufacture   192.168.125.116:8783
+      return 'http://47.108.27.242:8080/manufacture';//47.108.27.242:8080/manufacture   192.168.125.116:8783
     case AppEnvEnum.file:
       return 'http://47.108.27.242:80';
     default:
       return null;
   }
 }
+

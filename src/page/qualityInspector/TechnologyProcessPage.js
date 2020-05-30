@@ -13,6 +13,7 @@ import { getTechnologyProcessList } from '../../redux/action/qualityInspector/in
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { fitSize } from '../../utils/Fit';
 import styles from '../../common/Styles/SheetDetailView';
+import { defaultQualityStatus } from '../../utils/Common';
 
 class TechnologyProcessPage extends Component {
   constructor(props) {
@@ -21,7 +22,7 @@ class TechnologyProcessPage extends Component {
   }
 
   componentDidMount() {
-    this.init()
+    this.init();
   }
 
   init(){
@@ -50,17 +51,13 @@ class TechnologyProcessPage extends Component {
             sheetListid,
             materialsName,
             materialsNumber,
-            sheetListstatus,
             worker,
-            hasMechanical } = this.props.navigation.state.params;
+            hasMechanical,
+            sheetListstatus } = this.props.navigation.state.params;
     return (
       <View style={styles.container}>
         <View style={styles.containTop}>
-          <EvilIcons
-            name={'check'}
-            size={fitSize(70)}
-            style={styles.containLeft}
-          />
+          {defaultQualityStatus(sheetListstatus)}
           <View style={styles.containRight}>
             <Text ellipsizeMode="tail" numberOfLines={1} style={styles.materialsIDText}>
               {sheetListid}

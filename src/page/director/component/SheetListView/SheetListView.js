@@ -182,7 +182,7 @@ class SheetListView extends Component {
               refreshing={isLoading}
               onRefresh={() =>(this.requestRefreshSheetData()) }
               tintColor={Constants.THEME_COLOR}
-            />
+            /> 
           }
           ListFooterComponent={() => (this.renderIndicator())}
           onEndReached={() => {

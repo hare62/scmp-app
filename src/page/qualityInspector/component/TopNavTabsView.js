@@ -50,7 +50,7 @@ class TopNavTabsView extends Component {
       },
     ));
 
-    return this.tabNav
+    return this.tabNav;
   }
 
   render() {

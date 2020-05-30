@@ -11,10 +11,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import NavigationManager from '../../../navigation/NavigationManager';
 import { fitSize } from '../../../utils/Fit';
 import styles from '../../../common/Styles/SheetItem';
-import { sheetListStatusView, defaultQualityStatus } from '../../../utils/Common';
+import { defaultQualityStatus } from '../../../utils/Common';
 
 const SheetItem = (props) => {
-  const {
+  const { 
     sheetListFinishTime,
     sheetListid,
     materialsName,
@@ -22,7 +22,6 @@ const SheetItem = (props) => {
     hasMechanical,
     sheetId,
     testData } = props.item;
-  console.log("aaa", testData)
 
   return (
     <TouchableOpacity
@@ -61,23 +60,23 @@ const SheetItem = (props) => {
             <Text >
               是否有零件号: {hasMechanical}
             </Text>
-          </View> */}
-          {/* <View style={styles.container_right_contain_item}>
+          </View>
+          <View style={styles.container_right_contain_item}>
             <Text >
               sheetID : {sheetId}
             </Text>
-          </View> */}
+          </View>
           <View style={styles.container_right_contain_item}>
-            {/* <Text>
+            <Text>
               //质检中"01"
               //质检已完成"02"
               //待质检"00"
               {testData}
-            </Text> */}
-            {/* <Text >
+            </Text>
+            <Text >
               质检单状态 : {sheetListstatus}
-            </Text> */}
-          </View>
+            </Text>
+          </View> */}
         </View>
       </View>
     </TouchableOpacity>
@@ -108,7 +107,6 @@ const SheetListView = (props) => {
     getLoadingMoreSheetList,
     keyEx,
     value } = props;
-  console.log("链得", sheetListData)
 
   return (
     <View  style={{ marginBottom: 60 }}>

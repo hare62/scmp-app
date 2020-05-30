@@ -6,7 +6,7 @@ import { parseHeaderRange } from '../../utils/RegExp';
  * SheetListData基类
  */
 class BaseSheetListData {
-  constructor() {
+  constructor() { 
     // 是否是第一次请求数据
     this.isFirstRequest = true;
     // 总的条数

@@ -138,6 +138,11 @@ class JobBooking extends Component {
   /**
    * 渲染已完成报工详情
    * 步骤、工序名称、设备名称、合格，合用、工废、料废、价格、应得、应扣
+   *  /**
+   * 返工数：reworkQty;
+     返修数： rebuildQty;
+     让步接收数： concessionQty;
+     改制数：restructuringQty;
    */
   renderFinishJobBookView() {
     const {
@@ -151,7 +156,12 @@ class JobBooking extends Component {
       price,
       deserved,
       deductible,
-      sheetStatusCode } = this.props.navigation.state.params;
+      sheetStatusCode,
+      callBack,
+      reworkQty,
+      rebuildQty,
+      concessionQty,
+      restructuringQty } = this.props.navigation.state.params;
 
     return (
       <View style={styles.containtFinish}>
@@ -169,6 +179,10 @@ class JobBooking extends Component {
           <Text style={styles.leftDescript}>价格</Text>
           <Text style={styles.leftDescript}>应得</Text>
           <Text style={styles.leftDescript}>应扣</Text>
+          <Text style={styles.leftDescript}>返工数：</Text>
+          <Text style={styles.leftDescript}>返修数</Text>
+          <Text style={styles.leftDescript}>让步接收数</Text>
+          <Text style={styles.leftDescript}>改制数</Text>
         </View>
         <View style={styles.innerContain}>
           <Text style={styles.rightDescript}>{tecStep}</Text>
@@ -181,6 +195,10 @@ class JobBooking extends Component {
           <Text style={styles.rightDescript}>{price}</Text>
           <Text style={styles.rightDescript}>{deserved}</Text>
           <Text style={styles.rightDescript}>{deductible}</Text>
+          <Text style={styles.rightDescript}>{reworkQty}</Text>
+          <Text style={styles.rightDescript}>{rebuildQty}</Text>
+          <Text style={styles.rightDescript}>{concessionQty}</Text>
+          <Text style={styles.rightDescript}>{restructuringQty}</Text>
         </View>
       </View>
     )

@@ -8,22 +8,19 @@ import {
 } from 'react-native';
 import AsyncStorage from "@react-native-community/async-storage"
 import { FileSystem } from "react-native-unimodules"
-import * as DocumentPicker from 'expo-document-picker';
-import * as MediaLibrary from 'expo-media-library';
 import AlertBox from '../../../common/Component/AlertBox';
 import NavigationManager from '../../../navigation/NavigationManager';
-import reducers from '../../../redux/reducer';
 import { connect } from 'react-redux';
-import { getNoMechanicalMessageDetail, postSaveResult, postSubmitResult } from '../../../redux/action/qualityInspector';
 import { Camera } from 'expo-camera';
 import { Audio } from 'expo-av';
 import Constants from '../../../utils/Constants';
+import { deviceWidthDp } from '../../../utils/Fit';
 
 class MechanicalQualityView extends Component {
-
   state = {
     isShow: false,
-    title: ""
+    title: "",
+    isModalDropdownShow: false
   }
 
   DownLoadFile(fileId, fileName) {
@@ -57,7 +54,6 @@ class MechanicalQualityView extends Component {
             const { uri } = await downloadResumable.downloadAsync();
             MediaLibrary.createAssetAsync(uri).then((response) => {
             })
-            console.log('Finished downloading to ', uri);
             this.setState({
               title: `     下载成功请在上传的文件夹里面里面查看下载的文件`,
               isShow: true
@@ -73,13 +69,12 @@ class MechanicalQualityView extends Component {
         }
       })
     }
-
   }
+
   gotoCamera = async () => {
     const permission1 = await MediaLibrary.requestPermissionsAsync()
     const permission2 = await Audio.requestPermissionsAsync()
     const permission3 = await Camera.requestPermissionsAsync()
-    console.log(permission3, permission2, permission1)
     if (permission1.status === 'granted' && permission2.status === 'granted' && permission3.status === 'granted') {
       NavigationManager.push('LQcamera')
     }
@@ -97,6 +92,8 @@ class MechanicalQualityView extends Component {
       loadFileName,
       isDetailPage,
       fileArray,
+      scrapProcess,
+      responsibleParty
     } = this.props;
     let { fileUploadData } = this.props;
     fileUploadData = fileUploadData !== undefined ? fileUploadData : { files: [""] }
@@ -130,6 +127,30 @@ class MechanicalQualityView extends Component {
               </TouchableOpacity>
             })}
           </View>
+          {/* {
+            qualityResult === "02" ?
+              <View style={styles.wrapper_container} >
+                <View style={styles.row_container}>
+                  <Text>报废工序</Text>
+                  <TouchableOpacity
+                    style={styles.selectButton}
+                    // onPress={() => { onChoiceScrapProcess() }}
+                  >
+                    <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{scrapProcess}</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.row_container}>
+                  <Text>责任方</Text>
+                  <TouchableOpacity
+                    style={styles.selectButton}
+                    // onPress={() => { onChoiceResponsibleParty() }}
+                  >
+                    <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{responsibleParty}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              : null
+          } */}
         </View>
         <View>
           {
@@ -152,19 +173,22 @@ class MechanicalQualityView extends Component {
         {isShow ? <AlertBox title={title} ref="ref1" /> : null}
       </View>
     );
-
   }
 
   renderQualityResultView(code, value) {
-    const { qualityResult, changeQualityResult } = this.props;
+    const { changeQualityResult, qualityResult } = this.props;
     return (
-      <TouchableOpacity
-        style={styles.conclusion}
-        key={code}
-        onPress={() => changeQualityResult(code)}
-        underlayColor='transparent'>
-        <Text style={(qualityResult == code) ? styles.selectM : styles.unSelectM}>{value}</Text>
-      </TouchableOpacity>
+      <View>
+        <View>
+          <TouchableOpacity
+            style={styles.conclusion}
+            key={code}
+            onPress={() => changeQualityResult(code)}
+            underlayColor='transparent'>
+            <Text style={(qualityResult == code) ? styles.selectM : styles.unSelectM}>{value}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     )
   }
 
@@ -178,12 +202,16 @@ class MechanicalQualityView extends Component {
       uploadReport,
       isDownLoad,
       isDetailPage,
+      onChoiceScrapProcess,
+      onChoiceResponsibleParty,
+      responsibleParty,
+      scrapProcess,
     } = this.props;
-    let temp = ['合格', '待审批'];
+
     return (
       <View style={styles.containerM}>
         <View>
-          <Text style={styles.titleM}>renderAddPage零件号:</Text>
+          <Text style={styles.titleM}>Add零件号:</Text>
           <TextInput
             style={styles.textInputM}
             onChangeText={(mechanical) => { changeMechanical(mechanical) }}
@@ -199,6 +227,30 @@ class MechanicalQualityView extends Component {
             {this.renderQualityResultView("02", "待审批")}
 
           </View>
+          {
+            qualityResult === "02" ?
+              <View style={styles.wrapper_container} >
+                <View style={styles.row_container}>
+                  <Text>报废工序</Text>
+                  <TouchableOpacity
+                    style={styles.selectButton}
+                    onPress={() => { onChoiceScrapProcess() }}
+                  >
+                    <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{scrapProcess}</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.row_container}>
+                  <Text>责任方</Text>
+                  <TouchableOpacity
+                    style={styles.selectButton}
+                    onPress={() => { onChoiceResponsibleParty() }}
+                  >
+                    <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{responsibleParty}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              : null
+          }
         </View>
         <TouchableOpacity
           style={styles.uploadM}
@@ -228,18 +280,21 @@ class MechanicalQualityView extends Component {
     const {
       changeMechanical,
       mechanical,
-      qualityResult,
+      qualityResult,// 测试数据 const { qualityResult } = this.props;
       changeQualityResult,
       onReplaceFile,
       uploadReport,
-      fileArray
+      responsibleParty,
+      scrapProcess,
+      fileArray,
+      onChoiceScrapProcess,
+      onChoiceResponsibleParty
     } = this.props;
-    let temp = ['合格', '待审批'];
 
     return (
       <View style={styles.containerM}>
         <View>
-          <Text style={styles.titleM}>renderModefyPage零件号:</Text>
+          <Text style={styles.titleM}>Modefy零件号:</Text>
           <TextInput
             style={styles.textInputM}
             onChangeText={(mechanical) => { changeMechanical(mechanical) }}
@@ -253,6 +308,30 @@ class MechanicalQualityView extends Component {
             {this.renderQualityResultView("01", "合格")}
             {this.renderQualityResultView("02", "待审批")}
           </View>
+          {/* {
+            qualityResult === "02" ?
+              <View style={styles.wrapper_container} >
+                <View style={styles.row_container}>
+                  <Text>报废工序</Text>
+                  <TouchableOpacity
+                    style={styles.selectButton}
+                    onPress={() => { onChoiceScrapProcess() }}
+                  >
+                    <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{scrapProcess}</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.row_container}>
+                  <Text>责任方</Text>
+                  <TouchableOpacity
+                    style={styles.selectButton}
+                    onPress={() => { onChoiceResponsibleParty() }}
+                  >
+                    <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{responsibleParty}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              : null
+          } */}
         </View>
         <View>
           {
@@ -260,14 +339,20 @@ class MechanicalQualityView extends Component {
               return <TouchableOpacity
                 key={index}
                 style={styles.uploadM}
-                onPress={(uploadReport) => { onReplaceFile( index) }}
+                onPress={() => { onReplaceFile(index) }}
               >
                 <Text style={styles.uploadTextM}>{item.name}点击更换上传文件</Text>
               </TouchableOpacity>
             })
           }
+          {/* <TouchableOpacity
+            style={styles.uploadM}
+            onPress={onReplaceFile}
+          >
+            <Text style={styles.uploadTextM}>点击上传更多文件</Text>
+          </TouchableOpacity> */}
         </View>
-      </View>
+      </View >
     );
 
   }
@@ -339,6 +424,35 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     backgroundColor: Constants.BUTTON,
   },
+  wrapper_container: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  row_container: {
+    flexDirection: "row",
+    justifyContent:"flex-start",
+    alignItems: "center",
+    width: deviceWidthDp * 0.4,
+    marginTop: 10
+  },
+  selectButton: {
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: "#FFF",
+    paddingLeft: 10,
+    paddingRight:10,
+    backgroundColor: Constants.BUTTON,
+    width: deviceWidthDp * 0.2,
+    borderRadius: 50,
+    color: 'white',
+    marginLeft: 15
+  },
+  selectButtonText: {
+    color: 'white'
+  },
   uploadTextM: {
     color: "black",
     lineHeight: 20,
@@ -357,9 +471,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "#ccc",
     paddingLeft: 10,
-  }
+  },
 });
+
 const mapStateToProps = (state) => ({
   fileUploadData: state.qualityInspector.fileUploadData,
-})
+});
+
 export default connect(mapStateToProps, null)(MechanicalQualityView);

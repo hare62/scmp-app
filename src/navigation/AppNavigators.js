@@ -20,6 +20,8 @@ import JobBooking from '../page/worker/JobBooking';
 import DirectorDetailPage from '../page/director/DetailPage';
 import WorkerSheetListPage from '../page/director/component/Address/WorkerSheetListPage';
 import LQcamera from '../page/qualityInspector/LQcamera';
+import ScrapProcessPage from '../page/qualityInspector/ScrapProcessPage';
+import ResponsiblePartyPage from '../page/qualityInspector/ResponsiblePartyPage';
 
 const InitNavigator = createStackNavigator({
   WelcomePage: {
@@ -132,6 +134,18 @@ const MainNavigator = createStackNavigator({
   },
   WorkerSheetListPage:{
     screen: WorkerSheetListPage,
+    navigationOptions: {
+      header: null
+    }
+  },
+  ScrapProcessPage:{
+    screen: ScrapProcessPage,
+    navigationOptions: {
+      header: null
+    }
+  },
+  ResponsiblePartyPage:{
+    screen: ResponsiblePartyPage,
     navigationOptions: {
       header: null
     }

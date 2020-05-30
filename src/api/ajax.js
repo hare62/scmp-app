@@ -12,7 +12,6 @@ export default async function ajax(url,data={},type="POST"){
     return new Promise((resolve,reject)=>{
         let promise,user_id
         if(type==="GET"){
-            // console.log("GET",url)
             let dataStr = ''
             Object.keys(data).forEach(key => {
                 dataStr += key + '=' + data[key] + '&'
@@ -28,7 +27,6 @@ export default async function ajax(url,data={},type="POST"){
                         'token': token
                     }//设置header信息
                 })
-                console.log("debugger----------")
             }else{
                 promise=axios.get(BaseURL+url,{
                     headers: {
@@ -38,7 +36,6 @@ export default async function ajax(url,data={},type="POST"){
                 })
             }
         }else if(type==="POST"){
-            console.log("POST",url)
             if(url){
                 promise=axios.post(BaseURL+url,data,{
                     headers: {
@@ -55,7 +52,6 @@ export default async function ajax(url,data={},type="POST"){
                 promise=axios.post(BaseURL+url,data)
             }
         }else{
-            console.log("PUT",url)
             promise=axios.put(BaseURL+url,data,{
                 headers: {
                     'Content-Type':"application/json",
@@ -64,10 +60,8 @@ export default async function ajax(url,data={},type="POST"){
             })
         }
         promise.then(reponse=>{
-            console.log("ajax promise-----",reponse.data)
             resolve(reponse.data)
         }).catch(error=>{
-            console.log(error)
         })
         return 0
     })

@@ -62,7 +62,7 @@ const mapDispatch = (dispatch) => ({
    //获取下拉刷新的筛选质检单
   getPullUpRefreshFilterSheetList(keyEx, value){
     dispatch(getPullUpRefreshFilterSheetList(keyEx, value))
-  }
+  },
 });
 
 export default connect(mapState, mapDispatch)(FilterStatusView);

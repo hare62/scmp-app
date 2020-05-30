@@ -11,7 +11,7 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
   switch (action.type) {
-    
+
     case actionTypes.GET_QUALITYINSPECTOR_SHEET_LIST_SUCCESS:
       return {
         ...state,
@@ -47,7 +47,7 @@ export default (state = defaultState, action) => {
     case actionTypes.IS_SUCCESS_OF_FILE_UPLOAD:
       return {
         ...state,
-        fileUploadData:action.fileUploadData
+        fileUploadData: action.fileUploadData
       }
     case actionTypes.GET_QUALITY_INSPECTOR_SHEET_LIST_SUCCESS:
       return {
@@ -106,21 +106,53 @@ export default (state = defaultState, action) => {
         isLoadingOfStandar: false
       }
 
-     //获取无零件号的标准项失败
-     case actionTypes.GET_NO_MECHANICAL_STANDAR_ITEM_FAILURE:
+    //获取无零件号的标准项失败
+    case actionTypes.GET_NO_MECHANICAL_STANDAR_ITEM_FAILURE:
       return {
         ...state,
         isLoadingOfStandar: false
       }
 
-     //重置工人派工单默认数据 下拉刷新前操作
-     case actionTypes.RESET_QualityINSPECTOR_DEFAULT_SHEET_LIST:
+    //重置工人派工单默认数据 下拉刷新前操作
+    case actionTypes.RESET_QualityINSPECTOR_DEFAULT_SHEET_LIST:
       return {
         ...state,
         isLoading: false,
         qualityInspectorSheetList: new SheetListData(),
         isLoadingMore: false
       }
+
+    //获取报废工艺
+    case actionTypes.GET_SCRAP_PROCESS_LIST_SUCESS:
+      return {
+        ...state,
+        scrapProcessList: action.scrapProcessLis,
+      }
+
+    //获取工厂列表
+    case actionTypes.GET_FACTORY__LIST_SUCESS:
+      return {
+        ...state,
+        factoryList: action.jsonData,
+        isLoadingMore: false
+      }
+    
+    //获取供应商列表
+    case actionTypes.GET_SUPPLIER__LIST_SUCESS:
+      return {
+        ...state,
+        supplierList: action.jsonData,
+        isLoadingMore: false
+      }
+
+    //获取班组列表
+    case actionTypes.GET_MONITOR__LIST_SUCESS:
+      return {
+        ...state,
+        monitorList: action.jsonData,
+        isLoadingMore: false
+      } 
+    
     default:
       return state;
   }

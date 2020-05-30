@@ -24,7 +24,7 @@ const renderModefyPage = (props) => {
   let { inspectionName, standardValue, positiveTolerance, negativeTolerance, realNumber } = standarItem;
   return (
     <View style={styles.container}>
-      <Text style={styles.itemTitle}>标准项renderModefyPage</Text>
+      <Text style={styles.itemTitle}>Modefy标准项</Text>
       <Text style={styles.itemTitle}>{inspectionName}</Text>
       <View style={styles.innerContainer}>
         <View style={styles.normalContainer}>
@@ -59,7 +59,7 @@ const renderAddPage = (props) => {
   let { inspectionName, standardValue, positiveTolerance, negativeTolerance, realNumber } = standarItem;
   return (
     <View style={styles.container}>
-       <Text style={styles.itemTitle}>标准项renderAddPage</Text>
+       <Text style={styles.itemTitle}>Add标准项</Text>
       <Text style={styles.itemTitle}>{inspectionName}</Text>
       <View style={styles.innerContainer}>
         <View style={styles.normalContainer}>
@@ -95,7 +95,7 @@ const renderDetailPage = (props) => {
 
   return (
     <View style={styles.container}>
-       <Text style={styles.itemTitle}>标准项renderDetailPage</Text>
+       <Text style={styles.itemTitle}>Detail标准项</Text>
       <Text style={styles.itemTitle}>{inspectionName}</Text>
       <View style={styles.innerContainer}>
         <View style={styles.normalContainer}>
@@ -125,8 +125,7 @@ const renderDetailPage = (props) => {
   )
 }
 const NormalTremView = (props) => {
-  let { standarItem, isSubmit, isAddPage, isModifyPage, isDetailPage } = props;
-  let { realNumber } = standarItem;
+  let { isAddPage, isModifyPage, isDetailPage } = props;
   if (isModifyPage) {//存在实际值===修改页面
     return renderModefyPage(props)
   } else if (isAddPage) {//不存在实际值===新增页面

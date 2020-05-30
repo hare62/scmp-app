@@ -29,6 +29,8 @@ import * as MediaLibrary from 'expo-media-library';
 import { reqFileUpload, reqMD5 } from '../../api';
 import { FileSystem } from "react-native-unimodules";
 import AlertBox from '../../common/Component/AlertBox';
+import { concatStatic } from 'rxjs/operator/concat';
+import { deviceWidthDp } from '../../utils/Fit';
 
 class BatchQualityPage extends Component {
   constructor(props) {
@@ -49,16 +51,27 @@ class BatchQualityPage extends Component {
       fileArray: [],
       loadFileID: "",
       loadFileName: "",
-      isDisabledSubmitButton: true
+      isDisabledSubmitButton: true,
+      scrapProcess: "点击选择",
+      scrapProcessID:"",
+      responsibleParty: "点击选择",
+      responsiblePartyType:""
     }
 
     this.changeResult = this.changeResult.bind(this);
     this.showModelNoticeView = this.showModelNoticeView.bind(this);
     this.onRNFileSelector = this.onRNFileSelector.bind(this);
     this.saveModifyResult = this.saveModifyResult.bind(this);
+    this.onChoiceScrapProcess = this.onChoiceScrapProcess.bind(this);
+    this.onChoiceResponsibleParty = this.onChoiceResponsibleParty.bind(this);
+    props.navigation.addListener('didFocus', () => {this.init()});
   }
 
   componentDidMount() {
+   this.init();
+  }
+
+  init() {
     const {
       qualifiedQty,
       shareQty,
@@ -66,20 +79,37 @@ class BatchQualityPage extends Component {
       proInspectionId,
       isSubmit,
     } = this.props.navigation.state.params.item;
+    const { scrapProcessItem, responsiblePartyItem } = this.props.navigation.state.params;
+    console.warn('responsiblePartyItem',responsiblePartyItem)
+    if (scrapProcessItem) { // 修改报废工序
+      this.setState({
+        scrapProcess: scrapProcessItem.technologyName,
+        scrapProcessID: scrapProcessItem.technologyId
+      })
+    }
+
+    if(responsiblePartyItem){
+      console.log(responsiblePartyItem)
+      this.setState({
+        responsibleParty: responsiblePartyItem.name,
+        responsiblePartyType: responsiblePartyItem.responsiblePartyType
+      },()=>{
+        console.warn("responsiblePartyType",this.state.responsiblePartyType)
+      })
+    }
+
     let { getStandarItemDetailOfNoMechanical, getModifyFilePath } = this.props;
-    console.log("ppp", proInspectionId)
     let fileArray = [];
     if (qualifiedQty && isSubmit) {//有质检结论&&有提交按钮===修改页面
       getModifyFilePath({ proInspectionId }, (partFiles) => {
         if (partFiles) {
           partFiles = partFiles.substring(0, partFiles.length - 1);
           let arr = partFiles.split("|");
-          console.log(arr);
           // let uploadFileName =  ["IMG_20200523_082243.jpg", "IMG_20200523_082240.jpg"];
           // let uploadFileID = [355, 356];
           let fileID = arr[0].split("<");
           let fileName = arr[1].split("<");
-          for (let i = 0; i < (fileID.length - 1); i++) {
+          for (let i = 0; i < (fileID.length); i++) {
             let data = {};
             data.fileId = fileID[i];
             data.name = fileName[i];
@@ -94,6 +124,7 @@ class BatchQualityPage extends Component {
         }
       });
     }
+    
 
     getStandarItemDetailOfNoMechanical(technologyId, proInspectionId);
     //存在在state中好修改合格和待审批
@@ -101,6 +132,17 @@ class BatchQualityPage extends Component {
       mqualifiedQty: qualifiedQty,
       mshareQty: shareQty
     })
+  }
+
+  onChoiceScrapProcess() {
+    // TODO 
+    const { proInspectionId } = this.props.navigation.state.params;
+    NavigationManager.push("ScrapProcessPage",{proInspectionId,isBatchQualityPage:true});
+
+  }
+
+  onChoiceResponsibleParty() {
+    NavigationManager.push("ResponsiblePartyPage",{isBatchQualityPage:true});
   }
 
   renderTabLeftButton() {
@@ -154,7 +196,7 @@ class BatchQualityPage extends Component {
                     this.setState({
                       isShowNotice: false,
                     })
-                  }, 5000);
+                  }, 2000);
                 })
               } else {
                 FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 }).then(async (response) => {
@@ -165,49 +207,19 @@ class BatchQualityPage extends Component {
                   formData.append("md5", md5);
                   const result = await reqFileUpload(formData)
                   if (result.STATUS == "success") {
-                    if (this.state.uploadReport === "上传质检报告") {
-                      let uploadFileName = [...this.state.uploadFileName];
-                      uploadFileName.push(name);
-                      let uploadFileID = [...this.state.uploadFileID];
-                      uploadFileID.push(result.FILEID);
-                      this.setState({
-                        // isShow: true,
-                        noticeText: result.MESSAGE,
-                        // title: result.MESSAGE,
-                        uploadFileName: uploadFileName,
-                        uploadFileID: uploadFileID
-                      }, () => {
-                        this.setState({
-                          isShowNotice: false,
-                        })
-                        files.push({ name: name, fileId: result.FILEID })
-                      })
-                    } else {
-                      let uploadFileName = [...this.state.uploadFileName];
-                      uploadFileName.push(name);
-                      let uploadFileID = [...this.state.uploadFileID];
-                      uploadFileID.push(result.FILEID);
-                      this.setState({
-                        noticeText: result.MESSAGE,
-                        // isShow: true,
-                        // title: result.MESSAGE,
-                        uploadFileName: uploadFileName,
-                        uploadFileID: uploadFileID,
-                        isShowNotice: false,
-                      }, () => {
-                        // this.setState({
-                        //   isShowNotice: false,
-                        // })
-                        // this.refs.ref1.changeState()
-                        files.push({ name: name, fileId: result.FILEID })
-                      })
-                    }
-                  } else {
+                    let uploadFileName = [...this.state.uploadFileName];
+                    uploadFileName.push(name);
+                    let uploadFileID = [...this.state.uploadFileID];
+                    uploadFileID.push(result.FILEID);
                     this.setState({
-                      isShow: true,
-                      title: result.MESSAGE
+                      noticeText: result.MESSAGE,
+                      uploadFileName: uploadFileName,
+                      uploadFileID: uploadFileID
                     }, () => {
-                      // this.refs.ref1.changeState()
+                      this.setState({
+                        isShowNotice: false,
+                      })
+                      files.push({ name: name, fileId: result.FILEID })
                     })
                   }
                 })
@@ -222,16 +234,17 @@ class BatchQualityPage extends Component {
   onReplaceFile(index) {
     const { files } = this.state
     MediaLibrary.requestPermissionsAsync().then(async (response) => {
-      // console.log("请求权限",response)
       const { granted } = response
       if (granted) {
         DocumentPicker.getDocumentAsync({ multiplea: true }).then((response) => {
+          this.setState({
+            isShowNotice: true,
+            noticeText: "文件正在上传中",
+          })
           const { uri, name, type } = response
-          console.log(response)
           if (type == "success") {
             FileSystem.getInfoAsync(uri, { md5: true }).then(async (response) => {
               const { md5 } = response
-              // console.log("md5====",md5)
               let configKey = "SCMP-FILE"
               let obj = {
                 "fileName": name,
@@ -241,66 +254,39 @@ class BatchQualityPage extends Component {
               const result = await reqMD5(obj)
               if (result.STATUS == "success" && result.MESSAGE == "MD5值存在") {
                 this.setState({
-                  isShow: true,
-                  title: "此文件已存在请勿重复上传"
+                  noticeText: "此文件已存在请勿重复上传",
                 }, () => {
-                  this.refs.ref1.changeState()
+                  setTimeout(() => {
+                    this.setState({
+                      isShowNotice: false,
+                    })
+                  }, 2000);
                 })
               } else {
                 FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 }).then(async (response) => {
-                  // console.log("response-----",response)
                   let file = { uri: uri, type: 'multipart/form-data', name: name }
                   let formData = new FormData();
                   formData.append('file', file)
                   formData.append("configKey", 'SCMP-FILE');
                   formData.append("md5", md5);
-                  // console.log("formdata", JSON.stringify(formData))
                   const result = await reqFileUpload(formData)
                   if (result.STATUS == "success") {
-                    if (this.state.uploadReport === "上传质检报告") {
                       let newID = [...this.state.loadFileID];
                       newID[index] = result.FILEID;
                       let newName = [...this.state.loadFileName];
                       newName[index] = name;
-
                       //修改页面
                       this.setState({
-                        isShow: true,
-                        title: result.MESSAGE,
+                        noticeText: result.MESSAGE,
                         loadFileName: newName,
                         loadFileID: newID
                       }, () => {
-                        this.refs.ref1.changeState()
+                        this.setState({
+                          isShowNotice: false,
+                        })
                         files.push({ name: name, fileId: result.FILEID })
-                        console.log("uploadFileName", this.state.uploadFileName)
-                        console.log("uploadFileID", this.state.uploadFileID)
                       })
-                    } else {
-                      let newID = [...this.state.loadFileID];
-                      newID[index] = result.FILEID;
-                      let newName = [...this.state.loadFileName];
-                      newName[index] = name;
-                      this.setState({
-                        isShow: true,
-                        title: result.MESSAGE,
-                        loadFileName: newName,
-                        loadFileID: newID
-
-                      }, () => {
-                        this.refs.ref1.changeState()
-                        files.push({ name: name, fileId: result.FILEID })
-                        console.log("uploadFileName", this.state.uploadFileName)
-                        console.log("uploadFileID", this.state.uploadFileID)
-                      })
-                    }
-                  } else {
-                    this.setState({
-                      isShow: true,
-                      title: result.MESSAGE
-                    }, () => {
-                      this.refs.ref1.changeState()
-                    })
-                  }
+                    } 
                 })
               }
             })
@@ -312,7 +298,16 @@ class BatchQualityPage extends Component {
 
   renderModifyView() {
     const { standarItemOfNoMechanical } = this.props;
-    const { mqualifiedQty, mshareQty, fileArray, loadFileName, isShow, title } = this.state;
+    const { 
+      mqualifiedQty, 
+      mshareQty, 
+      fileArray, 
+      loadFileName, 
+      isShow, 
+      title, 
+      scrapProcess, 
+      responsibleParty 
+    } = this.state;
     return (
 
       <View>
@@ -336,6 +331,28 @@ class BatchQualityPage extends Component {
             keyboardType="numeric"
           />
         </View>
+        {/* {
+              <View style={styles.wrapper_container} >
+                <View style={styles.row_container}>
+                  <Text>报废工序</Text>
+                  <TouchableOpacity
+                    style={styles.selectButton}
+                    onPress={() => { this.onChoiceScrapProcess() }}
+                  >
+                    <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{scrapProcess}</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.row_container}>
+                  <Text>责任方</Text>
+                  <TouchableOpacity
+                    style={styles.selectButton}
+                    onPress={() => { this.onChoiceResponsibleParty() }}
+                  >
+                    <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{responsibleParty}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+          } */}
         {
           loadFileName ?
             loadFileName.map((item, index) => {
@@ -396,9 +413,20 @@ class BatchQualityPage extends Component {
 
   saveModifyResult() {
 
-    const { postSaveResult, standarItemOfNoMechanical } = this.props;
-    const { mqualifiedQty, mshareQty, loadFileName, loadFileID } = this.state;
+    const { 
+      postSaveResult, 
+      standarItemOfNoMechanical } = this.props;
+    const { 
+      mqualifiedQty, 
+      mshareQty, 
+      loadFileName, 
+      loadFileID, 
+      scrapProcess, 
+      scrapProcessID,
+      responsibleParty,
+      responsiblePartyType } = this.state;
     const { proInspectionId, qltSHeetId } = this.props.navigation.state.params.item;
+
     if (!isExist(mqualifiedQty)) {
       this.showModelNoticeView("请填入合格数信息");
       return false;
@@ -412,16 +440,22 @@ class BatchQualityPage extends Component {
         return false;
       }
     })
-    console.log("uploadFileName", loadFileName)
-    console.log("uploadFileID", loadFileID)
 
-    let nameString = loadFileName.join("<")
-    let idString = loadFileID.join("<")
-    let filePath = [];
-    filePath.push(idString);
-    filePath.push(nameString);
-    let partFiles = filePath.join("|");
-    console.log("filePath.join(" | ")", filePath.join("|"))
+    let nameString;
+    let idString;
+    let partFiles;
+    if (loadFileName && loadFileID) {
+      nameString = loadFileName.join("<")
+      idString = loadFileID.join("<")
+      let filePath = [];
+      filePath.push(idString);
+      filePath.push(nameString);
+      partFiles = filePath.join("|");
+    }
+
+    if(partFiles === "|"){
+      partFiles =''
+    }
 
     let parameter = {};
     parameter.proInspectionId = proInspectionId;//质检单Id
@@ -430,7 +464,12 @@ class BatchQualityPage extends Component {
     parameter.qltInspectionStandards = standarItemOfNoMechanical;//标准项
     parameter.qltSHeetId = qltSHeetId;//已经保存要填
     parameter.partFiles = partFiles;
+    // parameter.technologyName = scrapProcess;
+    parameter.insTechnologyId = scrapProcessID;
+    // parameter.name = responsibleParty;
+    parameter.responsiblePartyId = responsiblePartyType;
     postSaveResult(parameter, (result) => {
+      console.log("result",result)
       this.setState({
         isShowNotice: true,
         noticeText: result,
@@ -446,9 +485,22 @@ class BatchQualityPage extends Component {
   }
 
   saveResult() {
-    const { postSaveResult, standarItemOfNoMechanical } = this.props;
-    const { qualified, wshareQty, uploadFileName, uploadFileID } = this.state;
-    const { proInspectionId, qltSHeetId } = this.props.navigation.state.params.item;
+    const { 
+      postSaveResult, 
+      standarItemOfNoMechanical} = this.props;
+    const { 
+      qualified, 
+      wshareQty, 
+      uploadFileName, 
+      uploadFileID,
+      scrapProcess, 
+      scrapProcessID,
+      responsibleParty,
+      responsiblePartyType} = this.state;
+    const { 
+      proInspectionId, 
+      qltSHeetId } = this.props.navigation.state.params.item;
+
     if (!isExist(qualified)) {
       this.showModelNoticeView("请填入合格数信息");
       return false;
@@ -463,13 +515,18 @@ class BatchQualityPage extends Component {
       }
     })
 
-    let nameString = uploadFileName.join("<")
-    let idString = uploadFileID.join("<")
-    let filePath = [];
-    filePath.push(idString);
-    filePath.push(nameString);
-    let partFiles = filePath.join("|");
-    console.log("filePath.join(" | ")", filePath.join("|"))
+    let nameString;
+    let idString;
+    let partFiles;
+
+    if (uploadFileName && uploadFileID) {
+      nameString = uploadFileName.join("<")
+      idString = uploadFileID.join("<")
+      let filePath = [];
+      filePath.push(idString);
+      filePath.push(nameString);
+      partFiles = filePath.join("|");
+    }
 
     let parameter = {};
     parameter.proInspectionId = proInspectionId;//质检单Id
@@ -478,18 +535,23 @@ class BatchQualityPage extends Component {
     parameter.qltInspectionStandards = standarItemOfNoMechanical;//标准项
     parameter.qltSHeetId = qltSHeetId;//已经保存要填
     parameter.partFiles = partFiles;
+    // parameter.technologyName = scrapProcess;
+    parameter.insTechnologyId = scrapProcessID;
+    // parameter.name = responsibleParty;
+    parameter.responsiblePartyId = responsiblePartyType;
     postSaveResult(parameter, (result) => {
+      console.log("result",result)
       this.setState({
         isShowNotice: true,
         noticeText: result,
         saveModifyResult: false
-      })
+      });
       setTimeout(() => {
         this.setState({
           isShowNotice: false,
         })
         NavigationManager.goPage("TechnologyProcessPage");
-      }, 1500)
+      }, 1500);
     });
   }
 
@@ -533,7 +595,7 @@ class BatchQualityPage extends Component {
 
   renderAddView() {
     const { standarItemOfNoMechanical, } = this.props;
-    const { qualified, wshareQty, uploadFileName } = this.state;
+    const { qualified, wshareQty, uploadFileName, scrapProcess, responsibleParty } = this.state;
     return (
       <View>
         <View style={styles.warpper}>
@@ -558,13 +620,34 @@ class BatchQualityPage extends Component {
             keyboardType="numeric"
           />
         </View>
+        {/* {
+           <View style={styles.wrapper_container} >
+             <View style={styles.row_container}>
+               <Text>报废工序</Text>
+               <TouchableOpacity
+                 style={styles.selectButton}
+                 onPress={() => { this.onChoiceScrapProcess() }}
+               >
+                 <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{scrapProcess}</Text>
+               </TouchableOpacity>
+             </View>
+             <View style={styles.row_container}>
+               <Text>责任方</Text>
+               <TouchableOpacity
+                 style={styles.selectButton}
+                 onPress={() => { this.onChoiceResponsibleParty() }}
+               >
+                 <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{responsibleParty}</Text>
+               </TouchableOpacity>
+             </View>
+           </View>
+       } */}
         <TouchableOpacity
           style={styles.uploadM}
           onPress={this.onRNFileSelector}
         >
           <Text>上传质检报告</Text>
         </TouchableOpacity>
-        {/* 上传只需要文件名字 */}
         {uploadFileName.map((item) => {
           return (<View
             style={styles.uploadContain}
@@ -641,7 +724,6 @@ class BatchQualityPage extends Component {
         if (granted) {
           const token = await AsyncStorage.getItem("token")
           const getProgress = (downloadProgress) => {
-            console.log("downloadprogress", downloadProgress)
           }
           const downloadResumable = FileSystem.createDownloadResumable(
             `http://47.108.27.242:8080/file/file-center/fileDownload?fileName=${fileName}&configKey=SCMP-FILE&fileId=${fileId}`,
@@ -657,9 +739,7 @@ class BatchQualityPage extends Component {
           try {
             const { uri } = await downloadResumable.downloadAsync();
             MediaLibrary.createAssetAsync(uri).then((response) => {
-              console.log("创建资产", response)
             })
-            console.log('Finished downloading to ', uri);
             this.setState({
               title: `     下载成功请在上传的文件夹里面里面查看下载的文件`,
               isShow: true
@@ -755,14 +835,28 @@ class BatchQualityPage extends Component {
     )
   }
 
+  renderError() {
+    const { isSubmit, qualifiedQty } = this.props.navigation.state.params.item;
+
+    return (
+      <View>
+        <Text>后端返回字段：没有对应页面展示</Text>
+        <Text>是否有提交按钮{JSON.stringify(isSubmit)}</Text>
+        <Text>质检结果信息信息{JSON.stringify(qualifiedQty)}</Text>
+      </View>
+    )
+  }
+
   render() {
     const { qualifiedQty, isSubmit } = this.props.navigation.state.params.item;
     if (qualifiedQty && isSubmit) {//有质检结论&&有提交按钮===修改页面
       return this.renderModifyPage();
-    } else if (!qualifiedQty) {//没有质检结论===新增页面
+    } else if (!qualifiedQty && isSubmit) {//没有质检结论===新增页面
       return this.renderAddPage();
     } else if (qualifiedQty && !isSubmit) {//有质检结论&&无提交按钮===详情页面
       return this.renderDetailPage();
+    } else if (!qualifiedQty && !isSubmit) {
+      return this.renderError();
     }
   }
 }
@@ -843,7 +937,36 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "#ccc",
     paddingLeft: 10,
-  }
+  },
+  wrapper_container: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  row_container: {
+    flexDirection: "row",
+    justifyContent:"flex-start",
+    alignItems: "center",
+    width: deviceWidthDp * 0.4,
+    marginTop: 10
+  },
+  selectButton: {
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: "#FFF",
+    paddingLeft: 10,
+    paddingRight:10,
+    backgroundColor: Constants.BUTTON,
+    width: deviceWidthDp * 0.2,
+    borderRadius: 50,
+    color: 'white',
+    marginLeft: 15
+  },
+  selectButtonText: {
+    color: 'white'
+  },
 })
 
 // 请求无零件号质检结果的message
@@ -859,8 +982,8 @@ const mapDispatchToProps = (dispatch) => ({
   postSubmitResult(qualified, fit, industrialWaste, materialWaste, callBack) {
     dispatch(postSubmitResult(qualified, fit, industrialWaste, materialWaste, callBack))
   },
-  postSaveResult(qualified, fit, industrialWaste, materialWaste, callBack) {
-    dispatch(postSaveResult(qualified, fit, industrialWaste, materialWaste, callBack))
+  postSaveResult(parameter, callBack) {
+    dispatch(postSaveResult(parameter, callBack))
   },
   // 传检验单Id 和 零件号信息 无零件号是没有零件号的
   getStandarItemDetailOfNoMechanical(technologyId, proInspectionId) {

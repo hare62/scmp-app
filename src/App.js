@@ -1,5 +1,5 @@
 if(true) {
-  import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
+	import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
 }
 
 import React from 'react';

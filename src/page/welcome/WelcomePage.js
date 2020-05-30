@@ -11,9 +11,10 @@ class WelcomePage extends Component {
   componentDidMount() {
     this.timer = setTimeout(async() => {
       const { navigation } = this.props;
+      //QualityInspectorPage  LoginPage
       navigation.navigate('LoginPage');
     }, 2000);
-  }
+  }   
   UNSAFE_componentWillMount() {
     this.timer && clearTimeout(this.timer);
   }

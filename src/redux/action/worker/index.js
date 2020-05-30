@@ -70,7 +70,7 @@ export const getPullUpRefreshDefaultSheetList = () => {
     let sheetListData = new SheetListData();
     let url;
     const Range = sheetListData.generateHeaderData();
-
+    
     if (isPageUrl) {
       url = `${host}/manufacture/pro-inventory`;
     } else {
@@ -188,8 +188,6 @@ export const getPullUpRefreshFilterSheetList = (key, value) => {
         .then((responseData) => {
           const { jsonData, headers } = responseData;
           sheetListData.appendDatas(jsonData);
-
-          // 为了触发reducer
           let newSheetListData = new SheetListData();
           newSheetListData.copy(sheetListData);
           newSheetListData.parseHeaderData(headers);

@@ -91,13 +91,14 @@ class DetailPage extends Component {
   }
 
   renderDetailView = () => {
-    const { planDate,
+    const { 
+      planDate,
       sheetCode,
       matName,
       matQty,
       actualComplete,
       sheetStatus,
-      callBack } = this.props.navigation.state.params;
+    } = this.props.navigation.state.params;
 
     return (
       <View style={styles.container}>

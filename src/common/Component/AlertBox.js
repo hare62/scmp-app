@@ -13,7 +13,6 @@ class AlertBox extends React.Component {
             isVisible: true,
             navigation: navigation
         }, () => {
-            // console.log("state",this.state.navigation)
         })
     }
     toChangeVisible = () => {

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  TextInput
 } from 'react-native';
 import NavigationManager from '../../navigation/NavigationManager';
 import NavigationBar from '../../common/Component/NavigationBar';
@@ -15,7 +14,6 @@ import NormalTremView from './component/NormalTremView';
 import { connect } from 'react-redux';
 import {
   postAddMechanical,
-  postMD5Files,
   getStandarItem,
   onChangeStandardItemList
 } from '../../redux/action/qualityInspector/index';
@@ -26,11 +24,10 @@ import * as MediaLibrary from 'expo-media-library';
 import { reqFileUpload, reqMD5 } from '../../api';
 import AlertBox from '../../common/Component/AlertBox';
 import { FileUploadSave, getPartFile } from '../../redux/action/qualityInspector/index';
-import { Camera } from 'expo-camera';
 import ModelNoticeView from '../../common/Component/ModelNoticeView';
 import { getTechnologyProcessList } from '../../redux/action/qualityInspector/index';
 import { isExist } from '../../utils/Util';
-import { isMockData } from '../../utils/Config';
+import { cloneNode } from '@babel/types';
 
 class AddMechanicalPage extends Component {
   constructor(props) {
@@ -53,6 +50,10 @@ class AddMechanicalPage extends Component {
       loadFileID: "",
       loadFileName: "",
       fileArray: [],//下载内容
+      scrapProcess: "点击选择",
+      scrapProcessID: "",
+      responsibleParty: "点击选择",
+      responsiblePartyType: "",
     }
     this.submitResult = this.submitResult.bind(this);
     this.submitModifyResult = this.submitModifyResult.bind(this);
@@ -65,11 +66,35 @@ class AddMechanicalPage extends Component {
     this.onRNFileSelector = this.onRNFileSelector.bind(this);
     this.changeAddResult = this.changeAddResult.bind(this);
     this.showModelNoticeView = this.showModelNoticeView.bind(this);
-    this.onReplaceFile = this.onReplaceFile.bind(this);
+    this.onReplaceFileAndReUpload = this.onReplaceFileAndReUpload.bind(this);
+    this.onChoiceScrapProcess = this.onChoiceScrapProcess.bind(this);
+    this.onChoiceResponsibleParty = this.onChoiceResponsibleParty.bind(this);
+
+    props.navigation.addListener('didFocus', () => { this.init() });
   }
 
   componentDidMount() {
-    const { technologyId, proInspectionId, isAddPage } = this.props.navigation.state.params;
+    this.init();
+  }
+
+  init() {
+    const { technologyId, proInspectionId, isAddPage, scrapProcessItem, responsiblePartyItem } = this.props.navigation.state.params;
+    if (scrapProcessItem) { // 修改报废工序
+      this.setState({
+        scrapProcess: scrapProcessItem.technologyName,
+        scrapProcessID: scrapProcessItem.technologyId
+      })
+    }
+
+    if (responsiblePartyItem) {
+      console.log(responsiblePartyItem)
+      this.setState({
+        responsibleParty: responsiblePartyItem.name,
+        responsiblePartyType: responsiblePartyItem.responsiblePartyType
+      }, () => {
+        console.warn("responsiblePartyType", this.state.responsiblePartyType)
+      })
+    }
     const { getStandarItem, } = this.props;
     let mpartNo = this.props.navigation.state.params.partNo;
     let mqltConclusion = this.props.navigation.state.params.qltConclusion;
@@ -85,31 +110,36 @@ class AddMechanicalPage extends Component {
         })
       });
     } else {//修改和详情页面
-      console.log("qltSheetId", qltSheetId)
       let { getPartFile } = this.props;
       //  qltSheetId = "a471a88acbe74916b7471d3a3a718f1f"//假数据
       getPartFile({ qltSheetId }, (partFiles) => {
-        console.log("后端返回结果：", partFiles);
         partFiles = partFiles.substring(0, partFiles.length - 1);
-        console.log("看看partFiles", partFiles)
+        console.log("getPartFile1111",partFiles)
         if (partFiles) {
           let arr = partFiles.split("|");
-          console.log(arr);
+          console.log("arr",arr)
           // let uploadFileName =  ["IMG_20200523_082243.jpg", "IMG_20200523_082240.jpg"];
           // let uploadFileID = [355, 356];
           let fileID = arr[0].split("<");
           let fileName = arr[1].split("<");
-          for (let i = 0; i < (fileID.length - 1); i++) {
+          console.log("fileID",fileID)
+          console.log("fileName",fileName)
+          // let fileArray;
+          for (let i = 0; i < (fileID.length); i++) {
             let data = {};
             data.fileId = fileID[i];
             data.name = fileName[i];
+            console.log("-----",data)
             fileArray.push(data);
           }
+          console.log("-----",fileArray)
           //修改页面
           this.setState({
             fileArray: fileArray,
             uploadFileName: fileName,
             uploadFileID: fileID
+          },()=>{
+            console.log("fileArray",this.state.fileArray)
           })
         }
       });
@@ -127,15 +157,13 @@ class AddMechanicalPage extends Component {
           mpartNo: mpartNo,
         })
       });
-    } 
+    }
+
   }
 
-
-
-  onRNFileSelector() {  
+  onRNFileSelector() {
     const { files } = this.state
     MediaLibrary.requestPermissionsAsync().then(async (response) => {
-      // console.log("请求权限",response)
       const { granted } = response
       if (granted) {
         DocumentPicker.getDocumentAsync({ multiplea: true }).then((response) => {
@@ -144,12 +172,9 @@ class AddMechanicalPage extends Component {
             isShowNotice: true,
             noticeText: "文件正在上传中",
           })
-          console.log(response)
           if (type == "success") {
             FileSystem.getInfoAsync(uri, { md5: true }).then(async (response) => {
               const { md5 } = response
-              // console.log("md5====",md5)
-              let configKey = "SCMP-FILE"
               let obj = {
                 "fileName": name,
                 "md5": md5,
@@ -164,29 +189,24 @@ class AddMechanicalPage extends Component {
                     this.setState({
                       isShowNotice: false,
                     })
-                  }, 5000)
+                  }, 2000)
                 })
               } else {
                 const { FileUploadSave } = this.props
                 FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 }).then(async (response) => {
-                  // console.log("response-----",response)
                   let file = { uri: uri, type: 'multipart/form-data', name: name }
                   let formData = new FormData();
                   formData.append('file', file)
                   formData.append("configKey", 'SCMP-FILE');
                   formData.append("md5", md5);
-                  // console.log("formdata", JSON.stringify(formData))
-                  const result = await reqFileUpload(formData)
+                  const result = await reqFileUpload(formData);
                   if (result.STATUS == "success") {
                     if (this.state.uploadReport === "上传质检报告") {
                       let uploadFileName = [...this.state.uploadFileName];
                       uploadFileName.push(name);
                       let uploadFileID = [...this.state.uploadFileID];
                       uploadFileID.push(result.FILEID);
-                      // list.push(name);
                       this.setState({
-                        // isShow: true,
-                        // title: result.MESSAGE,
                         noticeText: result.MESSAGE,
                         uploadFileName: uploadFileName,
                         uploadFileID: uploadFileID
@@ -194,42 +214,28 @@ class AddMechanicalPage extends Component {
                         this.setState({
                           isShowNotice: false,
                         })
-                        // this.refs.ref1.changeState()
                         files.push({ name: name, fileId: result.FILEID })
                         FileUploadSave(files)
-                        console.log("uploadFileName", this.state.uploadFileName)
-                        console.log("uploadFileID", this.state.uploadFileID)
                       })
                     } else {
                       let uploadFileName = [...this.state.uploadFileName];
                       uploadFileName.push(name);
                       let uploadFileID = [...this.state.uploadFileID];
                       uploadFileID.push(result.FILEID);
-                      // list.push(name);
                       this.setState({
                         noticeText: result.MESSAGE,
-                        // isShow: true,
-                        // title: result.MESSAGE,
                         uploadFileName: uploadFileName,
                         uploadFileID: uploadFileID
                       }, () => {
-                        this.setState({
-                          isShowNotice: false,
-                        })
-                        // this.refs.ref1.changeState()
+                        setTimeout(() => {
+                          this.setState({
+                            isShowNotice: false,
+                          })
+                        }, 3000);
                         files.push({ name: name, fileId: result.FILEID })
                         FileUploadSave(files)
-                        console.log("uploadFileName", this.state.uploadFileName)
-                        console.log("uploadFileID", this.state.uploadFileID)
                       })
                     }
-                  } else {
-                    this.setState({
-                      isShow: true,
-                      title: result.MESSAGE
-                    }, () => {
-                      // this.refs.ref1.changeState()
-                    })
                   }
                 })
               }
@@ -240,20 +246,20 @@ class AddMechanicalPage extends Component {
     })
   }
 
-  onReplaceFile(index) {
+  onReplaceFileAndReUpload(index) {
     const { files } = this.state
     MediaLibrary.requestPermissionsAsync().then(async (response) => {
-      // console.log("请求权限",response)
       const { granted } = response
       if (granted) {
         DocumentPicker.getDocumentAsync({ multiplea: true }).then((response) => {
+          this.setState({
+            isShowNotice: true,
+            noticeText: "文件正在上传中",
+          })
           const { uri, name, type } = response
-          console.log(response)
           if (type == "success") {
             FileSystem.getInfoAsync(uri, { md5: true }).then(async (response) => {
               const { md5 } = response
-              // console.log("md5====",md5)
-              let configKey = "SCMP-FILE"
               let obj = {
                 "fileName": name,
                 "md5": md5,
@@ -262,87 +268,56 @@ class AddMechanicalPage extends Component {
               const result = await reqMD5(obj)
               if (result.STATUS == "success" && result.MESSAGE == "MD5值存在") {
                 this.setState({
-                  isShow: true,
-                  title: "此文件已存在请勿重复上传"
+                  noticeText: "此文件已存在请勿重复上传",
                 }, () => {
-                  this.refs.ref1.changeState()
+                  setInterval(() => {
+                    this.setState({
+                      isShowNotice: false,
+                    })
+                  }, 2000);
                 })
               } else {
                 const { FileUploadSave } = this.props
                 FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 }).then(async (response) => {
-                  // console.log("response-----",response)
                   let file = { uri: uri, type: 'multipart/form-data', name: name }
                   let formData = new FormData();
-                  formData.append('file', file)
+                  formData.append('file', file);
                   formData.append("configKey", 'SCMP-FILE');
                   formData.append("md5", md5);
-                  // console.log("formdata", JSON.stringify(formData))
                   const result = await reqFileUpload(formData)
                   if (result.STATUS == "success") {
-                    if (this.state.uploadReport === "上传质检报告") {
-                      let newFileArray = [...this.state.fileArray]
-                      console.log("--now")
-                      newFileArray[index] = { fileId: result.FILEID, name: name }
-
-                      //eg: let newFileArray= [
-                      //   {fileId:'361',name:'IMG_20200523_084828.jpg'},
-                      //   {fileId:'362',name:'IMG_20200523_084826.jpg'},
-                      // ]
-                      let newID=[];
-                      let newName=[];
-                      for (let i=0;i<newFileArray.length;i++){
-                        newID.push(newFileArray[i].fileId)
-                        newName.push(newFileArray[i].name)
-                      }
-                      console.log(newID,newName)
-                        //修改页面
-                      this.setState({
-                        isShow: true,
-                        title: result.MESSAGE,
-                        fileArray: newFileArray,
-                        uploadFileName: newName,
-                        uploadFileID: newID
-                      }, () => {
-                        this.refs.ref1.changeState()
-                        files.push({ name: name, fileId: result.FILEID })
-                        FileUploadSave(files)
-                        console.log("uploadFileName", this.state.uploadFileName)
-                        console.log("uploadFileID", this.state.uploadFileID)
-                      })
-                    } else {
-                      let newFileArray = [...this.state.fileArray]
-                      newFileArray[index] = { fileId: result.FILEID, name: name }
-                       //eg: let newFileArray= [
-                      //   {fileId:'361',name:'IMG_20200523_084828.jpg'},
-                      //   {fileId:'362',name:'IMG_20200523_084826.jpg'},
-                      // ]
-                      let newID=[];
-                      let newName=[];
-                      for (let i=0;i<newFileArray.length;i++){
-                        newID.push(newFileArray[i].fileId)
-                        newName.push(newFileArray[i].name)
-                      }
-                      this.setState({
-                        isShow: true,
-                        title: result.MESSAGE,
-                        fileArray: newFileArray,
-                        uploadFileName: newName,
-                        uploadFileID: newID
-
-                      }, () => {
-                        this.refs.ref1.changeState()
-                        files.push({ name: name, fileId: result.FILEID })
-                        FileUploadSave(files)
-                        console.log("uploadFileName", this.state.uploadFileName)
-                        console.log("uploadFileID", this.state.uploadFileID)
-                      })
+                    //eg: let newFileArray= [
+                    //   {fileId:'361',name:'IMG_20200523_084828.jpg'},
+                    //   {fileId:'362',name:'IMG_20200523_084826.jpg'},
+                    // ]
+                    let newFileArray = [...this.state.fileArray];
+                    //replace files
+                    newFileArray[index] = { fileId: result.FILEID, name: name };
+                    //reloading files
+                    // if (!index) {
+                    //   // let obj = { fileId: result.FILEID, name: name };
+                    //   // newFileArray.push(obj);
+                    //   newFileArray=[{fileId:"fileID",name:"name"}]
+                    // }
+                    let newID = [];
+                    let newName = [];
+                    for (let i = 0; i < newFileArray.length; i++) {
+                      newID.push(newFileArray[i].fileId)
+                      newName.push(newFileArray[i].name)
                     }
-                  } else {
                     this.setState({
-                      isShow: true,
-                      title: result.MESSAGE
+                      fileArray: newFileArray,
+                      uploadFileName: newName,
+                      uploadFileID: newID,
+                      noticeText: result.MESSAGE,
                     }, () => {
-                      this.refs.ref1.changeState()
+                      files.push({ name: name, fileId: result.FILEID });
+                      FileUploadSave(files);
+                      setTimeout(() => {
+                        this.setState({
+                          isShowNotice: false,
+                        })
+                      }, 3000);
                     })
                   }
                 })
@@ -353,8 +328,6 @@ class AddMechanicalPage extends Component {
       }
     })
   }
-
-
 
   renderTabLeftButton() {
     return (
@@ -399,7 +372,6 @@ class AddMechanicalPage extends Component {
     this.setState({
       qualityResult
     });
-
   }
 
   changeModifyQualityResult(qualityResult) {
@@ -422,7 +394,6 @@ class AddMechanicalPage extends Component {
         isShowNotice: true,
         noticeText: result,
       })
-
       const { sheetId } = this.props.navigation.state.params;
       const { getTechnologyProcessList } = this.props;
       getTechnologyProcessList(sheetId);
@@ -449,7 +420,16 @@ class AddMechanicalPage extends Component {
   }
 
   submitModifyResult() {
-    const { mpartNo, mqltConclusion, realNumber, uploadFileID, uploadFileName } = this.state;
+    const {
+      mpartNo,
+      mqltConclusion,
+      uploadFileID,
+      uploadFileName,
+      scrapProcess,
+      scrapProcessID,
+      responsibleParty,
+      responsiblePartyType
+    } = this.state;
     const { postAddMechanical, standardItemList } = this.props;
     const { proInspectionId, qltSheetId } = this.props.navigation.state.params;
     let result = {};
@@ -469,23 +449,34 @@ class AddMechanicalPage extends Component {
       }
     }
 
+    let nameString;
+    let idString;
+    let partFiles;
+
     // let uploadFileName =  ["IMG_20200523_082243.jpg", "IMG_20200523_082240.jpg"];
     // let uploadFileID = [355, 356];
-
-    let nameString = uploadFileName.join("<")
-    let idString = uploadFileID.join("<")
-    let filePath = [];
-    filePath.push(idString);
-    filePath.push(nameString);
-    let partFiles = filePath.join("|");
-    console.log("filePath.join(" | ")", filePath.join("|"))
-
+    // TODO
+    
+    if (uploadFileName && uploadFileID) {
+      nameString = uploadFileName.join("<");
+      idString = uploadFileID.join("<");
+      let filePath = [];
+      filePath.push(idString);
+      filePath.push(nameString);
+      partFiles = filePath.join("|");
+    }
+    
     result.proInspectionId = proInspectionId;
     result.partNo = mpartNo;
     result.qltConclusion = mqltConclusion;
     result.qltInspectionStandards = standardItemList;
     result.qltSheetId = qltSheetId;
     result.partFiles = partFiles;
+    // result.technologyName = scrapProcess;
+    result.insTechnologyId = scrapProcessID;
+    // result.name = responsibleParty;
+    result.responsiblePartyId = responsiblePartyType;
+
     postAddMechanical(result, (result) => {
       this.setState({
         isShowNotice: true,
@@ -507,7 +498,14 @@ class AddMechanicalPage extends Component {
 
   submitAddResult() {
     //新增保存
-    const { mechanical, qualityResult, realNumber, uploadFileName, uploadFileID } = this.state;
+    const { mechanical,
+      qualityResult,
+      uploadFileName,
+      uploadFileID,
+      scrapProcess,
+      scrapProcessID,
+      responsibleParty,
+      responsiblePartyType } = this.state;
     const { postAddMechanical, standardItemList } = this.props;
     const { proInspectionId } = this.props.navigation.state.params;
 
@@ -526,33 +524,43 @@ class AddMechanicalPage extends Component {
       }
     }
 
-    let nameString = uploadFileName.join("<")
-    let idString = uploadFileID.join("<")
-    let filePath = [];
-    filePath.push(idString);
-    filePath.push(nameString);
-    let partFiles = filePath.join("|");
-    console.log("filePath.join(" | ")", filePath.join("|"))
+    let nameString;
+    let idString;
+    let partFiles;
 
+    console.log("uploadFileName",uploadFileName)
+    console.log("uploadFileName",uploadFileName)
+    if (uploadFileName  && uploadFileID) {
+      nameString = uploadFileName.join("<")
+      idString = uploadFileID.join("<")
+      let filePath = [];
+      filePath.push(idString);
+      filePath.push(nameString);
+      partFiles = filePath.join("|");
+    }
+    if(partFiles === "|"){
+      partFiles =''
+    }
+    console.log("partFiles",partFiles)
+  
     let result = {};
     result.proInspectionId = proInspectionId;
     result.partNo = mechanical;
     result.qltConclusion = qualityResult;
     result.qltInspectionStandards = standardItemList;
     result.partFiles = partFiles;
-
-
+    // result.technologyName = scrapProcess;
+    result.insTechnologyId = scrapProcessID;
+    // result.name = responsibleParty;
+    result.responsiblePartyId = responsiblePartyType;
     // 提交成功后，需要把标准项的值都删了
-
     postAddMechanical(result, (result) => {
       this.setState({
         isShowNotice: true,
         noticeText: result,
       })
-
       // const { sheetId } = this.props.navigation.state.params.item;
       // const { getTechnologyProcessList } = this.props;
-
       // getTechnologyProcessList(sheetId);
       setTimeout(() => {
         this.setState({
@@ -569,9 +577,18 @@ class AddMechanicalPage extends Component {
     })
   }
 
+  onChoiceScrapProcess() {
+    const { proInspectionId } = this.props.navigation.state.params;
+    NavigationManager.push("ScrapProcessPage", { proInspectionId });
+  }
+
+  onChoiceResponsibleParty() {
+    NavigationManager.push("ResponsiblePartyPage");
+  }
+
   renderModifyPage() {
     const { mechanical, mqltConclusion, uploadReport, isDetailPage,
-      title, isShow, standarItemData, mpartNo, uploadFileName, loadFileName, fileArray } = this.state;
+      title, isShow, standarItemData, mpartNo, uploadFileName, loadFileName, fileArray, scrapProcess, responsibleParty } = this.state;
     const { sheetId, partNumber, isSubmit } = this.props.navigation.state.params;
     const { standardItemList } = this.props;
     return (
@@ -588,9 +605,13 @@ class AddMechanicalPage extends Component {
             mechanical={mpartNo}
             changeQualityResult={this.changeModifyQualityResult}
             qualityResult={mqltConclusion}
-            onReplaceFile={this.onReplaceFile}
+            onReplaceFile={this.onReplaceFileAndReUpload}
             isModifyPage={true}
             fileArray={fileArray}
+            onChoiceScrapProcess={this.onChoiceScrapProcess}
+            onChoiceResponsibleParty={this.onChoiceResponsibleParty}
+            scrapProcess={scrapProcess}
+            responsibleParty={responsibleParty}
           />
           {
             standarItemData ?
@@ -625,7 +646,18 @@ class AddMechanicalPage extends Component {
   }
 
   renderAddPage() {
-    const { mechanical, qualityResult, uploadReport, isDetailPage, title, isShow, standarItemData, uploadFileName } = this.state;
+    const {
+      mechanical,
+      qualityResult,
+      uploadReport,
+      isDetailPage,
+      title,
+      isShow,
+      standarItemData,
+      uploadFileName,
+      scrapProcess,
+      responsibleParty
+    } = this.state;
     const { sheetId, partNumber, isSubmit } = this.props.navigation.state.params;
     return (
       <View style={styles.contains}>
@@ -644,6 +676,10 @@ class AddMechanicalPage extends Component {
             onRNFileSelector={this.onRNFileSelector}
             uploadReport={uploadFileName}
             isDetailPage={isDetailPage}
+            onChoiceScrapProcess={this.onChoiceScrapProcess}
+            onChoiceResponsibleParty={this.onChoiceResponsibleParty}
+            scrapProcess={scrapProcess}
+            responsibleParty={responsibleParty}
             isAddPage={true}
           />
           {
@@ -681,7 +717,18 @@ class AddMechanicalPage extends Component {
 
   renderDetailPage() {
     // 详情页面可以直接拿到后端数据就显示上去
-    const { mechanical, uploadReport, isDetailPage, title, isShow, standarItemData, loadFileName, fileArray } = this.state;
+    const {
+      mechanical,
+      uploadReport,
+      isDetailPage,
+      title,
+      isShow,
+      standarItemData,
+      loadFileName,
+      fileArray,
+      scrapProcess,
+      responsibleParty
+    } = this.state;
     const { sheetId, partNumber, isSubmit } = this.props.navigation.state.params;
     const { partNo, qltConclusionValue } = partNumber[0];
     const { standardItemList } = this.props;
@@ -704,6 +751,8 @@ class AddMechanicalPage extends Component {
             isDetailPage={true}
             fileArray={fileArray}
             loadFileName={loadFileName}
+            scrapProcess={scrapProcess}
+            responsibleParty={responsibleParty}
           />
           {
             standardItemList ?
@@ -748,7 +797,7 @@ class AddMechanicalPage extends Component {
       return this.renderAddPage();
     }
 
-    if (isSubmit) {//
+    if (isSubmit) {
       return this.renderModifyPage();
     } else if (!isSubmit) {
       return this.renderDetailPage();
@@ -874,9 +923,6 @@ const mapDispatchToProps = (dispatch) => ({
   //保存新增零件号
   postAddMechanical(result, callBack) {
     dispatch(postAddMechanical(result, callBack))
-  },
-  postMD5Files(filepath) {
-    dispatch(postMD5Files(filepath))
   },
   FileUploadSave(fileName, fileID) {
     dispatch(FileUploadSave(fileName, fileID))

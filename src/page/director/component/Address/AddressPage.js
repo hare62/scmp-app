@@ -14,7 +14,6 @@ import NavigationManager from '../../../../navigation/NavigationManager';
 import Constants from '../../../../utils/Constants';
 import { connect } from 'react-redux';
 import { getAddressList, getSearchAddressList } from '../../../../redux/action/director';
-// import { getColor } from '../../../../utils/Common';
 import { getColor } from '../../../../utils/Common';
 
 class AddressPage extends Component {
@@ -49,7 +48,6 @@ class AddressPage extends Component {
   }
 
   SheetItem(data) {
-    //item {USER_NM,USER_ID}用户明和用户ID
     const { item } = data;
     const userName = item.USER_NM;
     const userID = item.USER_ID;

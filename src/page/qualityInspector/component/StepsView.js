@@ -3,7 +3,7 @@ import {
   View,
   Text,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import NavigationManager from '../../../navigation/NavigationManager';
 import { qualityStatusView } from '../../../utils/Common';
@@ -87,28 +87,26 @@ class StepsView extends Component {
             <Text style={{ fontSize: 20, color: '#616161' }}>
               报工数量{number}
             </Text>
-
             <Text style={{ fontSize: 20, color: '#616161' }}>
               {equipment}
             </Text>
             {qualityStatusView(status)}
           </View>
-
         </View>
+     
         {/* <View>
           <Text>
-            technologyId{JSON.stringify(technologyId)}
+            technologyId:{JSON.stringify(technologyId)}
           </Text>
           <Text>
-            proInspectionId{JSON.stringify(proInspectionId)}
+            proInspectionId:{JSON.stringify(proInspectionId)}
           </Text>
           <Text>
-            是否有提交按钮{JSON.stringify(isSubmit)}
+            是否有提交按钮:{JSON.stringify(isSubmit)}
           </Text>
           <Text>
-            零件号信息{JSON.stringify(partNumber)}
+            零件号信息:{JSON.stringify(partNumber)}
           </Text>
-
         </View> */}
       </TouchableOpacity>
     )
@@ -126,7 +124,6 @@ class StepsView extends Component {
     this.setState({
       visible: false
     });
-    // 传的参数是flatlist的里面有item和index
     const { hasMechanical, sheetId } = this.props;
     NavigationManager.push('MechanicalMessagePage', { hasMechanical, sheetId, ...data });
   }
@@ -134,10 +131,8 @@ class StepsView extends Component {
   render() {
     let { technologyProcessList } = this.props;
     let { visible, source } = this.state;
-    // console.log("StepsViewthis.props", this.props)
-    // console.log("StepsViewthis.props.navigation.state.params", this.props.navigation.state.params)
     return (
-      <View>
+      <View style={{marginBottom:300}}>
         <FlatList
           data={technologyProcessList}
           renderItem={data => this.renderTechnologyProcessList(data, this.onPopModalView)}

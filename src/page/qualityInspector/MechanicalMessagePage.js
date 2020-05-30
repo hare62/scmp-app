@@ -21,6 +21,7 @@ import Constants from '../../utils/Constants';
 import MechanicalDetailView from './component/MechanicalDetailView';
 import Toast from 'react-native-easy-toast';
 import ModelNoticeView from '../../common/Component/ModelNoticeView';
+import { isMockData } from '../../utils/Config';
 
 class MechanicalMessagePage extends Component {
   constructor(props) {
@@ -93,9 +94,11 @@ class MechanicalMessagePage extends Component {
 
     const { hasMechanical, item, sheetId } = this.props.navigation.state.params;
     const { partNumber, proInspectionId, isSubmit, number } = item;
-    const { mechanicalList } = this.props;
+    let mechanicalList;
+    mechanicalList = this.props.mechanicalList;
     // mechanicalList 异步请求到的数据 所以需要等到mechanicalList存在后才会有length这个属性
     const isAddPage = true;
+  
     return (
               (mechanicalList && hasMechanical === '01' && isSubmit && mechanicalList.length < number) ?
                 <TouchableOpacity
@@ -127,7 +130,6 @@ class MechanicalMessagePage extends Component {
   }
 
   renderModifyPage() {
-    // const { mechanicalList } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.block}>
@@ -213,14 +215,13 @@ class MechanicalMessagePage extends Component {
 
   renderError() {
     const { isSubmit, partNumber } = this.props.navigation.state.params.item;
-
     return (
       <View>
         <Text>后端返回字段：没有对应页面展示</Text>
         <Text>是否有提交按钮{JSON.stringify(isSubmit)}</Text>
         <Text>是否存在零件号信息{JSON.stringify(partNumber)}</Text>
       </View>
-    )
+    );
   }
 
   render() {
