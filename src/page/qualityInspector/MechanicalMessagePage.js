@@ -226,6 +226,7 @@ class MechanicalMessagePage extends Component {
 
   render() {
     const { isSubmit, partNumber } = this.props.navigation.state.params.item;
+   
     if (partNumber && isSubmit) {//有质检结论&&有提交按钮===修改页面
       return this.renderModifyPage();
     } else if (!partNumber) {//没有质检结论===新增页面

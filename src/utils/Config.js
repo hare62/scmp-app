@@ -6,6 +6,7 @@ export const AppEnvEnum = {
   manufacture: 'manufacture', //manufacture生产模块
   login: 'login', //login登录模块
   file:'file',//文件路径ue
+  smsVerification:"smsVerification"
 }
 
 //是否为mock数据
@@ -31,9 +32,11 @@ export const getHost = (type) => {
     case AppEnvEnum.login://192.168.0.190:7080  
       return 'http://47.108.27.242:80';
     case AppEnvEnum.manufacture:
-      return 'http://47.108.27.242:8080/manufacture';//47.108.27.242:8080/manufacture   192.168.125.116:8783
+      return 'http://47.108.27.242:8080/manufacture';//阿里:47.108.27.242:8080/manufacture   192.168.125.116:8783  0.127
     case AppEnvEnum.file:
       return 'http://47.108.27.242:80';
+    case AppEnvEnum.smsVerification:
+    return 'http://192.168.0.153:7080';//李昌次接口http://192.168.0.153:7080   47.108.27.242:7080
     default:
       return null;
   }

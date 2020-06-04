@@ -93,7 +93,7 @@ const onRefreshGetDefaultSheetList = (props) => {
     value
   } = props;
 
-  resetDefaultSheetList();
+  // resetDefaultSheetList();//放开后会把整个筛选条件的质检单刷新一遍
   if (keyEx && value) {
     getPullUpRefreshFilterSheetList(keyEx, value);
   } else {
@@ -125,10 +125,7 @@ const SheetListView = (props) => {
           />
         }
         onEndReached={() => {
-          console.warn("woede")
           if (sheetListData.canLoadMoreData()) {
-            console.warn("内")
-
             sheetListData.nextPage();
             getLoadingMoreSheetList(sheetListData, keyEx, value);
           }

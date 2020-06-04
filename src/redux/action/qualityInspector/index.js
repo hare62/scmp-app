@@ -162,23 +162,20 @@ const getMonitorListSucess = (jsonData) => ({
   jsonData
 })
 
-// 获取默认质检单
+//获取默认质检单
 export const getQualityInspectorSheetList = (callBack) => {
   return async (dispatch) => {
     dispatch(qualitySheetListRefresh());
     let sheetListData = new SheetListData();
     const Range = sheetListData.generateHeaderData();
     let url = `${host}/app-qlt-inspection/qltDispatchMessage`;
-    console.log("url", url)
     if (isMockData) {
-      console.log("urlisMockData", url)
       sheetListData.appendDatas(mockQualityInspectorSheetListData);
       let newSheetListData = new SheetListData();
       newSheetListData.copy(sheetListData);
       dispatch(getQualityInspectorSheetListSuccess(newSheetListData));
 
     } else {
-      console.log("url", url);
       fetchHeaderRequestTest({ url, type: "GET", Range })
         .then((responseData) => {
           const { jsonData, headers } = responseData;
@@ -222,8 +219,6 @@ export const getLoadingMoreSheetList = (sheetListData, callBack) => {
           newSheetListData.copy(sheetListData);
           newSheetListData.parseHeaderData(headers);
           dispatch(getQualityInspectorSheetListSuccess(newSheetListData));
-          // MessageCenter.getInstance().notice(Quality_LOAD_MORE,newSheetListData)
-
         }).catch((error) => {
           dispatch(getSheetListFailure());
           console.warn("action - qualityInspector - catch -getLoadingMoreSheetList " + error)
@@ -231,8 +226,6 @@ export const getLoadingMoreSheetList = (sheetListData, callBack) => {
     }
   }
 };
-
-
 
 /**加载更多
  * 获取筛选条件的派工单
@@ -248,11 +241,13 @@ export const getPullUpRefreshFilterSheetList = (key, value) => {
     let sheetListData = new SheetListData();
     const Range = sheetListData.generateHeaderData();
     let url;
+
     if (isPageUrl) {
       url = `${host}/app-qlt-inspection/qltDispatchMessage?${value}`;
     } else {
       url = `${host}/app-qlt-inspection/qltDispatchMessage?${value}`;
     }
+    console.log("url", url);
 
     if (isMockData) {
       sheetListData.appendDatas(mockFinishData);
@@ -269,7 +264,7 @@ export const getPullUpRefreshFilterSheetList = (key, value) => {
           newSheetListData.copy(sheetListData);
           newSheetListData.parseHeaderData(headers);
           dispatch(getFilterSheetListSuccess(newSheetListData, key));
-          console.warn(newSheetListData)
+          console.log(newSheetListData);
         })
         .catch((error) => {
           dispatch(getSheetListFailure());
@@ -414,7 +409,6 @@ export const FileUploadSave = (files) => {
 // 无零件号质检保存
 export const postSaveResult = (result, callBack) => {
   return () => {
-    console.log("postSaveResult",result)
     const url = `${host}/app-qlt-inspection/saveAppQltInspection`;
     if (isMockData) {
       if (typeof callBack === 'function') {
@@ -489,7 +483,6 @@ export const getStandarItemDetailOfNoMechanical = (technologyId, proInspectionId
           console.warn("action - qualityInspector - catch - getStandarItemDetailOfNoMechanical " + error);
         })
     }
-    // console.warn("获取无零件号的标准项详情", qualitySheetListid, mechanicalMessage)
     // let sheetListData = StandardItemDataList.init(StandardItemofNoMechanical);
     // dispatch(getStandarItemDetailOfNoMechanicalSuccess(sheetListData));
   }
@@ -580,7 +573,6 @@ export const getPartFile = ({ qltSheetId }, callBack) => {
       .then(function (response) {
         if (response.status === 200) {
           if (typeof callBack === 'function') {
-            console.log("index",response)
             callBack(response.data)//没有文件返回的是""空字符串
           }
         }
@@ -622,7 +614,6 @@ export const getScrapProcessList = (proInspectionId) => {
     if (isMockData) {
       let jsonData = ScrapProcessListData.init(mockScrapProcessList);
       dispatch(getScrapProcessListSucess(jsonData));
-      console.log(jsonData)
     } else {
       fetchRequestTest({ url, type: "GET" })
         .then((jsonData) => {
@@ -671,6 +662,25 @@ export const getFactoryList = ({ responsiblePartyType, name }) => {
         })
     } else {
 
+      const Range = responsiblePartyListData.generateHeaderData();
+      let url;
+      if (name) {//模糊搜索数据
+        url = `${host}/qlt-pro-inspection/sup?responsiblePartyType=${responsiblePartyType}&name=${name}`;
+      } else {//默认数据
+        url = `${host}/qlt-pro-inspection/sup?responsiblePartyType=${responsiblePartyType}`;
+      }
+      fetchHeaderRequestTest({ url, type: "GET", Range })
+        .then((responseData) => {
+          const { jsonData, headers } = responseData;
+          responsiblePartyListData.appendDatas(jsonData);
+          let newResponsiblePartyListData = new ResponsiblePartyListData();
+          newResponsiblePartyListData.copy(responsiblePartyListData);
+          newResponsiblePartyListData.parseHeaderData(headers);
+          dispatch(getFactoryListSucess(newResponsiblePartyListData));
+        })
+        .catch((error) => {
+          console.warn("action - qualityInspector - catch - getFactoryList " + error);
+        })
     }
   }
 }
@@ -703,6 +713,19 @@ export const getMoreFactoryList = ({ responsiblePartyType, factoryList }) => {
           console.warn("action - Worker - catch -getLoadingMoreSheetList " + error)
         })
     } else {
+      url = `${host}/qlt-pro-inspection/sup?responsiblePartyType=${responsiblePartyType}`;
+      fetchHeaderRequestTest({ url, type: 'GET', Range })
+        .then((responseData) => {
+          const { jsonData, headers } = responseData;
+          factoryList.appendDatas(jsonData);
+          let newFactoryList = new ResponsiblePartyListData();
+          newFactoryList.copy(factoryList);
+          newFactoryList.parseHeaderData(headers);
+          setTimeout(() => { dispatch(getFactoryListSucess(newFactoryList)); }, 2000)
+        }).catch((error) => {
+          dispatch(getSheetListFailure());
+          console.warn("action - Worker - catch -getLoadingMoreSheetList " + error)
+        })
     }
   }
 };
@@ -743,6 +766,25 @@ export const getSupplierList = ({ responsiblePartyType, name }) => {
           console.warn("action - qualityInspector - catch - getFactoryList " + error);
         })
     } else {
+      const Range = responsiblePartyListData.generateHeaderData();
+      let url;
+      if (name) {//模糊搜索数据
+        url = `${host}/qlt-pro-inspection/sup?responsiblePartyType=${responsiblePartyType}&name=${name}`;
+      } else {//默认数据
+        url = `${host}/qlt-pro-inspection/sup?responsiblePartyType=${responsiblePartyType}`;
+      }
+      fetchHeaderRequestTest({ url, type: "GET", Range })
+        .then((responseData) => {
+          const { jsonData, headers } = responseData;
+          responsiblePartyListData.appendDatas(jsonData);
+          let newResponsiblePartyListData = new ResponsiblePartyListData();
+          newResponsiblePartyListData.copy(responsiblePartyListData);
+          newResponsiblePartyListData.parseHeaderData(headers);
+          dispatch(getSupplierListSucess(newResponsiblePartyListData));
+        })
+        .catch((error) => {
+          console.warn("action - qualityInspector - catch - getFactoryList " + error);
+        })
     }
   }
 }
@@ -772,7 +814,19 @@ export const getMoreSupplierList = ({ responsiblePartyType, supplierList }) => {
           console.warn("action - Worker - catch -getLoadingMoreSheetList " + error)
         })
     } else {
-
+      url = `${host}/qlt-pro-inspection/sup?responsiblePartyType=${responsiblePartyType}`;
+      fetchHeaderRequestTest({ url, type: 'GET', Range })
+        .then((responseData) => {
+          const { jsonData, headers } = responseData;
+          supplierList.appendDatas(jsonData);
+          let newSupplierList = new ResponsiblePartyListData();
+          newSupplierList.copy(supplierList);
+          newSupplierList.parseHeaderData(headers);
+          setTimeout(() => { dispatch(getSupplierListSucess(newSupplierList)); }, 2000)
+        }).catch((error) => {
+          dispatch(getSheetListFailure());
+          console.warn("action - Worker - catch -getLoadingMoreSheetList " + error)
+        })
     }
   }
 };
@@ -814,7 +868,26 @@ export const getMonitorList = ({ responsiblePartyType, name }) => {
         })
 
     } else {
+      const Range = responsiblePartyListData.generateHeaderData();
+      let url;
+      if (name) {//模糊搜索数据
+        url = `${host}/qlt-pro-inspection/sup?responsiblePartyType=${responsiblePartyType}&name=${name}`;
+      } else {//默认数据
+        url = `${host}/qlt-pro-inspection/sup?responsiblePartyType=${responsiblePartyType}`;
+      }
 
+      fetchHeaderRequestTest({url, type: "GET", Range,})
+        .then((responseData) => {
+          const { jsonData, headers } = responseData;
+          responsiblePartyListData.appendDatas(jsonData);
+          let newResponsiblePartyListData = new ResponsiblePartyListData();
+          newResponsiblePartyListData.copy(responsiblePartyListData);
+          newResponsiblePartyListData.parseHeaderData(headers);
+          dispatch(getMonitorListSucess(newResponsiblePartyListData));
+        })
+        .catch((error) => {
+          console.warn("action - qualityInspector - catch - getFactoryList " + error);
+        })
     }
   }
 }
@@ -843,7 +916,19 @@ export const getMoreMonitorList = ({ responsiblePartyType, monitorList }) => {
           console.warn("action - Worker - catch -getMoreMonitorList " + error)
         })
     } else {
-
+      url = `${host}/qlt-pro-inspection/sup?responsiblePartyType=${responsiblePartyType}`;
+      fetchHeaderRequestTest({ url, type: 'GET', newToken: token, Range })
+        .then((responseData) => {
+          const { jsonData, headers } = responseData;
+          monitorList.appendDatas(jsonData);
+          let newMonitorList = new ResponsiblePartyListData();
+          newMonitorList.copy(monitorList);
+          newMonitorList.parseHeaderData(headers);
+          setTimeout(() => { dispatch(getMonitorListSucess(newMonitorList)); }, 2000)
+        }).catch((error) => {
+          dispatch(getSheetListFailure());
+          console.warn("action - Worker - catch -getMoreMonitorList " + error)
+        })
     }
   }
 };

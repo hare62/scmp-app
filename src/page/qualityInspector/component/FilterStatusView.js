@@ -5,7 +5,7 @@ import {
 import SheetListView from './SheetListView';
 import { connect } from 'react-redux';
 import SheetListData from '../../../data/qualityInspector/SheetListData';
-import { getFilterSheetList, getPullUpRefreshFilterSheetList} from '../../../redux/action/qualityInspector/index';
+import { getFilterSheetList, getPullUpRefreshFilterSheetList, resetDefaultSheetList} from '../../../redux/action/qualityInspector/index';
 
 class FilterStatusView extends Component {
   constructor(props) {
@@ -29,7 +29,13 @@ class FilterStatusView extends Component {
   }
 
   render() {
-    const { tabNames, item, getPullUpRefreshFilterSheetList, getFilterSheetList} = this.props;
+    const { 
+      tabNames, 
+      item, 
+      getPullUpRefreshFilterSheetList, 
+      getFilterSheetList,
+      resetDefaultSheetList
+    } = this.props;
     const { key, value } = tabNames;
     let SheetList = item[key];
 
@@ -44,6 +50,7 @@ class FilterStatusView extends Component {
         getLoadingMoreSheetList={getFilterSheetList}
         isLoading={SheetList.isLoading}
         isLoadingMore={SheetList.isLoadingMore}
+        resetDefaultSheetList={resetDefaultSheetList}
         />}
       </View>
     );
@@ -63,6 +70,9 @@ const mapDispatch = (dispatch) => ({
   getPullUpRefreshFilterSheetList(keyEx, value){
     dispatch(getPullUpRefreshFilterSheetList(keyEx, value))
   },
+  resetDefaultSheetList(){
+    dispatch(resetDefaultSheetList())
+  }
 });
 
 export default connect(mapState, mapDispatch)(FilterStatusView);

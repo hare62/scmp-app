@@ -27,7 +27,6 @@ import { FileUploadSave, getPartFile } from '../../redux/action/qualityInspector
 import ModelNoticeView from '../../common/Component/ModelNoticeView';
 import { getTechnologyProcessList } from '../../redux/action/qualityInspector/index';
 import { isExist } from '../../utils/Util';
-import { cloneNode } from '@babel/types';
 
 class AddMechanicalPage extends Component {
   constructor(props) {
@@ -53,6 +52,7 @@ class AddMechanicalPage extends Component {
       scrapProcess: "点击选择",
       scrapProcessID: "",
       responsibleParty: "点击选择",
+      responsiblePartyId:"",
       responsiblePartyType: "",
     }
     this.submitResult = this.submitResult.bind(this);
@@ -70,15 +70,16 @@ class AddMechanicalPage extends Component {
     this.onChoiceScrapProcess = this.onChoiceScrapProcess.bind(this);
     this.onChoiceResponsibleParty = this.onChoiceResponsibleParty.bind(this);
 
-    props.navigation.addListener('didFocus', () => { this.init() });
+    props.navigation.addListener('didFocus', () => { this.renderScrapProcess() });
   }
 
   componentDidMount() {
     this.init();
+    console.log("看看 复现数----",this.props)
   }
-
-  init() {
-    const { technologyId, proInspectionId, isAddPage, scrapProcessItem, responsiblePartyItem } = this.props.navigation.state.params;
+  
+  renderScrapProcess = ()=>{
+    const { scrapProcessItem, responsiblePartyItem } = this.props.navigation.state.params;
     if (scrapProcessItem) { // 修改报废工序
       this.setState({
         scrapProcess: scrapProcessItem.technologyName,
@@ -87,18 +88,74 @@ class AddMechanicalPage extends Component {
     }
 
     if (responsiblePartyItem) {
-      console.log(responsiblePartyItem)
       this.setState({
         responsibleParty: responsiblePartyItem.name,
-        responsiblePartyType: responsiblePartyItem.responsiblePartyType
-      }, () => {
-        console.warn("responsiblePartyType", this.state.responsiblePartyType)
+        responsiblePartyType: responsiblePartyItem.responsiblePartyType,
+        responsiblePartyId: responsiblePartyItem.userId
       })
     }
+  }
+
+  reShowScrapProcess = () => {
+    const { scrapProcessList, responsiblePartyList } = this.props.navigation.state.params;
+    console.log("看看 复现数----",this.props)
+
+    
+    if (scrapProcessList) { // 修改报废工序
+      this.setState({
+        scrapProcess: scrapProcessList.technologyName,
+        scrapProcessID: scrapProcessList.technologyId
+      })
+    }
+
+    if (responsiblePartyList) {
+      this.setState({
+        responsibleParty: responsiblePartyList.name,
+        responsiblePartyType: responsiblePartyList.responsiblePartyType,
+        responsiblePartyId: responsiblePartyList.responsiblePartyId
+      })
+    }
+  }
+
+  init() {
+    this.reShowScrapProcess();
+    const { technologyId, proInspectionId, isAddPage, scrapProcessItem, responsiblePartyItem } = this.props.navigation.state.params;
+    // if (scrapProcessItem) { // 修改报废工序
+    //   this.setState({
+    //     scrapProcess: scrapProcessItem.technologyName,
+    //     scrapProcessID: scrapProcessItem.technologyId
+    //   })
+    // }
+
+    // if (responsiblePartyItem) {
+    //   this.setState({
+    //     responsibleParty: responsiblePartyItem.name,
+    //     responsiblePartyType: responsiblePartyItem.responsiblePartyType
+    //   }, () => {
+    //     console.warn("responsiblePartyType", this.state.responsiblePartyType)
+    //   })
+    // }
     const { getStandarItem, } = this.props;
     let mpartNo = this.props.navigation.state.params.partNo;
     let mqltConclusion = this.props.navigation.state.params.qltConclusion;
-    let { partNo, qltSheetId, partFiles } = this.props.navigation.state.params;
+    let { 
+      partNo, 
+      qltSheetId, 
+      partFiles, 
+      insTechnologyId, 
+      insTechnologyName, 
+      responsiblePartyType, 
+      responsiblePartyId, 
+      responsiblePartyName 
+    } = this.props.navigation.state.params;
+    if(insTechnologyName){//报废有字段复现
+      this.setState({
+        scrapProcess:insTechnologyName,
+        responsibleParty:responsiblePartyName,
+        scrapProcessID:insTechnologyId,
+        responsiblePartyType:responsiblePartyType
+      })
+    }
 
     let fileArray = [];
     if (isAddPage) {//新增页面
@@ -114,32 +171,25 @@ class AddMechanicalPage extends Component {
       //  qltSheetId = "a471a88acbe74916b7471d3a3a718f1f"//假数据
       getPartFile({ qltSheetId }, (partFiles) => {
         partFiles = partFiles.substring(0, partFiles.length - 1);
-        console.log("getPartFile1111",partFiles)
         if (partFiles) {
           let arr = partFiles.split("|");
-          console.log("arr",arr)
           // let uploadFileName =  ["IMG_20200523_082243.jpg", "IMG_20200523_082240.jpg"];
           // let uploadFileID = [355, 356];
           let fileID = arr[0].split("<");
           let fileName = arr[1].split("<");
-          console.log("fileID",fileID)
-          console.log("fileName",fileName)
           // let fileArray;
           for (let i = 0; i < (fileID.length); i++) {
             let data = {};
             data.fileId = fileID[i];
             data.name = fileName[i];
-            console.log("-----",data)
             fileArray.push(data);
           }
-          console.log("-----",fileArray)
           //修改页面
           this.setState({
             fileArray: fileArray,
             uploadFileName: fileName,
             uploadFileID: fileID
           },()=>{
-            console.log("fileArray",this.state.fileArray)
           })
         }
       });
@@ -428,6 +478,7 @@ class AddMechanicalPage extends Component {
       scrapProcess,
       scrapProcessID,
       responsibleParty,
+      responsiblePartyId,
       responsiblePartyType
     } = this.state;
     const { postAddMechanical, standardItemList } = this.props;
@@ -465,6 +516,10 @@ class AddMechanicalPage extends Component {
       filePath.push(nameString);
       partFiles = filePath.join("|");
     }
+
+    if(partFiles === "|"){
+      partFiles =''
+    }
     
     result.proInspectionId = proInspectionId;
     result.partNo = mpartNo;
@@ -475,7 +530,8 @@ class AddMechanicalPage extends Component {
     // result.technologyName = scrapProcess;
     result.insTechnologyId = scrapProcessID;
     // result.name = responsibleParty;
-    result.responsiblePartyId = responsiblePartyType;
+    result.responsiblePartyId = responsiblePartyId;
+    result.responsiblePartyType = responsiblePartyType;
 
     postAddMechanical(result, (result) => {
       this.setState({
@@ -505,6 +561,7 @@ class AddMechanicalPage extends Component {
       scrapProcess,
       scrapProcessID,
       responsibleParty,
+      responsiblePartyId,
       responsiblePartyType } = this.state;
     const { postAddMechanical, standardItemList } = this.props;
     const { proInspectionId } = this.props.navigation.state.params;
@@ -528,8 +585,6 @@ class AddMechanicalPage extends Component {
     let idString;
     let partFiles;
 
-    console.log("uploadFileName",uploadFileName)
-    console.log("uploadFileName",uploadFileName)
     if (uploadFileName  && uploadFileID) {
       nameString = uploadFileName.join("<")
       idString = uploadFileID.join("<")
@@ -541,7 +596,6 @@ class AddMechanicalPage extends Component {
     if(partFiles === "|"){
       partFiles =''
     }
-    console.log("partFiles",partFiles)
   
     let result = {};
     result.proInspectionId = proInspectionId;
@@ -552,7 +606,8 @@ class AddMechanicalPage extends Component {
     // result.technologyName = scrapProcess;
     result.insTechnologyId = scrapProcessID;
     // result.name = responsibleParty;
-    result.responsiblePartyId = responsiblePartyType;
+    result.responsiblePartyId = responsiblePartyId;
+    result.responsiblePartyType = responsiblePartyType;
     // 提交成功后，需要把标准项的值都删了
     postAddMechanical(result, (result) => {
       this.setState({
@@ -729,8 +784,9 @@ class AddMechanicalPage extends Component {
       scrapProcess,
       responsibleParty
     } = this.state;
-    const { sheetId, partNumber, isSubmit } = this.props.navigation.state.params;
-    const { partNo, qltConclusionValue } = partNumber[0];
+    const { sheetId, partNumber, isSubmit, partNo, qltConclusionValue } = this.props.navigation.state.params;
+    // const { partNo, qltConclusionValue } = partNumber[0];
+    console.log("this.props",this.props)
     const { standardItemList } = this.props;
     return (
       <View style={styles.contains}>

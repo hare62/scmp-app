@@ -19,12 +19,20 @@ const renderTechnologyProcessList = (data, props) => {
     qltSheetId } = data.item;  
     const { sheetId, item } = props.navigation.state.params;
     const { isSubmit } = item;
-   
+    console.log("this.props",props)
+    console.log("data.item",data.item)
+    console.log("...props.navigation.state.params.item",props.navigation.state.params.item)
+    let { scrapProcessItem } = data.item;
+    let { responsiblePartyItem } = data.item;
+    let scrapProcessList = scrapProcessItem;
+    let responsiblePartyList = responsiblePartyItem;
+    console.log("hhhhh",scrapProcessItem)
   return (
     <TouchableOpacity
       onPress={() => {
         //把最外层数据传进来即可
-        NavigationManager.push('AddMechanicalPage', { sheetId, isSubmit, ...data.item,...props.navigation.state.params.item,})
+        // NavigationManager.push('AddMechanicalPage', { sheetId, isSubmit, ...data.item,...props.navigation.state.params.item,})
+        NavigationManager.push('AddMechanicalPage', { sheetId, isSubmit, ...data.item,...props.navigation.state.params.item,scrapProcessList,responsiblePartyList})
       }}
     >
       <View style={styles.container}>

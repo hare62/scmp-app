@@ -6,30 +6,32 @@ import {
   StyleSheet,
   TextInput
 } from 'react-native';
+import { connect } from 'react-redux';
 import NavigationBar from '../../common/Component/NavigationBar';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import NavigationManager from '../../navigation/NavigationManager';
 import { fitSize } from '../../utils/Fit';
+import { resetPassword } from '../../redux/action/login/index';
 
 class ResetPasswordPage extends Component {
   constructor(props) {
     super(props);
 
     const { navigation } = this.props;
-    NavigationManager.setNavigation(navigation);
+    // NavigationManager.setNavigation(navigation);
     this.state = {
       Number: 60,
       isCountdown: false,
       newPassword:null
-
     }
   }
 
   renderLeftButton() {
+    const { navigation } = this.props;
     return (
       <TouchableOpacity
         onPress={() => {
-          NavigationManager.goBack();
+          navigation.pop()
         }}
       >
         <AntDesign
@@ -55,12 +57,24 @@ class ResetPasswordPage extends Component {
   gotoResetPasswordPage() {
     const pwpattent = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]{8,15}$/;
     const { newPassword } = this.state;
+    console.warn("newPassword",pwpattent.test("1111"))
     if(pwpattent.test(newPassword)){
-      console.warn('包含大小写字母、数字、特殊字符至少3个组合大于8个字符');
+      console.warn('密码校验有通过');
+
+      this.props.resetPassword({userName:"016027",new_pwd:newPassword},res =>{
+        if(res){
+          NavigationManager.goPage('LoginPage');
+        }
+      });
+     
       return;
+    }else{
+      console.warn('包含大小写字母、数字、特殊字符至少3个组合大于8个字符');
     }
-    console.warn('密码校验通过');
-    NavigationManager.goPage('LoginPage')
+  }
+
+  handleNewPassword = (newPassword)=>{
+    this.setState({newPassword});
   }
 
   render() {
@@ -80,6 +94,7 @@ class ResetPasswordPage extends Component {
               style={styles.inputStyles}
               placeholder={'请输入新密码'}
               value={this.state.newPassword}
+              onChangeText={this.handleNewPassword}
             ></TextInput>
           </View>
           <View style={{ height: 40, marginTop:50, marginLeft: 100, justifyContent: "center", alignItems: 'flex-start', }}>
@@ -101,7 +116,6 @@ class ResetPasswordPage extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: 'center'
   },
   inputStyles: {
     borderWidth: 1,
@@ -109,7 +123,14 @@ const styles = StyleSheet.create({
     width: 200,
     height: 40
   },
-
 })
 
-export default ResetPasswordPage;
+const mapDispatchToProps = (dispatch) => ({
+  resetPassword({userName, new_pwd},callBack) {
+    dispatch(resetPassword({userName, new_pwd},callBack));
+  },
+})
+
+export default connect(null, mapDispatchToProps)(ResetPasswordPage);
+
+

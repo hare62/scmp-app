@@ -116,7 +116,7 @@ export default (state = defaultState, action) => {
     //重置工人派工单默认数据 下拉刷新前操作
     case actionTypes.RESET_QualityINSPECTOR_DEFAULT_SHEET_LIST:
       return {
-        ...state,
+        ...state,  
         isLoading: false,
         qualityInspectorSheetList: new SheetListData(),
         isLoadingMore: false

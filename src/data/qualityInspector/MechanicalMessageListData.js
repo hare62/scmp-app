@@ -11,6 +11,14 @@
 质检状态名称：qltConclusionValue;
 质检状态：qltConclusion;
 质检单Id：qltInspectionId;
+
+ ”insTechnologyId”：”报废工序ID”
+insTechnologyName:”报废工序名称”
+responsiblePartyType：“责任方类型（公司或者人）：01：工人，02供应商，03：班组”
+responsiblePartyId：“责任方ID”
+responsiblePartyName：“责任方名称”
+ * scrapProcessItem报废类型
+ * responsiblePartyItem责任方类型
  * 
  */
 
@@ -25,7 +33,14 @@ class MechanicalMessageData {
     this.partFiles = '';
     this.qltConclusionValue = '';
     this.qltConclusion = '';
-    this.qltInspectionId = '';
+    this.qltInspectionId = ''; 
+    this.insTechnologyId = '';
+    this.insTechnologyName = '';
+    this.responsiblePartyType = '';
+    this.responsiblePartyId = '';
+    this.responsiblePartyName = '';
+    this.scrapProcessItem = '';
+    this.responsiblePartyItem = '';
   }
 
   static init(jsonData) {
@@ -44,7 +59,14 @@ class MechanicalMessageData {
         partFiles,
         qltConclusionValue,
         qltConclusion,
-        qltInspectionId
+        qltInspectionId,
+        insTechnologyId,
+        insTechnologyName,
+        responsiblePartyType,
+        responsiblePartyId,
+        responsiblePartyName,
+        scrapProcessItem,
+        responsiblePartyItem
       }  = jsonData;
 
       data.mechanicalName = mechanicalName;
@@ -57,6 +79,14 @@ class MechanicalMessageData {
       data.qltConclusionValue = qltConclusionValue;
       data.qltConclusion = qltConclusion;
       data.qltInspectionId = qltInspectionId;
+      data.insTechnologyId = insTechnologyId;
+      data.insTechnologyName = insTechnologyName;
+      data.responsiblePartyType = responsiblePartyType;
+      data.responsiblePartyId = responsiblePartyId;
+      data.responsiblePartyName = responsiblePartyName;
+      data.scrapProcessItem = scrapProcessItem;
+      data.responsiblePartyItem = responsiblePartyItem;
+
     }catch(error){
       console.warn("data - qualityInspector - TechnologyProcessData - init" + error)
     }
@@ -92,6 +122,8 @@ class MechanicalMessageListData {
     }catch(error){
       console.warn("data - qualityInspector - MechanicalMessageListData - init " + error)
     }
+
+    console.log("测试下",listData)
 
     return listData;
   }

@@ -36,9 +36,15 @@ class QualityInspectorPage extends Component {
     }
     this.createFilterStatusView = this.createFilterStatusView.bind(this);
     this.createFilterTimeView = this.createFilterTimeView.bind(this);
+    props.navigation.addListener('didFocus', () => { this.init() });
+
   }
 
   componentDidMount() {
+    this.init();
+  }
+
+  init() {
     this.props.requestWorkSheetList();
   }
 

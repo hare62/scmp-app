@@ -15,17 +15,12 @@ import { getScrapProcessList } from '../../redux/action/qualityInspector/index';
 class ScrapProcessPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      list: []
-    }
   }
 
   componentDidMount() {
     const { proInspectionId } = this.props.navigation.state.params;
+    console.log("proInspectionId",this.props)
     this.props.getScrapProcessList(proInspectionId);
-    this.setState({
-      list: this.props.scrapProcessList
-    })
   }
 
   renderTabLeftButton() {
@@ -55,7 +50,7 @@ class ScrapProcessPage extends Component {
   }
 
   render() {
-    const { list } = this.state;
+    const { scrapProcessList } = this.props;
     return (
       <View style={{ marginBottom: 50 }}>
         <NavigationBar
@@ -65,19 +60,14 @@ class ScrapProcessPage extends Component {
         />
         <ScrollView>
           <View>
-            {list ?
-              list.map((item, i) => (
+            {scrapProcessList ?
+              scrapProcessList.map((item, i) => (
                 <ListItem
                   key={i}
                   title={item.technologyName}
                   bottomDivider
                   chevron
                   onPress={() => { this.handleItem(i, item) }}
-                  subtitle={
-                    <View >
-                      <Text >{item.technologyId}</Text>
-                    </View>
-                  }
                 />
               )) : null
             }

@@ -27,6 +27,8 @@
  * proInspectionId===质检ID
  * qualifiedQty无零件号质检结果
  * shareQty无零件号待审批质检结果
+ * scrapProcessItem报废类型
+ * responsiblePartyItem责任方类型
  */
 
 class TechnologyProcessData {
@@ -43,6 +45,8 @@ class TechnologyProcessData {
     this.technologyId = '';
     this.qualifiedQty = '';
     this.shareQty = '';
+    this.scrapProcessItem = '';
+    this.responsiblePartyItem = '';
   }
 
   static init(jsonData) {
@@ -63,7 +67,9 @@ class TechnologyProcessData {
         proInspectionId,
         technologyId,
         qualifiedQty,
-        shareQty }  = jsonData;
+        shareQty,
+        scrapProcessItem,
+        responsiblePartyItem }  = jsonData;
 
       data.step = tecStep;
       data.name = proSheetTecName;
@@ -77,6 +83,8 @@ class TechnologyProcessData {
       data.technologyId = technologyId;
       data.qualifiedQty = qualifiedQty;
       data.shareQty = shareQty;
+      data.scrapProcessItem = scrapProcessItem;
+      data.responsiblePartyItem = responsiblePartyItem;
     }catch(error){
       console.warn("data - qualityInspector - TechnologyProcessData - init" + error)
     }
@@ -115,6 +123,7 @@ class ProcessListData {
       console.warn("data - qualityInspector - ProcessListData - init " + error);
     }
 
+    console.log("oo",listData)
     return listData;
   }
 

@@ -120,14 +120,13 @@ class MechanicalQualityView extends Component {
               return <TouchableOpacity
                 style={styles.conclusion}
                 key={index}
-                // onPress={isDetailPage ? null : () => changeQualityResult(index)}
-                // 根据中文文字去修改状态的
+                disabled={true}
                 underlayColor='transparent'>
                 <Text style={(qualityResult === item) ? styles.selectM : styles.unSelectM}>{item}</Text>
               </TouchableOpacity>
             })}
           </View>
-          {/* {
+          {
             qualityResult === "02" ?
               <View style={styles.wrapper_container} >
                 <View style={styles.row_container}>
@@ -150,7 +149,7 @@ class MechanicalQualityView extends Component {
                 </View>
               </View>
               : null
-          } */}
+          }
         </View>
         <View>
           {
@@ -308,7 +307,7 @@ class MechanicalQualityView extends Component {
             {this.renderQualityResultView("01", "合格")}
             {this.renderQualityResultView("02", "待审批")}
           </View>
-          {/* {
+          {
             qualityResult === "02" ?
               <View style={styles.wrapper_container} >
                 <View style={styles.row_container}>
@@ -331,7 +330,7 @@ class MechanicalQualityView extends Component {
                 </View>
               </View>
               : null
-          } */}
+          }
         </View>
         <View>
           {
@@ -345,6 +344,12 @@ class MechanicalQualityView extends Component {
               </TouchableOpacity>
             })
           }
+
+          {/* <TouchableOpacity
+          onPress={this.gotoCamera}
+          style={styles.upload}
+        ><Text>相机</Text>
+        </TouchableOpacity> */}
           {/* <TouchableOpacity
             style={styles.uploadM}
             onPress={onReplaceFile}

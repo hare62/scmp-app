@@ -10,7 +10,6 @@
 
 import BaseSheetListData from '../Base/BaseSheetListData';
 
-
 class ResponsiblePartyData {
   constructor() {
     this.name = '';
@@ -28,13 +27,11 @@ class ResponsiblePartyData {
         responsiblePartyType,
         className,
         matId,
-        drawNo
+        drawNo,
       } = jsonData;
-      // itemData.name = name;
-      // itemData.userId = userId;
+      itemData.userId = userId;
       itemData.responsiblePartyType = responsiblePartyType;
       itemData.name = name;
-      itemData.userId = matId
     }
     catch (error) {
       console.error("data QualityInpector - ResponsiblePartyData - init:" + error);

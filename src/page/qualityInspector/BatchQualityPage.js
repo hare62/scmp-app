@@ -51,36 +51,22 @@ class BatchQualityPage extends Component {
       fileArray: [],
       loadFileID: "",
       loadFileName: "",
-      isDisabledSubmitButton: true,
       scrapProcess: "点击选择",
-      scrapProcessID:"",
+      scrapProcessID: "",
       responsibleParty: "点击选择",
-      responsiblePartyType:""
+      responsiblePartyType: "",
+      responsiblePartyId: ""
     }
 
-    this.changeResult = this.changeResult.bind(this);
-    this.showModelNoticeView = this.showModelNoticeView.bind(this);
-    this.onRNFileSelector = this.onRNFileSelector.bind(this);
-    this.saveModifyResult = this.saveModifyResult.bind(this);
-    this.onChoiceScrapProcess = this.onChoiceScrapProcess.bind(this);
-    this.onChoiceResponsibleParty = this.onChoiceResponsibleParty.bind(this);
-    props.navigation.addListener('didFocus', () => {this.init()});
+    props.navigation.addListener('didFocus', () => { this.renderScrapProcess() });
   }
 
   componentDidMount() {
-   this.init();
+    this.init();
   }
 
-  init() {
-    const {
-      qualifiedQty,
-      shareQty,
-      technologyId,
-      proInspectionId,
-      isSubmit,
-    } = this.props.navigation.state.params.item;
+  renderScrapProcess = () => {
     const { scrapProcessItem, responsiblePartyItem } = this.props.navigation.state.params;
-    console.warn('responsiblePartyItem',responsiblePartyItem)
     if (scrapProcessItem) { // 修改报废工序
       this.setState({
         scrapProcess: scrapProcessItem.technologyName,
@@ -88,17 +74,49 @@ class BatchQualityPage extends Component {
       })
     }
 
-    if(responsiblePartyItem){
-      console.log(responsiblePartyItem)
+    if (responsiblePartyItem) {
       this.setState({
         responsibleParty: responsiblePartyItem.name,
-        responsiblePartyType: responsiblePartyItem.responsiblePartyType
-      },()=>{
-        console.warn("responsiblePartyType",this.state.responsiblePartyType)
+        responsiblePartyType: responsiblePartyItem.responsiblePartyType,
+        responsiblePartyId: responsiblePartyItem.userId
+      })
+    }
+  }
+
+  reShowScrapProcess = () => {
+    const { scrapProcessItem, responsiblePartyItem } = this.props.navigation.state.params.item;
+    
+    if (scrapProcessItem) { // 修改报废工序
+      this.setState({
+        scrapProcess: scrapProcessItem.technologyName,
+        scrapProcessID: scrapProcessItem.technologyId
       })
     }
 
-    let { getStandarItemDetailOfNoMechanical, getModifyFilePath } = this.props;
+    if (responsiblePartyItem) {
+      this.setState({
+        responsibleParty: responsiblePartyItem.name,
+        responsiblePartyType: responsiblePartyItem.responsiblePartyType,
+        responsiblePartyId: responsiblePartyItem.responsiblePartyId
+      })
+    }
+  }
+
+  reShowQualityResult = () => {
+    const { qualifiedQty, shareQty } = this.props.navigation.state.params.item;
+    this.setState({
+      mqualifiedQty: qualifiedQty,
+      mshareQty: shareQty
+    });
+  }
+
+  reShowFiles = () => {
+    const {
+      qualifiedQty,
+      proInspectionId,
+      isSubmit,
+    } = this.props.navigation.state.params.item;
+    let { getModifyFilePath } = this.props;
     let fileArray = [];
     if (qualifiedQty && isSubmit) {//有质检结论&&有提交按钮===修改页面
       getModifyFilePath({ proInspectionId }, (partFiles) => {
@@ -124,25 +142,28 @@ class BatchQualityPage extends Component {
         }
       });
     }
-    
+  }
 
+  init() {
+    // 复现报废工序
+    this.reShowScrapProcess();
+    // 复现质检结果
+    this.reShowQualityResult();
+    // 复现文件
+    this.reShowFiles();
+    const { technologyId, proInspectionId } = this.props.navigation.state.params.item;
+    let { getStandarItemDetailOfNoMechanical } = this.props;
+    // 获取标准项
     getStandarItemDetailOfNoMechanical(technologyId, proInspectionId);
-    //存在在state中好修改合格和待审批
-    this.setState({
-      mqualifiedQty: qualifiedQty,
-      mshareQty: shareQty
-    })
   }
 
-  onChoiceScrapProcess() {
-    // TODO 
-    const { proInspectionId } = this.props.navigation.state.params;
-    NavigationManager.push("ScrapProcessPage",{proInspectionId,isBatchQualityPage:true});
-
+  onScrapProcess = () => {
+    const { proInspectionId } = this.props.navigation.state.params.item;
+    NavigationManager.push("ScrapProcessPage", { proInspectionId, isBatchQualityPage: true });
   }
 
-  onChoiceResponsibleParty() {
-    NavigationManager.push("ResponsiblePartyPage",{isBatchQualityPage:true});
+  onResponsibleParty = () => {
+    NavigationManager.push("ResponsiblePartyPage", { isBatchQualityPage: true });
   }
 
   renderTabLeftButton() {
@@ -161,14 +182,14 @@ class BatchQualityPage extends Component {
     );
   }
 
-  changeResult(realNumber, index) {
+  changeResult = (realNumber, index) => {
     const { standarItemOfNoMechanical, onChangeNoChanicalRealValueResult } = this.props;
     let data = [...standarItemOfNoMechanical];
     data[index].realNumber = realNumber;
     onChangeNoChanicalRealValueResult(data);
   }
 
-  onRNFileSelector() {
+  onRNFileSelector = () => {
     const { files } = this.state
     MediaLibrary.requestPermissionsAsync().then(async (response) => {
       const { granted } = response
@@ -196,7 +217,7 @@ class BatchQualityPage extends Component {
                     this.setState({
                       isShowNotice: false,
                     })
-                  }, 2000);
+                  }, 5000);
                 })
               } else {
                 FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 }).then(async (response) => {
@@ -271,22 +292,22 @@ class BatchQualityPage extends Component {
                   formData.append("md5", md5);
                   const result = await reqFileUpload(formData)
                   if (result.STATUS == "success") {
-                      let newID = [...this.state.loadFileID];
-                      newID[index] = result.FILEID;
-                      let newName = [...this.state.loadFileName];
-                      newName[index] = name;
-                      //修改页面
+                    let newID = [...this.state.loadFileID];
+                    newID[index] = result.FILEID;
+                    let newName = [...this.state.loadFileName];
+                    newName[index] = name;
+                    //修改页面
+                    this.setState({
+                      noticeText: result.MESSAGE,
+                      loadFileName: newName,
+                      loadFileID: newID
+                    }, () => {
                       this.setState({
-                        noticeText: result.MESSAGE,
-                        loadFileName: newName,
-                        loadFileID: newID
-                      }, () => {
-                        this.setState({
-                          isShowNotice: false,
-                        })
-                        files.push({ name: name, fileId: result.FILEID })
+                        isShowNotice: false,
                       })
-                    } 
+                      files.push({ name: name, fileId: result.FILEID })
+                    })
+                  }
                 })
               }
             })
@@ -296,21 +317,49 @@ class BatchQualityPage extends Component {
     })
   }
 
+  renderScrapProcessView = ({ scrapProcess, responsibleParty, onScrapProcess, onResponsibleParty, disabled }) => {
+    return (
+      <View style={styles.wrapper_container} >
+        <View style={styles.row_container}>
+          <Text>报废工序</Text>
+          <TouchableOpacity
+            style={styles.selectButton}
+            onPress={onScrapProcess ? onScrapProcess : null}
+            disabled={disabled ? true : false}
+          >
+            <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{scrapProcess}</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.row_container}>
+          <Text>责任方</Text>
+          <TouchableOpacity
+            style={styles.selectButton}
+            onPress={onResponsibleParty ? onResponsibleParty : null}
+            disabled={disabled ? true : false}
+          >
+            <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{responsibleParty}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
   renderModifyView() {
     const { standarItemOfNoMechanical } = this.props;
-    const { 
-      mqualifiedQty, 
-      mshareQty, 
-      fileArray, 
-      loadFileName, 
-      isShow, 
-      title, 
-      scrapProcess, 
-      responsibleParty 
+    const {
+      mqualifiedQty,
+      mshareQty,
+      fileArray,
+      loadFileName,
+      isShow,
+      title,
+      scrapProcess,
+      responsibleParty
     } = this.state;
+    console.warn("mshareQty",parseInt(mshareQty)>0)
     return (
-
       <View>
+        {/* {this.renderQualityResultView({ qualified: mqualifiedQty, editable: true, shareQty: mshareQty })} */}
         <View style={styles.warpper}>
           <Text style={styles.title}>合格:</Text>
           <TextInput
@@ -331,28 +380,7 @@ class BatchQualityPage extends Component {
             keyboardType="numeric"
           />
         </View>
-        {/* {
-              <View style={styles.wrapper_container} >
-                <View style={styles.row_container}>
-                  <Text>报废工序</Text>
-                  <TouchableOpacity
-                    style={styles.selectButton}
-                    onPress={() => { this.onChoiceScrapProcess() }}
-                  >
-                    <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{scrapProcess}</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.row_container}>
-                  <Text>责任方</Text>
-                  <TouchableOpacity
-                    style={styles.selectButton}
-                    onPress={() => { this.onChoiceResponsibleParty() }}
-                  >
-                    <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{responsibleParty}</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-          } */}
+        { parseInt(mshareQty)>0 ? this.renderScrapProcessView({ scrapProcess, responsibleParty, onScrapProcess: this.onScrapProcess, onResponsibleParty: this.onResponsibleParty }) : null}
         {
           loadFileName ?
             loadFileName.map((item, index) => {
@@ -365,6 +393,7 @@ class BatchQualityPage extends Component {
               </TouchableOpacity>
             }) : null
         }
+        {/* {this.renderStandarView({ standarItemOfNoMechanical })} */}
         {
           !standarItemOfNoMechanical ? <></> :
             standarItemOfNoMechanical.map((item, index) => (
@@ -383,50 +412,27 @@ class BatchQualityPage extends Component {
 
   submitResult() {
     const { postSubmitResult } = this.props;
-    const { proInspectionId } = this.props.navigation.state.params.item;
+    // const { proInspectionId } = this.props.navigation.state.params.item;
 
-    postSubmitResult(proInspectionId, (result, isSuccess) => {
-      this.setState({
-        isShowNotice: true,
-        noticeText: result,
-      })
-      setTimeout(() => {
-        this.setState({
-          isShowNotice: false,
-        })
-        NavigationManager.goPage("TechnologyProcessPage");
-      }, 1500)
-    });
-  }
 
-  showModelNoticeView(notice) {
-    this.setState({
-      isShowNotice: true,
-      noticeText: notice,
-    })
-    setTimeout(() => {
-      this.setState({
-        isShowNotice: false,
-      })
-    }, 1500)
-  }
-
-  saveModifyResult() {
-
-    const { 
-      postSaveResult, 
+    const {
+      postSaveResult,
       standarItemOfNoMechanical } = this.props;
-    const { 
-      mqualifiedQty, 
-      mshareQty, 
-      loadFileName, 
-      loadFileID, 
-      scrapProcess, 
+    const {
+      mqualifiedQty,
+      mshareQty,
+      loadFileName,
+      loadFileID,
+      scrapProcess,
       scrapProcessID,
       responsibleParty,
-      responsiblePartyType } = this.state;
+      responsiblePartyId,
+      responsiblePartyType
+       } = this.state;
     const { proInspectionId, qltSHeetId } = this.props.navigation.state.params.item;
-
+    console.log("000----",this.props)
+    console.log("status",this.state)
+    
     if (!isExist(mqualifiedQty)) {
       this.showModelNoticeView("请填入合格数信息");
       return false;
@@ -453,8 +459,8 @@ class BatchQualityPage extends Component {
       partFiles = filePath.join("|");
     }
 
-    if(partFiles === "|"){
-      partFiles =''
+    if (partFiles === "|") {
+      partFiles = ''
     }
 
     let parameter = {};
@@ -464,12 +470,98 @@ class BatchQualityPage extends Component {
     parameter.qltInspectionStandards = standarItemOfNoMechanical;//标准项
     parameter.qltSHeetId = qltSHeetId;//已经保存要填
     parameter.partFiles = partFiles;
-    // parameter.technologyName = scrapProcess;
     parameter.insTechnologyId = scrapProcessID;
-    // parameter.name = responsibleParty;
-    parameter.responsiblePartyId = responsiblePartyType;
+    parameter.responsiblePartyId = responsiblePartyId;
+    parameter.responsiblePartyType = responsiblePartyType;
+
+    postSubmitResult(parameter, (result, isSuccess) => {
+      this.setState({
+        isShowNotice: true,
+        noticeText: result,
+      })
+      setTimeout(() => {
+        this.setState({
+          isShowNotice: false,
+        })
+        NavigationManager.goPage("TechnologyProcessPage");
+      }, 1500)
+    });
+  }
+
+  showModelNoticeView = (notice) => {
+    console.warn(".....",notice)
+    this.setState({
+      isShowNotice: true,
+      noticeText: notice,
+    })
+    setTimeout(() => {
+      this.setState({
+        isShowNotice: false,
+      })
+    }, 5000)
+  }
+
+  saveModifyResult = () => {
+
+    const {
+      postSaveResult,
+      standarItemOfNoMechanical } = this.props;
+    const {
+      mqualifiedQty,
+      mshareQty,
+      loadFileName,
+      loadFileID,
+      scrapProcess,
+      scrapProcessID,
+      responsibleParty,
+      responsiblePartyId,
+      responsiblePartyType
+       } = this.state;
+    const { proInspectionId, qltSHeetId } = this.props.navigation.state.params.item;
+    console.log("000----",this.props)
+    console.log("status",this.state)
+    
+    if (!isExist(mqualifiedQty)) {
+      this.showModelNoticeView("请填入合格数信息");
+      return false;
+    } else if (!isExist(mshareQty)) {
+      this.showModelNoticeView("请填入待审批数信息");
+      return false;
+    }
+    standarItemOfNoMechanical.map((item, index) => {
+      if (!isExist(item.realNumber)) {
+        this.showModelNoticeView("请填入标准项信息");
+        return false;
+      }
+    })
+
+    let nameString;
+    let idString;
+    let partFiles;
+    if (loadFileName && loadFileID) {
+      nameString = loadFileName.join("<")
+      idString = loadFileID.join("<")
+      let filePath = [];
+      filePath.push(idString);
+      filePath.push(nameString);
+      partFiles = filePath.join("|");
+    }
+
+    if (partFiles === "|") {
+      partFiles = ''
+    }
+
+    let parameter = {};
+    parameter.proInspectionId = proInspectionId;//质检单Id
+    parameter.shareQty = mshareQty;//待审批数
+    parameter.qualifiedQty = mqualifiedQty;//合格数
+    parameter.qltInspectionStandards = standarItemOfNoMechanical;//标准项
+    parameter.qltSHeetId = qltSHeetId;//已经保存要填
+    parameter.partFiles = partFiles;
+    parameter.insTechnologyId = scrapProcessID;
+    parameter.responsiblePartyId = responsiblePartyId;
+    parameter.responsiblePartyType = responsiblePartyType;
     postSaveResult(parameter, (result) => {
-      console.log("result",result)
       this.setState({
         isShowNotice: true,
         noticeText: result,
@@ -485,21 +577,23 @@ class BatchQualityPage extends Component {
   }
 
   saveResult() {
-    const { 
-      postSaveResult, 
-      standarItemOfNoMechanical} = this.props;
-    const { 
-      qualified, 
-      wshareQty, 
-      uploadFileName, 
+    const {
+      postSaveResult,
+      standarItemOfNoMechanical } = this.props;
+    const {
+      qualified,
+      wshareQty,
+      uploadFileName,
       uploadFileID,
-      scrapProcess, 
+      scrapProcess,
       scrapProcessID,
       responsibleParty,
-      responsiblePartyType} = this.state;
-    const { 
-      proInspectionId, 
+      responsiblePartyId,
+      responsiblePartyType } = this.state;
+    const {
+      proInspectionId,
       qltSHeetId } = this.props.navigation.state.params.item;
+      console.warn("oo",isExist(qualified))
 
     if (!isExist(qualified)) {
       this.showModelNoticeView("请填入合格数信息");
@@ -528,6 +622,12 @@ class BatchQualityPage extends Component {
       partFiles = filePath.join("|");
     }
 
+    if (partFiles === "|") {
+      partFiles = ''
+    }
+
+    console.log(this.state)
+
     let parameter = {};
     parameter.proInspectionId = proInspectionId;//质检单Id
     parameter.shareQty = wshareQty;//待审批数
@@ -538,9 +638,9 @@ class BatchQualityPage extends Component {
     // parameter.technologyName = scrapProcess;
     parameter.insTechnologyId = scrapProcessID;
     // parameter.name = responsibleParty;
-    parameter.responsiblePartyId = responsiblePartyType;
+    parameter.responsiblePartyId = responsiblePartyId;
+    parameter.responsiblePartyType = responsiblePartyType;
     postSaveResult(parameter, (result) => {
-      console.log("result",result)
       this.setState({
         isShowNotice: true,
         noticeText: result,
@@ -556,7 +656,6 @@ class BatchQualityPage extends Component {
   }
 
   renderModifyPage() {
-    const { isDisabledSubmitButton } = this.state;
     return (
       <View style={styles.contains}>
         <View style={styles.block}>
@@ -573,14 +672,13 @@ class BatchQualityPage extends Component {
         <View style={styles.warpperButton}>
           <TouchableOpacity
             style={styles.leftBottom}
-            onPress={() => { this.saveModifyResult() }}
+            onPress={this.saveModifyResult}
           >
             <Text>保存</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.leftBottom, styles.select]}
             onPress={() => { this.submitResult() }}
-            disabled={isDisabledSubmitButton}
           >
             <Text >提交</Text>
           </TouchableOpacity>
@@ -596,8 +694,10 @@ class BatchQualityPage extends Component {
   renderAddView() {
     const { standarItemOfNoMechanical, } = this.props;
     const { qualified, wshareQty, uploadFileName, scrapProcess, responsibleParty } = this.state;
+    console.warn("wshareQty",parseInt(wshareQty)>0)
     return (
       <View>
+        {/* {this.renderQualityResultView({ qualified: qualified, editable: true, shareQty: wshareQty })} */}
         <View style={styles.warpper}>
           <Text style={styles.title}>合格:</Text>
           <TextInput
@@ -620,28 +720,29 @@ class BatchQualityPage extends Component {
             keyboardType="numeric"
           />
         </View>
+        { parseInt(wshareQty) ? this.renderScrapProcessView({ scrapProcess, responsibleParty, onScrapProcess: this.onScrapProcess, onResponsibleParty: this.onResponsibleParty }) : null}
         {/* {
-           <View style={styles.wrapper_container} >
-             <View style={styles.row_container}>
-               <Text>报废工序</Text>
-               <TouchableOpacity
-                 style={styles.selectButton}
-                 onPress={() => { this.onChoiceScrapProcess() }}
-               >
-                 <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{scrapProcess}</Text>
-               </TouchableOpacity>
-             </View>
-             <View style={styles.row_container}>
-               <Text>责任方</Text>
-               <TouchableOpacity
-                 style={styles.selectButton}
-                 onPress={() => { this.onChoiceResponsibleParty() }}
-               >
-                 <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{responsibleParty}</Text>
-               </TouchableOpacity>
-             </View>
-           </View>
-       } */}
+          <View style={styles.wrapper_container} >
+            <View style={styles.row_container}>
+              <Text>报废工序</Text>
+              <TouchableOpacity
+                style={styles.selectButton}
+                onPress={this.onScrapProcess}
+              >
+                <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{scrapProcess}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.row_container}>
+              <Text>责任方</Text>
+              <TouchableOpacity
+                style={styles.selectButton}
+                onPress={this.onResponsibleParty}
+              >
+                <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{responsibleParty}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        } */}
         <TouchableOpacity
           style={styles.uploadM}
           onPress={this.onRNFileSelector}
@@ -655,6 +756,7 @@ class BatchQualityPage extends Component {
             <Text >{item}</Text>
           </View>)
         })}
+        {/* {this.renderStandarView({ standarItemOfNoMechanical })} */}
         {
           standarItemOfNoMechanical ?
             standarItemOfNoMechanical.map((item, index) => (
@@ -672,7 +774,7 @@ class BatchQualityPage extends Component {
   }
 
   renderAddPage() {
-    const { isShow, title, isDisabledSubmitButton } = this.state;
+    const { isShow, title } = this.state;
     return (
       <View style={styles.contains}>
         <View style={styles.block}>
@@ -696,7 +798,6 @@ class BatchQualityPage extends Component {
           <TouchableOpacity
             style={[styles.leftBottom, styles.select]}
             onPress={() => { this.submitResult() }}
-            disabled={isDisabledSubmitButton}
           >
             <Text >提交</Text>
           </TouchableOpacity>
@@ -757,11 +858,63 @@ class BatchQualityPage extends Component {
     }
   }
 
+  renderQualityResultView = ({ qualified, editable, shareQty }) => {
+    return (
+      <>
+        <View style={styles.warpper}>
+          <Text style={styles.title}>合格:</Text>
+          <TextInput
+            style={styles.loggingData}
+            onChangeText={(mqualifiedQty) => this.setState({ mqualifiedQty })}
+            value={`${qualified}`}
+            placeholderTextColor='#ccc'
+            keyboardType="numeric"
+            editable={editable}
+          />
+        </View>
+        <View style={styles.warpper}>
+          <Text style={styles.title}>待审批:</Text>
+          <TextInput
+            style={styles.loggingData}
+            onChangeText={(mshareQty) => this.setState({ mshareQty })}
+            value={`${shareQty}`}
+            placeholderTextColor='#ccc'
+            keyboardType="numeric"
+            editable={editable}
+          />
+        </View>
+      </>
+    );
+  }
+
+  renderStandarView = ({ standarItemOfNoMechanical }) => {
+    return (
+      !standarItemOfNoMechanical ? <></> :
+        standarItemOfNoMechanical.map((item, index) => (
+          <NormalTremView
+            key={item.inspectionName}
+            changeResult={this.changeResult}
+            index={index}
+            standarItem={item}
+            isDetailPage={true}
+          />
+        ))
+    )
+  }
+
   renderDetailView() {
     const { standarItemOfNoMechanical } = this.props;
-    const { mqualifiedQty, mshareQty, isShow, loadFileName, fileArray } = this.state;
+    const {
+      mqualifiedQty,
+      mshareQty,
+      fileArray,
+      scrapProcess,
+      responsibleParty
+    } = this.state;
+    
     return (
       <View>
+        {/* {this.renderQualityResultView({ qualified: mqualifiedQty, editable: false, shareQty: mshareQty })} */}
         <View style={styles.warpper}>
           <Text style={styles.title}>合格:</Text>
           <TextInput
@@ -784,6 +937,29 @@ class BatchQualityPage extends Component {
             editable={false}
           />
         </View>
+        { mshareQty ? this.renderScrapProcessView({ scrapProcess, responsibleParty, disabled: true }) : null}
+        {/* {
+          <View style={styles.wrapper_container} >
+            <View style={styles.row_container}>
+              <Text>报废工序</Text>
+              <TouchableOpacity
+                style={styles.selectButton}
+                disabled={true}
+              >
+                <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{scrapProcess}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.row_container}>
+              <Text>责任方</Text>
+              <TouchableOpacity
+                style={styles.selectButton}
+                disabled={true}
+              >
+                <Text style={styles.selectButtonText} ellipsizeMode="tail" numberOfLines={1}>{responsibleParty}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        } */}
         {
           fileArray.map((item, index) => {
             return <TouchableOpacity
@@ -795,6 +971,7 @@ class BatchQualityPage extends Component {
             </TouchableOpacity>
           })
         }
+        {/* {this.renderStandarView({ standarItemOfNoMechanical })} */}
         {
           !standarItemOfNoMechanical ? <></> :
             standarItemOfNoMechanical.map((item, index) => (
@@ -941,10 +1118,11 @@ const styles = StyleSheet.create({
   wrapper_container: {
     flexDirection: "row",
     justifyContent: "space-between",
+    paddingLeft: 10,
   },
   row_container: {
     flexDirection: "row",
-    justifyContent:"flex-start",
+    justifyContent: "flex-start",
     alignItems: "center",
     width: deviceWidthDp * 0.4,
     marginTop: 10
@@ -957,7 +1135,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "#FFF",
     paddingLeft: 10,
-    paddingRight:10,
+    paddingRight: 10,
     backgroundColor: Constants.BUTTON,
     width: deviceWidthDp * 0.2,
     borderRadius: 50,
@@ -979,13 +1157,12 @@ const mapDispatchToProps = (dispatch) => ({
   getNoMechanicalMessageDetail() {
     dispatch(getNoMechanicalMessageDetail())
   },
-  postSubmitResult(qualified, fit, industrialWaste, materialWaste, callBack) {
-    dispatch(postSubmitResult(qualified, fit, industrialWaste, materialWaste, callBack))
+  postSubmitResult(parameter, callBack) {
+    dispatch(postSubmitResult(parameter, callBack))
   },
   postSaveResult(parameter, callBack) {
     dispatch(postSaveResult(parameter, callBack))
   },
-  // 传检验单Id 和 零件号信息 无零件号是没有零件号的
   getStandarItemDetailOfNoMechanical(technologyId, proInspectionId) {
     dispatch(getStandarItemDetailOfNoMechanical(technologyId, proInspectionId))
   },

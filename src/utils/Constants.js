@@ -7,8 +7,9 @@ const Constants = {
    TEXT_CONTENT:"#616161",//文本内容文字颜色
    DESCRIBE:"#666",//描述文字颜色
    INPUT_BORDER:"#CCC",
-   BORDER_COLOR:"#DDE1E4",
+   BORDER_COLOR:"#8DA8B1",
    PAGE_INCREASE_COUNT: 20, // 分页数据增量
+   OVER_VERIFICATION_CODE:"今日发送验证码已达上线"
 }
 
 export default Constants;   

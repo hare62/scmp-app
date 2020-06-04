@@ -46,6 +46,7 @@ class StepsView extends Component {
     // }
     let { step, name, status, equipment, partNumber } = data.item;
     let { hasMechanical, sheetListid, sheetId } = this.props;
+    console.log("Steptview",data)
     if (hasMechanical === '01' && !partNumber) {
       this.setState({
         visible: true,

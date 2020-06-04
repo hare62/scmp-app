@@ -44,12 +44,10 @@ class LQCamera extends Component{
                     totalTime+=1
                 },1000)
                 let video = await this.camera.recordAsync()
-                console.log(video)
                 this.setState({
                     uri:video.uri
                 },()=>{
                     MediaLibrary.createAssetAsync(video.uri).then((response)=>{
-                        console.log("创建资产",response)
                         const {filename,uri}=response
                         this.setState({
                             filename:filename,
@@ -64,14 +62,12 @@ class LQCamera extends Component{
 
     }
     pausevideo=async ()=>{
-        console.log("stop")
         if (this.camera) {
             let video = await this.camera.stopRecording()
             clearInterval(this.timer)
             this.setState({
                 time:""
             })
-            console.log("video",video)
         }
     }
     tochangeModePhoto=()=>{
@@ -107,15 +103,12 @@ class LQCamera extends Component{
         this.setState({
             id:''
         })
-        console.log("takephoto")
         if (this.camera) {
             let photo = await this.camera.takePictureAsync();
-            console.log("photo",photo)
             this.setState({
                 uri:photo.uri
             },()=>{
                 MediaLibrary.createAssetAsync(photo.uri).then((response)=>{
-                    console.log("创建资产",response)
                     const {filename,uri}=response
                     this.setState({
                         filename:filename,

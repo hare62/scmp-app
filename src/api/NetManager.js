@@ -104,7 +104,6 @@ export const fetchHeaderRequest = (url, param) => {
  */
 export const fetchHeaderRequestTest = async ({url, type, contentType, Range, body, newToken} ) => {
   let token = newToken || await AsyncStorage.getItem('token');
-  console.log("token",token)
   const method = {
     method: type,
     headers: new Headers({

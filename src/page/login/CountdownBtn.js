@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { 
+import {
   TouchableOpacity,
-  Text
+  Text,
+  StyleSheet,
+  View
 } from 'react-native';
+import Constants from '../../utils/Constants';
 
 // 默认倒计时时间
-const defaultTime = 3;
+const defaultTime = 60;
 // 默认倒计时间隔
 const defaultInterval = 1000;
 
@@ -15,10 +18,17 @@ class CountdownBtn extends Component {
 
     this.state = {
       time: defaultTime,
-      isClickable: true 
+      isClickable: true
     };
 
     this.handleBtnClick = this.handleBtnClick.bind(this);
+    props.navigation.addListener('didFocus', () => { this.resetLoginStatus() });
+  }
+
+  resetLoginStatus = () =>{
+    this.setState({
+      isClickable: true
+    })
   }
 
   clearTimer() {
@@ -51,7 +61,9 @@ class CountdownBtn extends Component {
 
     this.timer = setInterval(() => {
       this.onCountdown();
-    }, defaultInterval); 
+    }, defaultInterval);
+    let { getVerificationCode } = this.props;
+    getVerificationCode();
   }
 
   componentWillUnmount() {
@@ -59,21 +71,50 @@ class CountdownBtn extends Component {
   }
 
   render() {
-    const { text } = this.props;
+
+    const { text, isEdit } = this.props;
     const { isClickable, time } = this.state;
 
     return (
-      <TouchableOpacity
-        onPress={() => { isClickable ? this.handleBtnClick() : null }}
-      >
-        <Text>
-          {
-            isClickable ? text : time
-          }
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.isEdit}>
+        <TouchableOpacity
+          onPress={() => { isClickable && isEdit ? this.handleBtnClick() : null }}
+          disabled={(isClickable && isEdit) ? false : true}
+        >
+          <Text>
+            {
+              isClickable ? text : time
+            }
+          </Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 };
+
+const styles = StyleSheet.create({
+  isEdit: {
+    backgroundColor: '#41BD41',
+    height: 40,
+    justifyContent: 'center',
+    width: 130,
+    alignItems: 'center',
+    borderWidth: 1,
+    marginLeft: 20,
+    borderColor: Constants.BORDER_COLOR,
+    borderRadius: 5
+  },
+  isNotEdit: {
+    height: 40,
+    justifyContent: 'center',
+    marginLeft: 20,
+    width: 130,
+    alignItems: 'center',
+    borderWidth: 1,
+    marginLeft: 20,
+    borderColor: Constants.BORDER_COLOR,
+    borderRadius: 5
+  },
+})
 
 export default CountdownBtn;

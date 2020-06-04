@@ -26,7 +26,6 @@ const _getTabs = (props) => {
 
 const _tabNav = (props) => {
   if(!tabNav){
-    console.warn("2次")
     tabNav = createAppContainer(createMaterialTopTabNavigator(
       _getTabs(props),
       {
@@ -53,7 +52,6 @@ const _tabNav = (props) => {
 
 const TopNavTabsView = (props) => {
   const TabNavigator = _tabNav(props);
-  console.warn("1次")
   return (
     <View style={styles.container}>
       {<TabNavigator />}

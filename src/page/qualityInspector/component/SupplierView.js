@@ -72,6 +72,7 @@ class SupplierView extends Component {
   render() {
     const { search } = this.state;
     const { supplierList, getMoreSupplierList } = this.props;
+    console.log("supplierList.responsiblePartyList",supplierList)
     return (
       <View style={{ marginBottom: 80 }}>
         <SearchBar

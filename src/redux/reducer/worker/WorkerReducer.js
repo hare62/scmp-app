@@ -81,7 +81,7 @@ export default (state = defaultState, action) => {
         isLoading: true,
         isLoadingMore: false
       }
- 
+  
     //重置工人派工单默认数据 下拉刷新前操作
     case actionTypes.RESET_WORKER_DEFAULT_SHEET_LIST:
       return {
@@ -99,6 +99,9 @@ export default (state = defaultState, action) => {
       }
 
     //刷新工人单个派工单列表数据
+    /**
+     * isRefreshSheetCell改变了，旁敲侧击
+     */
     case actionTypes.REFRESH_WORKER_CELL_SHEET_LIST_DATA:
       return {
         ...state,
@@ -119,7 +122,7 @@ export default (state = defaultState, action) => {
           ...state,
           [action.topNavName]: {
             ...state[action.topNavName],
-            filterSheetList: {...state[action.topNavName.filterSheetList]},//
+            filterSheetList: {...state[action.topNavName.filterSheetList]},
             // topNavName: action.topNavName,
           },
           isRefreshSheetCell: false

@@ -17,12 +17,11 @@ import { fitSize } from '../../../utils/Fit';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Fumi } from 'react-native-textinput-effects';
 import Toast from 'react-native-easy-toast';
-import {LoadingControl} from '../../../common/Component/LoadingView';
+import { LoadingControl } from '../../../common/Component/LoadingView';
 
 class LoginView extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       userInfo: '',
       password: '',
@@ -46,12 +45,10 @@ class LoginView extends Component {
   }
 
   login() {
-    
     const { getLoginInfo } = this.props;
-    
     const isAjax = true;
     const { userInfo, password } = this.state;
-    if(!userInfo || !password){//校验表单数据是否有值
+    if (!userInfo || !password) {//校验表单数据是否有值
       const result = "账号和密码均不能为空";
       this.toast.show(result);
       return false;
@@ -73,8 +70,8 @@ class LoginView extends Component {
     });
   }
 
-  gotoResetPassword() {
-    NavigationManager.goPage('AuthPage');
+  gotoResetPassword = () => {
+    NavigationManager.push('AuthPage');
   }
 
   render() {
@@ -128,19 +125,19 @@ class LoginView extends Component {
           >
             <Text style={{ fontSize: 25, color: 'white', }}>登录</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => this.gotoResetPassword()}
+          <TouchableOpacity
+            onPress={this.gotoResetPassword}
             style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center', marginTop: 30 }}
           >
             <Text style={{ marginTop: 20, color: '#4EADEF', textDecorationLine: 'underline' }}>
-              忘记密码?
+              点击用手机号登录
             </Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
           {isShowConfirmModal ? confirmModal : null}
           <Toast
-          ref={(toast) => (this.toast = toast)}
-          position={'center'}
-        />
+            ref={(toast) => (this.toast = toast)}
+            position={'center'}
+          />
         </ImageBackground>
       </View >
     );
@@ -192,7 +189,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const mapState = (state) =>({
+const mapState = (state) => ({
   loginStatus: state.login.loginStatus,
 })
 
