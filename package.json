@@ -55,7 +55,7 @@
     "react-test-renderer": "16.9.0",
     "reactotron-react-native": "^5.0.0",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   },
   "jest": {
     "preset": "react-native"
