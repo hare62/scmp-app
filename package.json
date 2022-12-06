@@ -20,7 +20,7 @@
     "expo-media-library": "^8.1.0",
     "npm": "^6.14.5",
     "prop-types": "^15.7.2",
-    "qs": "^6.9.3",
+    "qs": "^6.9.7",
     "react": "16.9.0",
     "react-native": "0.61.1",
     "react-native-easy-toast": "^1.2.0",
